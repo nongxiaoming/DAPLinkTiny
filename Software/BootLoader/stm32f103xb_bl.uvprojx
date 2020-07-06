@@ -14,16 +14,15 @@
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
-          <Device>STM32F103RB</Device>
-          <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
-          <PackURL>http://www.keil.com/pack/</PackURL>
-          <Cpu>IRAM(0x20000000,0x00005000) IROM(0x08000000,0x00020000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
+          <Device>AT32F415KBU7-4</Device>
+          <Vendor>ArteryTek</Vendor>
+          <PackID>Keil.AT32F4xx_DFP.1.3.1</PackID>
+          <Cpu>IRAM(0x20000000,0x8000) IROM(0x08000000,0x20000) CPUTYPE("Cortex-M4") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
-          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_128 -FS08000000 -FL020000 -FP0($$Device:STM32F103RB$Flash\STM32F10x_128.FLM))</FlashDriverDll>
-          <DeviceId>4231</DeviceId>
-          <RegisterFile>$$Device:STM32F103RB$Device\Include\stm32f10x.h</RegisterFile>
+          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0AT32F415_128 -FS08000000 -FL020000 -FP0($$Device:AT32F415KBU7-4$Flash\AT32F415_128.FLM))</FlashDriverDll>
+          <DeviceId>0</DeviceId>
+          <RegisterFile>$$Device:AT32F415KBU7-4$Device\Include\at32f4xx.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
@@ -33,7 +32,7 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>$$Device:STM32F103RB$SVD\STM32F103xx.svd</SFDFile>
+          <SFDFile>$$Device:AT32F415KBU7-4$SVD\AT32F415xx.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
@@ -110,13 +109,13 @@
         </CommonProperty>
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
-          <SimDllArguments></SimDllArguments>
-          <SimDlgDll>DARMSTM.DLL</SimDlgDll>
-          <SimDlgDllArguments>-pSTM32F103RB</SimDlgDllArguments>
+          <SimDllArguments> -REMAP</SimDllArguments>
+          <SimDlgDll>DCM.DLL</SimDlgDll>
+          <SimDlgDllArguments>-pCM4</SimDlgDllArguments>
           <TargetDllName>SARMCM3.DLL</TargetDllName>
           <TargetDllArguments></TargetDllArguments>
-          <TargetDlgDll>TARMSTM.DLL</TargetDlgDll>
-          <TargetDlgDllArguments>-pSTM32F103RB</TargetDlgDllArguments>
+          <TargetDlgDll>TCM.DLL</TargetDlgDll>
+          <TargetDlgDllArguments>-pCM4</TargetDlgDllArguments>
         </DllOption>
         <DebugOption>
           <OPTHX>
@@ -137,7 +136,7 @@
             <DriverSelection>-1</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
-          <Flash2></Flash2>
+          <Flash2>BIN\UL2CM3.DLL</Flash2>
           <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
@@ -174,7 +173,7 @@
             <AdsLsxf>1</AdsLsxf>
             <RvctClst>1</RvctClst>
             <GenPPlst>0</GenPPlst>
-            <AdsCpuType>"Cortex-M3"</AdsCpuType>
+            <AdsCpuType>"Cortex-M4"</AdsCpuType>
             <RvctDeviceName></RvctDeviceName>
             <mOS>0</mOS>
             <uocRom>0</uocRom>
@@ -246,7 +245,7 @@
               <IRAM>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x5000</Size>
+                <Size>0x8000</Size>
               </IRAM>
               <IROM>
                 <Type>1</Type>
@@ -301,7 +300,7 @@
               <OCR_RVCT9>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x5000</Size>
+                <Size>0x8000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
@@ -337,9 +336,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--gnu --c99 --no_unaligned_access --no_unaligned_access</MiscControls>
-              <Define>DAPLINK_VERSION=254, MSC_ENDPOINT, DAPLINK_BL, DAPLINK_BUILD_KEY=0x9B939D93, DRAG_N_DROP_SUPPORT, OS_TICK=10000, INTERFACE_STM32F103XB, USE_HAL_DRIVER, STM32F103xB, DAPLINK_HIC_ID=0x97969908, __packed=__packed, DAPLINK_NO_ASSERT_FILENAMES, OS_CLOCK=72000000</Define>
+              <Define>DAPLINK_VERSION=254, AT32F415KBU7_4,USE_STDPERIPH_DRIVER,MSC_ENDPOINT, DAPLINK_BL, DAPLINK_BUILD_KEY=0x9B939D93, DRAG_N_DROP_SUPPORT, OS_TICK=10000, INTERFACE_AT32F415, USE_HAL_DRIVER, STM32F103xB, DAPLINK_HIC_ID=0x97969908, __packed=__packed, DAPLINK_NO_ASSERT_FILENAMES, OS_CLOCK=72000000</Define>
               <Undefine></Undefine>
-              <IncludePath>../Libraries/usb;../Libraries/daplink;./applications;..\Libraries\CMSIS\Include;../Libraries/hic_hal;../Libraries/daplink/drag-n-drop;../Libraries/daplink/settings;../Libraries/target;../Libraries/rtos_none;../Libraries/hic_hal/stm32/stm32f103xb;../Libraries/hic_hal/stm32/stm32f103xb/cmsis;../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver;../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver/Inc</IncludePath>
+              <IncludePath>../Libraries/usb;../Libraries/daplink;./applications;..\Libraries\CMSIS\Include;../Libraries/hic_hal;../Libraries/daplink/drag-n-drop;../Libraries/daplink/settings;../Libraries/target;../Libraries/rtos_none;../Libraries/hic_hal/at32/at32f415;..\Libraries\CMSIS\Device;..\Libraries\AT32F4xx_StdPeriph_Driver\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -521,97 +520,22 @@
             <File>
               <FileName>flash.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/flash.c</FilePath>
+              <FilePath>../Libraries/hic_hal/at32/at32f415/flash.c</FilePath>
             </File>
             <File>
               <FileName>gpio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/gpio.c</FilePath>
+              <FilePath>../Libraries/hic_hal/at32/at32f415/gpio.c</FilePath>
             </File>
             <File>
               <FileName>read_uid.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/read_uid.c</FilePath>
+              <FilePath>../Libraries/hic_hal/at32/at32f415/read_uid.c</FilePath>
             </File>
             <File>
               <FileName>sdk.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/sdk.c</FilePath>
-            </File>
-            <File>
-              <FileName>startup_stm32f103xb.S</FileName>
-              <FileType>2</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/armcc/startup_stm32f103xb.S</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f1xx_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f1xx_hal_cortex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f1xx_hal_dma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f1xx_hal_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f1xx_hal_flash_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f1xx_hal_gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f1xx_hal_gpio_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f1xx_hal_rcc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f1xx_hal_rcc_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f1xx_hal_tim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f1xx_hal_tim_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f1xx_hal_uart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f1xx_hal_usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_usart.c</FilePath>
-            </File>
-            <File>
-              <FileName>system_stm32f1xx.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/cmsis/system_stm32f1xx.c</FilePath>
+              <FilePath>../Libraries/hic_hal/at32/at32f415/sdk.c</FilePath>
             </File>
             <File>
               <FileName>uart.c</FileName>
@@ -626,7 +550,37 @@
             <File>
               <FileName>usbd_STM32F103.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/usbd_STM32F103.c</FilePath>
+              <FilePath>../Libraries/hic_hal/at32/at32f415/usbd_STM32F103.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_rcc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_rcc.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>misc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\misc.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -690,23 +644,13 @@
             </File>
           </Files>
         </Group>
-        <Group>
-          <GroupName>::CMSIS</GroupName>
-        </Group>
       </Groups>
     </Target>
   </Targets>
 
   <RTE>
     <apis/>
-    <components>
-      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.4.0" condition="ARMv6_7_8-M Device">
-        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.7.0"/>
-        <targetInfos>
-          <targetInfo name="stm32f103xb_bl"/>
-        </targetInfos>
-      </component>
-    </components>
+    <components/>
     <files/>
   </RTE>
 

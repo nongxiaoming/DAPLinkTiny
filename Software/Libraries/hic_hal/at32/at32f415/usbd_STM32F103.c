@@ -196,7 +196,7 @@ void USBD_Connect(BOOL con)
 
 void USBD_Reset(void)
 {
-    NVIC_DisableIRQ(USB_LP_CAN1_RX0_IRQn);
+    NVIC_DisableIRQ(USBOTG_IRQn);
 
     /* Double Buffering is not yet supported                                    */
     ISTR = 0;                             /* Clear Interrupt Status             */
@@ -229,7 +229,7 @@ void USBD_Reset(void)
     EPxREG(0) = EP_CONTROL | EP_RX_VALID;
     DADDR = DADDR_EF | 0;                 /* Enable USB Default Address         */
 
-    NVIC_EnableIRQ(USB_LP_CAN1_RX0_IRQn);
+    NVIC_EnableIRQ(USBOTG_IRQn);
 }
 
 

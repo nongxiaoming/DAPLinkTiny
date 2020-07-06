@@ -39,6 +39,9 @@
 #include "target_board.h"
 #include "flash_manager.h"
 
+#ifndef __WEAK
+#define __WEAK  __weak
+#endif 
 //! @brief Size in bytes of the virtual disk.
 //!
 //! Must be bigger than 4x the flash size of the biggest supported
