@@ -27,7 +27,7 @@
 /* Double Buffering is not supported                                         */
 
 #include <rl_usb.h>
-#include "at32f4xx.h"
+#include "stm32f1xx.h"
 #include "usbreg.h"
 #include "IO_Config.h"
 #include "cortex_m.h"
