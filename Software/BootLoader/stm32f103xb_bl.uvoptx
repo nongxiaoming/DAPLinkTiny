@@ -547,7 +547,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../Libraries/hic_hal/stm32/stm32f103xb/uart.c</PathWithFileName>
+      <PathWithFileName>../Libraries/hic_hal/at32/at32f415/uart.c</PathWithFileName>
       <FilenameWithoutPath>uart.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>

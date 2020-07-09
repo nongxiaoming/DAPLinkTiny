@@ -540,7 +540,7 @@
             <File>
               <FileName>uart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../Libraries/hic_hal/stm32/stm32f103xb/uart.c</FilePath>
+              <FilePath>../Libraries/hic_hal/at32/at32f415/uart.c</FilePath>
             </File>
             <File>
               <FileName>usb_config.c</FileName>
