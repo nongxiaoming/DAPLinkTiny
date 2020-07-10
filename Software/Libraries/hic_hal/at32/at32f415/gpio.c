@@ -25,7 +25,7 @@
 #include "daplink.h"
 #include "util.h"
 
-static TIM_HandleTypeDef timer;
+//static TIM_HandleTypeDef timer;
 
 static void busy_wait(uint32_t cycles)
 {
@@ -124,8 +124,7 @@ void gpio_init(void)
     __HAL_RCC_AFIO_CLK_ENABLE();
     // Disable JTAG to free pins for other uses
     // Note - SWD is still enabled
-    //__HAL_AFIO_REMAP_SWJ_NOJTAG();
-	  __HAL_AFIO_REMAP_SWJ_DISABLE();
+     GPIO_PinsRemapConfig(AFIO_MAP7_SWJTAG_0010,ENABLE);
 
     USB_CONNECT_PORT_ENABLE();
     USB_CONNECT_OFF();
@@ -206,40 +205,40 @@ void gpio_init(void)
 void gpio_set_hid_led(gpio_led_state_t state)
 {
     // LED is active low
-    HAL_GPIO_WritePin(PIN_HID_LED_PORT, PIN_HID_LED, state ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    GPIO_WriteBit(PIN_HID_LED_PORT, PIN_HID_LED, state ? Bit_RESET : Bit_SET);
 }
 
 void gpio_set_cdc_led(gpio_led_state_t state)
 {
     // LED is active low
-    HAL_GPIO_WritePin(PIN_CDC_LED_PORT, PIN_CDC_LED, state ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    GPIO_WriteBit(PIN_CDC_LED_PORT, PIN_CDC_LED, state ? Bit_RESET : Bit_SET);
 }
 
 void gpio_set_msc_led(gpio_led_state_t state)
 {
     // LED is active low
-    HAL_GPIO_WritePin(PIN_MSC_LED_PORT, PIN_MSC_LED, state ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    GPIO_WriteBit(PIN_MSC_LED_PORT, PIN_MSC_LED, state ? Bit_RESET : Bit_SET);
 }
 
 uint8_t gpio_get_reset_btn_no_fwrd(void)
 {
-	  uint8_t i = 20;
-	  uint32_t n = 0;
-	  GPIO_PinState state = GPIO_PIN_RESET;
-	  while(i--)
-		{
-			state = (state==GPIO_PIN_RESET)?GPIO_PIN_SET:GPIO_PIN_RESET;
-			HAL_GPIO_WritePin(GPIOA,GPIO_PIN_13,state);
-			for(n = 0; n < 5000;n++)
-       {
-			 
-			 }
-       if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_14)!=state)
-			 {
+//	  uint8_t i = 20;
+//	  uint32_t n = 0;
+//	  GPIO_PinState state = GPIO_PIN_RESET;
+//	  while(i--)
+//		{
+//			state = (state==GPIO_PIN_RESET)?GPIO_PIN_SET:GPIO_PIN_RESET;
+//			HAL_GPIO_WritePin(GPIOA,GPIO_PIN_13,state);
+//			for(n = 0; n < 5000;n++)
+//       {
+//			 
+//			 }
+//       if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_14)!=state)
+//			 {
 		   return 0;
-			 }
-		}
-    return 1;
+//			 }
+//		}
+//    return 1;
 }
 
 uint8_t gpio_get_reset_btn_fwrd(void)
