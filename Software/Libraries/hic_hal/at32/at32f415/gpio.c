@@ -116,12 +116,12 @@ void gpio_init(void)
 {
     GPIO_InitType GPIO_InitStructure;
     // enable clock to ports
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-    __HAL_RCC_GPIOD_CLK_ENABLE();
+    RCC_APB2PeriphClockCmd(RCC_APB2PERIPH_GPIOA, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2PERIPH_GPIOB, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2PERIPH_GPIOC, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2PERIPH_GPIOD, ENABLE);
     // Enable USB connect pin
-    __HAL_RCC_AFIO_CLK_ENABLE();
+    RCC_APB2PeriphClockCmd(RCC_APB2PERIPH_AFIO, ENABLE);
     // Disable JTAG to free pins for other uses
     // Note - SWD is still enabled
      GPIO_PinsRemapConfig(AFIO_MAP7_SWJTAG_0010,ENABLE);
