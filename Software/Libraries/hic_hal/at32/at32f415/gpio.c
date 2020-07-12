@@ -39,75 +39,76 @@ static void busy_wait(uint32_t cycles)
 
 static uint32_t tim1_clk_div(uint32_t apb2clkdiv)
 {
-    switch (apb2clkdiv) {
-        case RCC_CFGR_PPRE2_DIV2:
-            return 1;
-        case RCC_CFGR_PPRE2_DIV4:
-            return 2;
-        case RCC_CFGR_PPRE2_DIV8:
-            return 4;
-        default: // RCC_CFGR_PPRE2_DIV1
-            return 1;
-    }
+//    switch (apb2clkdiv) {
+//        case RCC_CFGR_PPRE2_DIV2:
+//            return 1;
+//        case RCC_CFGR_PPRE2_DIV4:
+//            return 2;
+//        case RCC_CFGR_PPRE2_DIV8:
+//            return 4;
+//        default: // RCC_CFGR_PPRE2_DIV1
+//            return 1;
+//    }
+	return 1;
 }
 
 static void output_clock_enable(void)
 {
-    HAL_StatusTypeDef ret;
-    RCC_ClkInitTypeDef clk_init;
-    TIM_OC_InitTypeDef pwm_config;
-    uint32_t unused;
-    uint32_t period;
-    uint32_t source_clock;
+//    HAL_StatusTypeDef ret;
+//    RCC_ClkInitTypeDef clk_init;
+//    TIM_OC_InitTypeDef pwm_config;
+//    uint32_t unused;
+//    uint32_t period;
+//    uint32_t source_clock;
 
-    HAL_RCC_GetClockConfig(&clk_init, &unused);
+//    HAL_RCC_GetClockConfig(&clk_init, &unused);
 
-    /* Compute the period value to have TIMx counter clock equal to 8000000 Hz */
-    source_clock = SystemCoreClock / tim1_clk_div(clk_init.APB2CLKDivider);
-    period = (uint32_t)(source_clock / 8000000) - 1;
+//    /* Compute the period value to have TIMx counter clock equal to 8000000 Hz */
+//    source_clock = SystemCoreClock / tim1_clk_div(clk_init.APB2CLKDivider);
+//    period = (uint32_t)(source_clock / 8000000) - 1;
 
-    /* Set TIMx instance */
-    timer.Instance = TIM1;
+//    /* Set TIMx instance */
+//    timer.Instance = TIM1;
 
-    timer.Init.Period            = period;
-    timer.Init.Prescaler         = 0;
-    timer.Init.ClockDivision     = 0;
-    timer.Init.CounterMode       = TIM_COUNTERMODE_UP;
-    timer.Init.RepetitionCounter = 0;//period / 2;
+//    timer.Init.Period            = period;
+//    timer.Init.Prescaler         = 0;
+//    timer.Init.ClockDivision     = 0;
+//    timer.Init.CounterMode       = TIM_COUNTERMODE_UP;
+//    timer.Init.RepetitionCounter = 0;//period / 2;
 
-    __HAL_RCC_TIM1_CLK_ENABLE();
+//    __HAL_RCC_TIM1_CLK_ENABLE();
 
-    ret = HAL_TIM_PWM_DeInit(&timer);
-    if (ret != HAL_OK) {
-        util_assert(0);
-        return;
-    }
+//    ret = HAL_TIM_PWM_DeInit(&timer);
+//    if (ret != HAL_OK) {
+//        util_assert(0);
+//        return;
+//    }
 
-    ret = HAL_TIM_PWM_Init(&timer);
-    if (ret != HAL_OK) {
-        util_assert(0);
-        return;
-    }
+//    ret = HAL_TIM_PWM_Init(&timer);
+//    if (ret != HAL_OK) {
+//        util_assert(0);
+//        return;
+//    }
 
-    pwm_config.OCMode = TIM_OCMODE_PWM2;
-    pwm_config.Pulse = 0; // TODO - make sure this isn't used
-    pwm_config.OCPolarity = TIM_OCPOLARITY_HIGH;
-    pwm_config.OCNPolarity = TIM_OCPOLARITY_HIGH;
-    pwm_config.OCFastMode = TIM_OCFAST_DISABLE;
-    pwm_config.OCIdleState = TIM_OCIDLESTATE_RESET;
-    pwm_config.OCNIdleState = TIM_OCIDLESTATE_RESET;
-    ret = HAL_TIM_PWM_ConfigChannel(&timer, &pwm_config, TIM_CHANNEL_1);
-    if (ret != HAL_OK) {
-        util_assert(0);
-        return;
-    }
+//    pwm_config.OCMode = TIM_OCMODE_PWM2;
+//    pwm_config.Pulse = 0; // TODO - make sure this isn't used
+//    pwm_config.OCPolarity = TIM_OCPOLARITY_HIGH;
+//    pwm_config.OCNPolarity = TIM_OCPOLARITY_HIGH;
+//    pwm_config.OCFastMode = TIM_OCFAST_DISABLE;
+//    pwm_config.OCIdleState = TIM_OCIDLESTATE_RESET;
+//    pwm_config.OCNIdleState = TIM_OCIDLESTATE_RESET;
+//    ret = HAL_TIM_PWM_ConfigChannel(&timer, &pwm_config, TIM_CHANNEL_1);
+//    if (ret != HAL_OK) {
+//        util_assert(0);
+//        return;
+//    }
 
-    __HAL_TIM_SET_COMPARE(&timer, TIM_CHANNEL_1, period / 2);
-    ret = HAL_TIM_PWM_Start(&timer, TIM_CHANNEL_1);
-    if (ret != HAL_OK) {
-        util_assert(0);
-        return;
-    }
+//    __HAL_TIM_SET_COMPARE(&timer, TIM_CHANNEL_1, period / 2);
+//    ret = HAL_TIM_PWM_Start(&timer, TIM_CHANNEL_1);
+//    if (ret != HAL_OK) {
+//        util_assert(0);
+//        return;
+//    }
 
     return;
 }
@@ -128,70 +129,68 @@ void gpio_init(void)
 
     USB_CONNECT_PORT_ENABLE();
     USB_CONNECT_OFF();
-    GPIO_InitStructure.Pin = USB_CONNECT_PIN;
-    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
-    HAL_GPIO_Init(USB_CONNECT_PORT, &GPIO_InitStructure);
+	  GPIO_StructInit(&GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_Pins = USB_CONNECT_PIN;
+    GPIO_InitStructure.GPIO_MaxSpeed = GPIO_MaxSpeed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT_PP;
+    GPIO_Init(USB_CONNECT_PORT, &GPIO_InitStructure);
     // configure LEDs
-    HAL_GPIO_WritePin(RUNNING_LED_PORT, RUNNING_LED_PIN, GPIO_PIN_SET);
-    GPIO_InitStructure.Pin = RUNNING_LED_PIN;
-    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
-    HAL_GPIO_Init(RUNNING_LED_PORT, &GPIO_InitStructure);
+    GPIO_WriteBit(RUNNING_LED_PORT, RUNNING_LED_PIN, Bit_SET);
+    GPIO_InitStructure.GPIO_Pins = RUNNING_LED_PIN;
+    GPIO_InitStructure.GPIO_MaxSpeed = GPIO_MaxSpeed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT_PP;
+    GPIO_Init(RUNNING_LED_PORT, &GPIO_InitStructure);
 
-    HAL_GPIO_WritePin(CONNECTED_LED_PORT, CONNECTED_LED_PIN, GPIO_PIN_SET);
-    GPIO_InitStructure.Pin = CONNECTED_LED_PIN;
-    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
-    HAL_GPIO_Init(CONNECTED_LED_PORT, &GPIO_InitStructure);
+    GPIO_WriteBit(CONNECTED_LED_PORT, CONNECTED_LED_PIN, Bit_SET);
+    GPIO_InitStructure.GPIO_Pins = CONNECTED_LED_PIN;
+    GPIO_InitStructure.GPIO_MaxSpeed = GPIO_MaxSpeed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT_PP;
+    GPIO_Init(CONNECTED_LED_PORT, &GPIO_InitStructure);
 
-    HAL_GPIO_WritePin(PIN_CDC_LED_PORT, PIN_CDC_LED, GPIO_PIN_SET);
-    GPIO_InitStructure.Pin = PIN_CDC_LED;
-    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
-    HAL_GPIO_Init(PIN_CDC_LED_PORT, &GPIO_InitStructure);
+    GPIO_WriteBit(PIN_CDC_LED_PORT, PIN_CDC_LED, Bit_SET);
+    GPIO_InitStructure.GPIO_Pins = PIN_CDC_LED;
+    GPIO_InitStructure.GPIO_MaxSpeed = GPIO_MaxSpeed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT_PP;
+    GPIO_Init(PIN_CDC_LED_PORT, &GPIO_InitStructure);
 
-    HAL_GPIO_WritePin(PIN_MSC_LED_PORT, PIN_MSC_LED, GPIO_PIN_SET);
-    GPIO_InitStructure.Pin = PIN_MSC_LED;
-    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
-    HAL_GPIO_Init(PIN_MSC_LED_PORT, &GPIO_InitStructure);
+    GPIO_WriteBit(PIN_MSC_LED_PORT, PIN_MSC_LED, Bit_SET);
+    GPIO_InitStructure.GPIO_Pins = PIN_MSC_LED;
+    GPIO_InitStructure.GPIO_MaxSpeed = GPIO_MaxSpeed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT_PP;
+    GPIO_Init(PIN_MSC_LED_PORT, &GPIO_InitStructure);
 
     // reset button configured as gpio open drain output with a pullup
-    HAL_GPIO_WritePin(nRESET_PIN_PORT, nRESET_PIN, GPIO_PIN_SET);
-    GPIO_InitStructure.Pin = nRESET_PIN;
-    GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_OD;
-    GPIO_InitStructure.Pull = GPIO_PULLUP;
-    HAL_GPIO_Init(nRESET_PIN_PORT, &GPIO_InitStructure);
+    GPIO_WriteBit(nRESET_PIN_PORT, nRESET_PIN, Bit_SET);
+    GPIO_InitStructure.GPIO_Pins = nRESET_PIN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT_OD;
+    GPIO_Init(nRESET_PIN_PORT, &GPIO_InitStructure);
 
     // Turn on power to the board. When the target is unpowered
     // it holds the reset line low.
-    HAL_GPIO_WritePin(POWER_EN_PIN_PORT, POWER_EN_PIN, GPIO_PIN_RESET);
-    GPIO_InitStructure.Pin = POWER_EN_PIN;
-    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
-    HAL_GPIO_Init(POWER_EN_PIN_PORT, &GPIO_InitStructure);
+    GPIO_WriteBit(POWER_EN_PIN_PORT, POWER_EN_PIN, Bit_RESET);
+    GPIO_InitStructure.GPIO_Pins = POWER_EN_PIN;
+    GPIO_InitStructure.GPIO_MaxSpeed = GPIO_MaxSpeed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT_PP;
+    GPIO_Init(POWER_EN_PIN_PORT, &GPIO_InitStructure);
 
     // Setup the 8MHz MCO
-    GPIO_InitStructure.Pin = GPIO_PIN_8;
-    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStructure.Mode = GPIO_MODE_AF_PP;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
-    output_clock_enable();
+//    GPIO_InitStructure.GPIO_Pins = GPIO_Pins_8;
+//    GPIO_InitStructure.GPIO_MaxSpeed = GPIO_MaxSpeed_50MHz;
+//    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+//    GPIO_Init(GPIOA, &GPIO_InitStructure);
+//    output_clock_enable();
 
     //PA13 Output
-		GPIO_InitStructure.Pin = GPIO_PIN_13;
-    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_LOW;
-		GPIO_InitStructure.Pull = GPIO_NOPULL;
-    GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Pins = GPIO_Pins_13;
+    GPIO_InitStructure.GPIO_MaxSpeed = GPIO_MaxSpeed_2MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT_PP;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
 		
 		//PA14 Output
-		GPIO_InitStructure.Pin = GPIO_PIN_14;
-    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_LOW;
-		GPIO_InitStructure.Pull = GPIO_PULLUP;
-    GPIO_InitStructure.Mode = GPIO_MODE_INPUT;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Pins = GPIO_Pins_14;
+    GPIO_InitStructure.GPIO_MaxSpeed = GPIO_MaxSpeed_2MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_PU;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
 		
     // Let the voltage rails stabilize.  This is especailly important
     // during software resets, since the target's 3.3v rail can take

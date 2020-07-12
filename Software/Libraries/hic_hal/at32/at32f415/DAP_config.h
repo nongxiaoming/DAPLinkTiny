@@ -265,7 +265,7 @@ __STATIC_INLINE void PORT_OFF(void)
 */
 __STATIC_INLINE uint32_t PIN_SWCLK_TCK_IN(void)
 {
-    return ((SWCLK_TCK_PIN_PORT->ODR & SWCLK_TCK_PIN) ? 1 : 0);
+    return ((SWCLK_TCK_PIN_PORT->OPTDT & SWCLK_TCK_PIN) ? 1 : 0);
 }
 
 /** SWCLK/TCK I/O pin: Set Output to High.
@@ -273,7 +273,7 @@ Set the SWCLK/TCK DAP hardware I/O pin to high level.
 */
 __STATIC_INLINE void PIN_SWCLK_TCK_SET(void)
 {
-    SWCLK_TCK_PIN_PORT->BSRR = SWCLK_TCK_PIN;
+    SWCLK_TCK_PIN_PORT->BSRE = SWCLK_TCK_PIN;
 }
 
 /** SWCLK/TCK I/O pin: Set Output to Low.
@@ -506,10 +506,10 @@ Status LEDs. In detail the operation of Hardware I/O and LED pins are enabled an
 __STATIC_INLINE void DAP_SETUP(void)
 {
     /* Enable port clock */
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-    __HAL_RCC_GPIOD_CLK_ENABLE();
+    RCC_APB2PeriphClockCmd(RCC_APB2PERIPH_GPIOA, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2PERIPH_GPIOB, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2PERIPH_GPIOC, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2PERIPH_GPIOD, ENABLE);
     /* Configure I/O pin SWCLK */
     pin_out_init(SWCLK_TCK_PIN_PORT, SWCLK_TCK_PIN_Bit);
     SWCLK_TCK_PIN_PORT->BSRE = SWCLK_TCK_PIN;
