@@ -159,7 +159,27 @@ void          USBD_IntrEna(void)
 
 void USBD_Init(void)
 {
-    RCC->APB1ENR |= (1 << 23);            /* enable clock for USB               */
+  switch (SystemCoreClock)
+  {
+    case 48000000:
+      RCC_USBCLKConfig(RCC_USBCLKSelection_PLL_Div1);
+      break;
+    case 72000000:
+      RCC_USBCLKConfig(RCC_USBCLKSelection_PLL_Div1_5);
+      break;
+    case 96000000:
+      RCC_USBCLKConfig(RCC_USBCLKSelection_PLL_Div2);
+      break;
+    case 120000000:
+      RCC_USBCLKConfig(RCC_USBCLKSelection_PLL_Div2_5);
+      break;
+    case 144000000:
+      RCC_USBCLKConfig(RCC_USBCLKSelection_PLL_Div3);
+      break;
+    default:
+        break;
+  }
+   RCC_AHBPeriphClockCmd(RCC_AHBPERIPH_USB, ENABLE) ;  
     USBD_IntrEna();                       /* Enable USB Interrupts              */
     /* Control USB connecting via SW                                            */
     USB_CONNECT_OFF();

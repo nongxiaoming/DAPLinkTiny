@@ -26,6 +26,12 @@
 #include "string.h"
 #include "target_board.h"
 
+#ifdef AT32F415KBU7_4
+#define FLASH_SECTOR_SIZE 1024 
+#else 
+#define FLASH_SECTOR_SIZE	2048
+#endif	
+
 /*********************************************************************
 *
 *       Static code
@@ -59,19 +65,17 @@ uint32_t EraseChip(void)
 {
     uint32_t ret = 0;  // O.K.
     if (g_board_info.target_cfg) {
-        FLASH_Unlock();
         //bootloader, interface flashing only concerns 1 flash region
         util_assert((g_board_info.target_cfg->flash_regions[0].end - g_board_info.target_cfg->flash_regions[0].start) %
-                    FLASH_PAGE_SIZE == 0);
-        memset(&erase_init, 0, sizeof(erase_init));
-        erase_init.TypeErase = FLASH_TYPEERASE_PAGES;
-        erase_init.PageAddress = g_board_info.target_cfg->flash_regions[0].start;
-        erase_init.NbPages = (g_board_info.target_cfg->flash_regions[0].end - g_board_info.target_cfg->flash_regions[0].start) % FLASH_PAGE_SIZE;
-        if (HAL_FLASHEx_Erase(&erase_init, &error) != FLASH_PRC_DONE) {
-            ret = 1;
-        }
-        
-        FLASH_Lock();
+                    FLASH_SECTOR_SIZE == 0);
+   
+        uint32_t address = g_board_info.target_cfg->flash_regions[0].start;
+        uint32_t NbPages = (g_board_info.target_cfg->flash_regions[0].end - g_board_info.target_cfg->flash_regions[0].start) % FLASH_SECTOR_SIZE;
+        while(NbPages--)
+				{
+				 EraseSector(address);
+				 address += FLASH_SECTOR_SIZE;
+				}
     }else{
         ret = 1;
     }

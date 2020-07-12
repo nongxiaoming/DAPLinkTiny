@@ -582,6 +582,16 @@
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\misc.c</FilePath>
             </File>
+            <File>
+              <FileName>system_at32f4xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\CMSIS\Device\system_at32f4xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>startup_at32f415kbu7-4.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\Libraries\CMSIS\Device\startup\mdk\startup_at32f415kbu7-4.s</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
