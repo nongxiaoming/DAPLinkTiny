@@ -96,7 +96,7 @@
 /* #define SYSCLK_FREQ_96MHz_HSI    96000000 */
 /* #define SYSCLK_FREQ_108MHz_HSI   108000000 */
 /* #define SYSCLK_FREQ_120MHz_HSI   120000000 */
-/* #define SYSCLK_FREQ_144MHz_HSI   144000000 */
+#define SYSCLK_FREQ_144MHz_HSI   144000000 
 #endif
 
 #if defined (AT32F415xx)

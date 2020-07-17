@@ -159,27 +159,10 @@ void          USBD_IntrEna(void)
 
 void USBD_Init(void)
 {
-  switch (SystemCoreClock)
-  {
-    case 48000000:
-      RCC_USBCLKConfig(RCC_USBCLKSelection_PLL_Div1);
-      break;
-    case 72000000:
-      RCC_USBCLKConfig(RCC_USBCLKSelection_PLL_Div1_5);
-      break;
-    case 96000000:
-      RCC_USBCLKConfig(RCC_USBCLKSelection_PLL_Div2);
-      break;
-    case 120000000:
-      RCC_USBCLKConfig(RCC_USBCLKSelection_PLL_Div2_5);
-      break;
-    case 144000000:
-      RCC_USBCLKConfig(RCC_USBCLKSelection_PLL_Div3);
-      break;
-    default:
-        break;
-  }
-   RCC_AHBPeriphClockCmd(RCC_AHBPERIPH_USB, ENABLE) ;  
+	/* Set usbclk from HSI */
+   RCC_HSI2USB48M(ENABLE);
+	 RCC_USBCLKConfig(RCC_USBCLKSelection_PLL_Div1);
+   RCC_AHBPeriphClockCmd(RCC_AHBPERIPH_USB, ENABLE) ;   
     USBD_IntrEna();                       /* Enable USB Interrupts              */
     /* Control USB connecting via SW                                            */
     USB_CONNECT_OFF();
@@ -585,7 +568,7 @@ U32 USBD_GetError(void)
  *  USB Device Interrupt Service Routine
  */
 
-void USB_LP_CAN1_RX0_IRQHandler(void)
+void USBOTG_IRQHandler(void)
 {
     uint32_t istr;
     uint32_t num;
