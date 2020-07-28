@@ -147,7 +147,7 @@ void __SVC_1(void)
 void          USBD_IntrEna(void)
 {
 #endif
-    NVIC_EnableIRQ(USBOTG_IRQn);
+    NVIC_EnableIRQ(USB_LP_CAN1_RX0_IRQn);
 }
 
 
