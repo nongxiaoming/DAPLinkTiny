@@ -39,11 +39,16 @@
 #define UART_PINS_PORT_DISABLE()     __HAL_RCC_GPIOA_CLK_DISABLE()
 
 #define UART_TX_PORT                 GPIOA
-#define UART_TX_PIN                  GPIO_Pins_2
+#define UART_TX_PIN                  GPIO_PIN_2
 
 #define UART_RX_PORT                 GPIOA
-#define UART_RX_PIN                  GPIO_Pins_3
+#define UART_RX_PIN                  GPIO_PIN_3
 
+//#define UART_CTS_PORT                GPIOA
+//#define UART_CTS_PIN                 GPIO_PIN_0
+
+//#define UART_RTS_PORT                GPIOA
+//#define UART_RTS_PIN                 GPIO_PIN_1
 
 
 #define RX_OVRF_MSG         "<DAPLink:Overflow>\n"
@@ -75,25 +80,37 @@ static void clear_buffers(void)
 
 int32_t uart_initialize(void)
 {
-    GPIO_InitType GPIO_InitStructure;
+    GPIO_InitTypeDef GPIO_InitStructure;
 
-    USART_INTConfig(CDC_UART, USART_INT_RDNE|USART_INT_TDE, DISABLE);
+    CDC_UART->CR1 &= ~(USART_IT_TXE | USART_IT_RXNE);
     clear_buffers();
 
     CDC_UART_ENABLE();
     UART_PINS_PORT_ENABLE();
 
-  /* Configure the CDC_UART TX pin */
-  GPIO_StructInit(&GPIO_InitStructure);
-  GPIO_InitStructure.GPIO_Pins = UART_TX_PIN; 
-  GPIO_InitStructure.GPIO_MaxSpeed = GPIO_MaxSpeed_50MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	
-  GPIO_Init(UART_TX_PORT, &GPIO_InitStructure);
-  /* Configure the CDC_UART RX pin */
-  GPIO_InitStructure.GPIO_Pins = UART_RX_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-  GPIO_Init(UART_RX_PORT, &GPIO_InitStructure);
-
+    //TX pin
+    GPIO_InitStructure.Pin = UART_TX_PIN;
+    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStructure.Mode = GPIO_MODE_AF_PP;
+    HAL_GPIO_Init(UART_TX_PORT, &GPIO_InitStructure);
+    //RX pin
+    GPIO_InitStructure.Pin = UART_RX_PIN;
+    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStructure.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStructure.Pull = GPIO_PULLUP;
+    HAL_GPIO_Init(UART_RX_PORT, &GPIO_InitStructure);
+//    //CTS pin, input
+//    GPIO_InitStructure.Pin = UART_CTS_PIN;
+//    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
+//    GPIO_InitStructure.Mode = GPIO_MODE_INPUT;
+//    GPIO_InitStructure.Pull = GPIO_PULLUP;
+//    HAL_GPIO_Init(UART_CTS_PORT, &GPIO_InitStructure);
+//    //RTS pin, output low
+//    HAL_GPIO_WritePin(UART_RTS_PORT, UART_RTS_PIN, GPIO_PIN_RESET);
+//    GPIO_InitStructure.Pin = UART_RTS_PIN;
+//    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
+//    GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
+//    HAL_GPIO_Init(UART_RTS_PORT, &GPIO_InitStructure);
 
     NVIC_EnableIRQ(CDC_UART_IRQn);
 
@@ -102,7 +119,7 @@ int32_t uart_initialize(void)
 
 int32_t uart_uninitialize(void)
 {
-    USART_INTConfig(CDC_UART, USART_INT_RDNE|USART_INT_TDE, DISABLE);
+    CDC_UART->CR1 &= ~(USART_IT_TXE | USART_IT_RXNE);
     clear_buffers();
     return 1;
 }
@@ -113,16 +130,16 @@ int32_t uart_reset(void)
     CDC_UART->CR1 = cr1 & ~(USART_IT_TXE | USART_IT_RXNE);
     clear_buffers();
     CDC_UART->CR1 = cr1 & ~USART_IT_TXE;
-	
     return 1;
 }
 
 int32_t uart_set_configuration(UART_Configuration *config)
 {
-    USART_InitType USART_InitStructure;
+    UART_HandleTypeDef uart_handle;
+    HAL_StatusTypeDef status;
 
-   /*Configure UART param*/
-    USART_StructInit(&USART_InitStructure);
+    memset(&uart_handle, 0, sizeof(uart_handle));
+    uart_handle.Instance = CDC_UART;
 
     // parity
     configuration.Parity = config->Parity;
