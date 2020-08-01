@@ -112,6 +112,42 @@ uint32_t SyncWriteEP             =   0  ;
 uint32_t IsoOutPacketDataCnt[4]  = { 0 };
 uint32_t IsoOutTokenRead         =   0  ;
 
+uint32_t StatQueue[(USBD_EP_NUM + 1) * 2 + 1];
+uint32_t StatQueueHead = 0;
+uint32_t StatQueueTail = 0;
+uint32_t LastIstr = 0;
+
+
+inline static void stat_enque(uint32_t stat)
+{
+    cortex_int_state_t state;
+    state = cortex_int_get_and_disable();
+    StatQueue[StatQueueTail] = stat;
+    StatQueueTail = (StatQueueTail + 1) % (sizeof(StatQueue) / sizeof(StatQueue[0]));
+    cortex_int_restore(state);
+}
+
+inline static uint32_t stat_deque()
+{
+    cortex_int_state_t state;
+    uint32_t stat;
+    state = cortex_int_get_and_disable();
+    stat = StatQueue[StatQueueHead];
+    StatQueueHead = (StatQueueHead + 1) % (sizeof(StatQueue) / sizeof(StatQueue[0]));
+    cortex_int_restore(state);
+
+    return stat;
+}
+
+inline static uint32_t stat_is_empty()
+{
+    cortex_int_state_t state;
+    uint32_t empty;
+    state = cortex_int_get_and_disable();
+    empty = StatQueueHead == StatQueueTail;
+    cortex_int_restore(state);
+    return empty;
+}
 /*
  *  usbd_stm32_delay
  *    Parameters:      delay:      Delay in 100 us ticks
@@ -779,302 +815,306 @@ uint32_t USBD_GetFrame (void) {
 /*
  *  USB Device Interrupt Service Routine
  */
-void USBOTG_IRQHandler(void) {
-  uint32_t istr, val, num, i, msk;
-  static uint32_t IsoInIncomplete = 0;
+//void USBOTG_IRQHandler(void) {
+//  uint32_t istr, val, num, i, msk;
+//  static uint32_t IsoInIncomplete = 0;
 
-  istr = OTG->GINTSTS & OTG->GINTMSK;
+//  istr = OTG->GINTSTS & OTG->GINTMSK;
 
-/* reset interrupt                                                            */
-  if (istr & (1 << 12)) {
-    USBD_Reset();
-    usbd_reset_core();
-#ifdef __RTX
-    if (USBD_RTX_DevTask) {
-      isr_evt_set(USBD_EVT_RESET, USBD_RTX_DevTask);
-    }
-#else
-    if (USBD_P_Reset_Event) {
-      USBD_P_Reset_Event();
-    }
-#endif
-    OTG->GINTSTS = (1 << 12);
-  }
+///* reset interrupt                                                            */
+//  if (istr & (1 << 12)) {
+//    USBD_Reset();
+//    usbd_reset_core();
+//#ifdef __RTX
+//    if (USBD_RTX_DevTask) {
+//      isr_evt_set(USBD_EVT_RESET, USBD_RTX_DevTask);
+//    }
+//#else
+//    if (USBD_P_Reset_Event) {
+//      USBD_P_Reset_Event();
+//    }
+//#endif
+//    OTG->GINTSTS = (1 << 12);
+//  }
 
-/* suspend interrupt                                                          */
-  if (istr & (1 << 11)) {
-    USBD_Suspend();
-#ifdef __RTX
-    if (USBD_RTX_DevTask) {
-      isr_evt_set(USBD_EVT_SUSPEND, USBD_RTX_DevTask);
-    }
-#else
-    if (USBD_P_Suspend_Event) {
-      USBD_P_Suspend_Event();
-    }
-#endif
-    OTG->GINTSTS = (1 << 11);
-  }
+///* suspend interrupt                                                          */
+//  if (istr & (1 << 11)) {
+//    USBD_Suspend();
+//#ifdef __RTX
+//    if (USBD_RTX_DevTask) {
+//      isr_evt_set(USBD_EVT_SUSPEND, USBD_RTX_DevTask);
+//    }
+//#else
+//    if (USBD_P_Suspend_Event) {
+//      USBD_P_Suspend_Event();
+//    }
+//#endif
+//    OTG->GINTSTS = (1 << 11);
+//  }
 
-/* resume interrupt                                                           */
-  if (istr & (1UL << 31)) {
-    USBD_Resume();
-#ifdef __RTX
-    if (USBD_RTX_DevTask) {
-      isr_evt_set(USBD_EVT_RESUME, USBD_RTX_DevTask);
-    }
-#else
-    if (USBD_P_Resume_Event) {
-      USBD_P_Resume_Event();
-    }
-#endif
-    OTG->GINTSTS = (1UL << 31);
-  }
+///* resume interrupt                                                           */
+//  if (istr & (1UL << 31)) {
+//    USBD_Resume();
+//#ifdef __RTX
+//    if (USBD_RTX_DevTask) {
+//      isr_evt_set(USBD_EVT_RESUME, USBD_RTX_DevTask);
+//    }
+//#else
+//    if (USBD_P_Resume_Event) {
+//      USBD_P_Resume_Event();
+//    }
+//#endif
+//    OTG->GINTSTS = (1UL << 31);
+//  }
 
-/* speed enumeration completed                                                */
-  if (istr & (1 << 13)) {
-    OTG->DIEPCTL0 &= ~3;
-    switch (USBD_MAX_PACKET0) {
-      case 8:
-        OTG->DIEPCTL0 |= 3;
-      break;
+///* speed enumeration completed                                                */
+//  if (istr & (1 << 13)) {
+//    OTG->DIEPCTL0 &= ~3;
+//    switch (USBD_MAX_PACKET0) {
+//      case 8:
+//        OTG->DIEPCTL0 |= 3;
+//      break;
 
-      case 16:
-        OTG->DIEPCTL0 |= 2;
-      break;
+//      case 16:
+//        OTG->DIEPCTL0 |= 2;
+//      break;
 
-      case 32:
-        OTG->DIEPCTL0 |= 1;
-      break;
-			
-			default:
-				break;
-    }
-    OTG->DCTL    |= (1 << 8);           /* clear global IN NAK                */
-    OTG->DCTL    |= (1 << 10);          /* clear global OUT NAK               */
-    OTG->GINTSTS  = (1 << 13);
-  }
+//      case 32:
+//        OTG->DIEPCTL0 |= 1;
+//      break;
+//			
+//			default:
+//				break;
+//    }
+//    OTG->DCTL    |= (1 << 8);           /* clear global IN NAK                */
+//    OTG->DCTL    |= (1 << 10);          /* clear global OUT NAK               */
+//    OTG->GINTSTS  = (1 << 13);
+//  }
 
-/* Start Of Frame                                                             */
-  if (istr & (1 << 3)) {
-#ifdef __RTX
-    if (USBD_RTX_DevTask) {
-      isr_evt_set(USBD_EVT_SOF, USBD_RTX_DevTask);
-    }
-#else
-    if (USBD_P_SOF_Event) {
-      USBD_P_SOF_Event();
-    }
-#endif
-     OTG->GINTSTS = (1 << 3);
-  }
+///* Start Of Frame                                                             */
+//  if (istr & (1 << 3)) {
+//#ifdef __RTX
+//    if (USBD_RTX_DevTask) {
+//      isr_evt_set(USBD_EVT_SOF, USBD_RTX_DevTask);
+//    }
+//#else
+//    if (USBD_P_SOF_Event) {
+//      USBD_P_SOF_Event();
+//    }
+//#endif
+//     OTG->GINTSTS = (1 << 3);
+//  }
 
-/* RxFIFO non-empty                                                           */
-  if (istr & (1 << 4)) {
-    val = OTG->GRXSTSR;
-    num = val & 0x0F;
+///* RxFIFO non-empty                                                           */
+//  if (istr & (1 << 4)) {
+//    val = OTG->GRXSTSR;
+//    num = val & 0x0F;
 
-    switch ((val >> 17) & 0x0F) {
-/* setup packet                                                               */
-      case 6:
-#ifdef __RTX
-      OTG->GINTMSK &= ~(1 << 4);
-      if (USBD_RTX_EPTask[num]) {
-        isr_evt_set(USBD_EVT_SETUP, USBD_RTX_EPTask[num]);
-      }
-#else
-      if (USBD_P_EP[num]) {
-        USBD_P_EP[num](USBD_EVT_SETUP);
-      }
-#endif
-      break;
+//    switch ((val >> 17) & 0x0F) {
+///* setup packet                                                               */
+//      case 6:
+//#ifdef __RTX
+//      OTG->GINTMSK &= ~(1 << 4);
+//      if (USBD_RTX_EPTask[num]) {
+//        isr_evt_set(USBD_EVT_SETUP, USBD_RTX_EPTask[num]);
+//      }
+//#else
+//      if (USBD_P_EP[num]) {
+//        USBD_P_EP[num](USBD_EVT_SETUP);
+//      }
+//#endif
+//      break;
 
-/* OUT packet                                                                 */
-      case 2:
-      OTG->GINTMSK &= ~(1 << 4);
-      if (EP_OUT_TYPE(num) == USB_ENDPOINT_TYPE_ISOCHRONOUS) {
-        IsoOutTokenRead = 1;
-        USBD_ReadEP (num, (uint8_t *)IsoOutPacketDataPtr[num]);
-        IsoOutTokenRead = 0;
-      } else {
-#ifdef __RTX
-        if (USBD_RTX_EPTask[num]) {
-          isr_evt_set(USBD_EVT_OUT, USBD_RTX_EPTask[num]);
-        }
-#else
-        if (USBD_P_EP[num]) {
-          USBD_P_EP[num](USBD_EVT_OUT);
-        }
-#endif
-      }
-      break;
+///* OUT packet                                                                 */
+//      case 2:
+//      OTG->GINTMSK &= ~(1 << 4);
+//      if (EP_OUT_TYPE(num) == USB_ENDPOINT_TYPE_ISOCHRONOUS) {
+//        IsoOutTokenRead = 1;
+//        USBD_ReadEP (num, (uint8_t *)IsoOutPacketDataPtr[num]);
+//        IsoOutTokenRead = 0;
+//      } else {
+//#ifdef __RTX
+//        if (USBD_RTX_EPTask[num]) {
+//          isr_evt_set(USBD_EVT_OUT, USBD_RTX_EPTask[num]);
+//        }
+//#else
+//        if (USBD_P_EP[num]) {
+//          USBD_P_EP[num](USBD_EVT_OUT);
+//        }
+//#endif
+//      }
+//      break;
 
-      default:
-        OTG->GRXSTSP;
-    }
-  }
+//      default:
+//        OTG->GRXSTSP;
+//    }
+//  }
 
-/* OUT Packet                                                                 */
-  if (istr & (1 << 19)) {
-    msk = (((OTG->DAINT & OTG->DAINTMSK) >> 16) & 0xFFFF);
-    i   = 0;
-    while (msk) {
-      num = 0;
-      for (; i < (USBD_EP_NUM+1); i++) {
-        if ((msk >> i) & 1) {
-          num = i;
-          msk &= ~(1 << i);
-          break;
-        }
-      }
+///* OUT Packet                                                                 */
+//  if (istr & (1 << 19)) {
+//    msk = (((OTG->DAINT & OTG->DAINTMSK) >> 16) & 0xFFFF);
+//    i   = 0;
+//    while (msk) {
+//      num = 0;
+//      for (; i < (USBD_EP_NUM+1); i++) {
+//        if ((msk >> i) & 1) {
+//          num = i;
+//          msk &= ~(1 << i);
+//          break;
+//        }
+//      }
 
-      /* Endpoint disabled                                                    */
-      if (DOEPINT(num) & (1 << 1)) {
-        if (EP_OUT_TYPE(num) == USB_ENDPOINT_TYPE_ISOCHRONOUS) {
-          DOEPTSIZ(num) = (1 << 19) |                /* packet count          */
-                          (OutMaxPacketSize[num]);   /* transfer size         */
-          
-          if ((USBD_GetFrame() & 1)) DOEPCTL(num) |= (1 << 28); /* even frame */
-          else                       DOEPCTL(num) |= (1 << 29); /* odd frame  */
+//      /* Endpoint disabled                                                    */
+//      if (DOEPINT(num) & (1 << 1)) {
+//        if (EP_OUT_TYPE(num) == USB_ENDPOINT_TYPE_ISOCHRONOUS) {
+//          DOEPTSIZ(num) = (1 << 19) |                /* packet count          */
+//                          (OutMaxPacketSize[num]);   /* transfer size         */
+//          
+//          if ((USBD_GetFrame() & 1)) DOEPCTL(num) |= (1 << 28); /* even frame */
+//          else                       DOEPCTL(num) |= (1 << 29); /* odd frame  */
 
-          DOEPCTL(num)    |= (1UL <<31) | (1 << 26);
-        }
-        DOEPINT(num) |= (1 << 1);
-      }
-      
-      /* Transfer complete interrupt                                          */
-      if ((DOEPINT(num) & 1) | (DOEPINT(num) & (1 << 3))) {
-        if (EP_OUT_TYPE(num) != USB_ENDPOINT_TYPE_ISOCHRONOUS) {
+//          DOEPCTL(num)    |= (1UL <<31) | (1 << 26);
+//        }
+//        DOEPINT(num) |= (1 << 1);
+//      }
+//      
+//      /* Transfer complete interrupt                                          */
+//      if ((DOEPINT(num) & 1) | (DOEPINT(num) & (1 << 3))) {
+//        if (EP_OUT_TYPE(num) != USB_ENDPOINT_TYPE_ISOCHRONOUS) {
 
-          DOEPTSIZ(num)    = (1 << 19) |                 /* packet count      */
-                             (OutMaxPacketSize[num]);    /* transfer size     */
-          if (num == 0) {
-            DOEPTSIZ(0)   |= (1 << 29);
-          }
-          DOEPCTL(num)    |= (1UL <<31) | (1 << 26);     /* clr NAK, en EP    */
-        }
-        DOEPINT(num) |= 1;
-      }
-    }
-  }
+//          DOEPTSIZ(num)    = (1 << 19) |                 /* packet count      */
+//                             (OutMaxPacketSize[num]);    /* transfer size     */
+//          if (num == 0) {
+//            DOEPTSIZ(0)   |= (1 << 29);
+//          }
+//          DOEPCTL(num)    |= (1UL <<31) | (1 << 26);     /* clr NAK, en EP    */
+//        }
+//        DOEPINT(num) |= 1;
+//      }
+//    }
+//  }
 
-/* IN Packet                                                                  */
-  if (istr & (1 << 18)) {
-    msk = (OTG->DAINT & OTG->DAINTMSK & 0xFFFF);
-    i   = 0;
-    while (msk) {
-      num = 0;
-      for (; i < (USBD_EP_NUM+1); i++) {
-        if ((msk >> i) & 1) {
-          num = i;
-          msk &= ~(1 << i);
-          break;
-        }
-      }
+///* IN Packet                                                                  */
+//  if (istr & (1 << 18)) {
+//    msk = (OTG->DAINT & OTG->DAINTMSK & 0xFFFF);
+//    i   = 0;
+//    while (msk) {
+//      num = 0;
+//      for (; i < (USBD_EP_NUM+1); i++) {
+//        if ((msk >> i) & 1) {
+//          num = i;
+//          msk &= ~(1 << i);
+//          break;
+//        }
+//      }
 
-      /* Endpoint disabled                                                    */
-      if (DIEPINT(num) & (1 << 1)) {
-        DIEPINT(num) = (1 << 1);
-        
-        if (EP_IN_TYPE(num) == USB_ENDPOINT_TYPE_ISOCHRONOUS) {
-          if ((IsoInIncomplete & (1 << num)) != 0) {
+//      /* Endpoint disabled                                                    */
+//      if (DIEPINT(num) & (1 << 1)) {
+//        DIEPINT(num) = (1 << 1);
+//        
+//        if (EP_IN_TYPE(num) == USB_ENDPOINT_TYPE_ISOCHRONOUS) {
+//          if ((IsoInIncomplete & (1 << num)) != 0) {
 
-            USBD_FlushInEpFifo(num | 0x80);
-            SyncWriteEP = 1;
-            USBD_WriteEP (num, (uint8_t *)InPacketDataPtr[num], InPacketDataCnt[num]);
-            SyncWriteEP = 0;
+//            USBD_FlushInEpFifo(num | 0x80);
+//            SyncWriteEP = 1;
+//            USBD_WriteEP (num, (uint8_t *)InPacketDataPtr[num], InPacketDataCnt[num]);
+//            SyncWriteEP = 0;
 
-            IsoInIncomplete &= ~(1 << num);
-          }
-        }
-      }
+//            IsoInIncomplete &= ~(1 << num);
+//          }
+//        }
+//      }
 
-      /* IN endpoint NAK effective                                            */
-      if (DIEPINT(num) & (1 << 6)) {
-        if (EP_IN_TYPE(num) != USB_ENDPOINT_TYPE_ISOCHRONOUS) {
-          if (InPacketDataPtr[num] && (InPacketDataReady & (1 << num))) {
-            SyncWriteEP = 1;
-            USBD_WriteEP (num, (uint8_t *)InPacketDataPtr[num], InPacketDataCnt[num]);
-            SyncWriteEP = 0;
-            if (!InPacketDataReady)     /* No more pending IN transfers       */
-              OTG->DIEPMSK &= ~(1 << 6);/* Disable IN NAK interrupts          */
-            continue;
-          } else 
-              DIEPCTL(num) |= (1 << 26);
-            DIEPINT(num)    = (1 <<  6);
-        }
-      }
+//      /* IN endpoint NAK effective                                            */
+//      if (DIEPINT(num) & (1 << 6)) {
+//        if (EP_IN_TYPE(num) != USB_ENDPOINT_TYPE_ISOCHRONOUS) {
+//          if (InPacketDataPtr[num] && (InPacketDataReady & (1 << num))) {
+//            SyncWriteEP = 1;
+//            USBD_WriteEP (num, (uint8_t *)InPacketDataPtr[num], InPacketDataCnt[num]);
+//            SyncWriteEP = 0;
+//            if (!InPacketDataReady)     /* No more pending IN transfers       */
+//              OTG->DIEPMSK &= ~(1 << 6);/* Disable IN NAK interrupts          */
+//            continue;
+//          } else 
+//              DIEPCTL(num) |= (1 << 26);
+//            DIEPINT(num)    = (1 <<  6);
+//        }
+//      }
 
-      /* Transmit completed                                                   */
-      if (DIEPINT(num) & 1) {
-        DIEPINT(num) = 1;
-        SyncWriteEP = 1;
-        if (EP_IN_TYPE(num) == USB_ENDPOINT_TYPE_ISOCHRONOUS) {
-          USBD_WriteEP (num, (uint8_t *)InPacketDataPtr[num], InPacketDataCnt[num]);
-        } else {
-#ifdef __RTX
-          if (USBD_RTX_EPTask[num]) {
-            isr_evt_set(USBD_EVT_IN,  USBD_RTX_EPTask[num]);
-          }
-#else
-          if (USBD_P_EP[num]) {
-            USBD_P_EP[num](USBD_EVT_IN);
-          }
-#endif
-        }
-        SyncWriteEP = 0;
-      }
-    }
-  }
+//      /* Transmit completed                                                   */
+//      if (DIEPINT(num) & 1) {
+//        DIEPINT(num) = 1;
+//        SyncWriteEP = 1;
+//        if (EP_IN_TYPE(num) == USB_ENDPOINT_TYPE_ISOCHRONOUS) {
+//          USBD_WriteEP (num, (uint8_t *)InPacketDataPtr[num], InPacketDataCnt[num]);
+//        } else {
+//#ifdef __RTX
+//          if (USBD_RTX_EPTask[num]) {
+//            isr_evt_set(USBD_EVT_IN,  USBD_RTX_EPTask[num]);
+//          }
+//#else
+//          if (USBD_P_EP[num]) {
+//            USBD_P_EP[num](USBD_EVT_IN);
+//          }
+//#endif
+//        }
+//        SyncWriteEP = 0;
+//      }
+//    }
+//  }
 
-/* End of periodic frame                                                      */
-  if (istr & (1 << 15)) {
-    for (num = 1; num <= USBD_EP_NUM; num++) {
+///* End of periodic frame                                                      */
+//  if (istr & (1 << 15)) {
+//    for (num = 1; num <= USBD_EP_NUM; num++) {
 
-      if (EP_OUT_TYPE(num) != USB_ENDPOINT_TYPE_ISOCHRONOUS) continue;
-      if (((DOEPCTL(num) >> 15) & 1) == 0)                   continue;
+//      if (EP_OUT_TYPE(num) != USB_ENDPOINT_TYPE_ISOCHRONOUS) continue;
+//      if (((DOEPCTL(num) >> 15) & 1) == 0)                   continue;
 
-      /* incomplete isochronous out transfer                                  */
-      if (OTG->GINTSTS & (1 << 21)) {
-        if ((USBD_GetFrame() & 1) == ((DOEPCTL(num) >> 16) & 1)) {
-          if (DOEPCTL(num) & (1UL << 31)) {
-            InPacketDataCnt[num] = 0;   /* discard data                       */
-            DOEPCTL(num) |= (1UL << 30);/* disable endpoint                   */
-          }
-        }
+//      /* incomplete isochronous out transfer                                  */
+//      if (OTG->GINTSTS & (1 << 21)) {
+//        if ((USBD_GetFrame() & 1) == ((DOEPCTL(num) >> 16) & 1)) {
+//          if (DOEPCTL(num) & (1UL << 31)) {
+//            InPacketDataCnt[num] = 0;   /* discard data                       */
+//            DOEPCTL(num) |= (1UL << 30);/* disable endpoint                   */
+//          }
+//        }
 
-      /* prepare for next isohronous transfer                                 */
-      } else {
-        DOEPTSIZ(num) = (1 << 19) |                /* packet count            */
-                        (OutMaxPacketSize[num]);   /* transfer size           */
+//      /* prepare for next isohronous transfer                                 */
+//      } else {
+//        DOEPTSIZ(num) = (1 << 19) |                /* packet count            */
+//                        (OutMaxPacketSize[num]);   /* transfer size           */
 
-        if ((USBD_GetFrame() & 1)) DOEPCTL(num) |= (1 << 28); /* even frame   */
-        else                       DOEPCTL(num) |= (1 << 29); /* odd frame    */
+//        if ((USBD_GetFrame() & 1)) DOEPCTL(num) |= (1 << 28); /* even frame   */
+//        else                       DOEPCTL(num) |= (1 << 29); /* odd frame    */
 
-        DOEPCTL(num)    |= (1UL <<31) | (1 << 26);
-      }
-    }
-    OTG->GINTSTS = (1 << 15) | (1 << 21);
-  }
+//        DOEPCTL(num)    |= (1UL <<31) | (1 << 26);
+//      }
+//    }
+//    OTG->GINTSTS = (1 << 15) | (1 << 21);
+//  }
 
-/* incomplete isochronous IN transfer                                         */
-  if (istr & (1 << 20)) {
-    OTG->GINTSTS = (1 << 20);
-    for (num = 1; num < (USBD_EP_NUM + 1); num++) {
+///* incomplete isochronous IN transfer                                         */
+//  if (istr & (1 << 20)) {
+//    OTG->GINTSTS = (1 << 20);
+//    for (num = 1; num < (USBD_EP_NUM + 1); num++) {
 
-      if (EP_IN_TYPE(num) != USB_ENDPOINT_TYPE_ISOCHRONOUS) continue;
-      if (((DIEPCTL(num) >> 15) & 1) == 0)                  continue;
+//      if (EP_IN_TYPE(num) != USB_ENDPOINT_TYPE_ISOCHRONOUS) continue;
+//      if (((DIEPCTL(num) >> 15) & 1) == 0)                  continue;
 
-      if (DIEPCTL(num) & (1UL << 31)) { /* if EP en & packet frame is incorect*/
-        if ((USBD_GetFrame() & 1) == ((DIEPCTL(num) >> 16) & 1)) {
-          
-          IsoInIncomplete |= (1 << num);
-          DIEPCTL(num)    |= (1UL << 30) | (1 << 27);
-        }
-      }
-    }
-  }
-}
+//      if (DIEPCTL(num) & (1UL << 31)) { /* if EP en & packet frame is incorect*/
+//        if ((USBD_GetFrame() & 1) == ((DIEPCTL(num) >> 16) & 1)) {
+//          
+//          IsoInIncomplete |= (1 << num);
+//          DIEPCTL(num)    |= (1UL << 30) | (1 << 27);
+//        }
+//      }
+//    }
+//  }
+//}
+#define ISTR_RESUME (0x01UL<<31)
+#define ISTR_RESET  (0x01UL<<12)
+#define ISTR_SUSP   (0x01UL<<11)
+#define ISTR_SOF    (0x01UL<<3)
 
 void USBD_Handler(void)
 {
@@ -1125,8 +1165,9 @@ void USBD_Handler(void)
     }
 
     /* USB Wakeup                                                               */
-    if (istr & ISTR_WKUP) {
-        USBD_WakeUp();
+    if (istr & ISTR_RESUME) {
+        //USBD_WakeUp();
+			  USBD_Resume();
 #ifdef __RTX
 
         if (USBD_RTX_DevTask) {
