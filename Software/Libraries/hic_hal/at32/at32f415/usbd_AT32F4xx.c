@@ -846,6 +846,9 @@ void USBOTG_IRQHandler(void) {
       case 32:
         OTG->DIEPCTL0 |= 1;
       break;
+			
+			default:
+				break;
     }
     OTG->DCTL    |= (1 << 8);           /* clear global IN NAK                */
     OTG->DCTL    |= (1 << 10);          /* clear global OUT NAK               */
