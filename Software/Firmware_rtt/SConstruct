@@ -5,7 +5,7 @@ import rtconfig
 if os.getenv('RTT_ROOT'):
     RTT_ROOT = os.getenv('RTT_ROOT')
 else:
-    RTT_ROOT = os.path.normpath(os.getcwd() + '/../../..')
+    RTT_ROOT = os.path.normpath(os.getcwd() + '/../Libraries/rt-thread')
 
 sys.path = sys.path + [os.path.join(RTT_ROOT, 'tools')]
 try:
@@ -46,14 +46,14 @@ Export('SDK_LIB')
 # prepare building environment
 objs = PrepareBuilding(env, RTT_ROOT, has_libcpu=False)
 
-at32_library = 'AT32_Std_Driver'
+at32_library = 'AT32F4xx_StdPeriph_Driver'
 rtconfig.BSP_LIBRARY_TYPE = at32_library
 
 # include libraries
 objs.extend(SConscript(os.path.join(libraries_path_prefix, at32_library, 'SConscript')))
 
 # common include drivers
-objs.extend(SConscript(os.path.join(libraries_path_prefix, 'rt_drivers', 'SConscript')))
+objs.extend(SConscript(os.path.join(libraries_path_prefix, 'CMSIS', 'SConscript')))
 
 # make a building
 DoBuilding(TARGET, objs)
