@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_projx.xsd">
+
   <SchemaVersion>2.1</SchemaVersion>
+
   <Header>### uVision Project, (C) Keil Software</Header>
+
   <Targets>
     <Target>
       <TargetName>rt-thread</TargetName>
@@ -15,28 +18,28 @@
           <Vendor>ArteryTek</Vendor>
           <PackID>Keil.AT32F4xx_DFP.1.3.1</PackID>
           <Cpu>IRAM(0x20000000,0x8000) IROM(0x08000000,0x20000) CPUTYPE("Cortex-M4") CLOCK(12000000) ELITTLE</Cpu>
-          <FlashUtilSpec />
-          <StartupFile />
+          <FlashUtilSpec></FlashUtilSpec>
+          <StartupFile></StartupFile>
           <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0AT32F415_128 -FS08000000 -FL020000 -FP0($$Device:AT32F415KBU7-4$Flash\AT32F415_128.FLM))</FlashDriverDll>
           <DeviceId>0</DeviceId>
           <RegisterFile>$$Device:AT32F415KBU7-4$Device\Include\at32f4xx.h</RegisterFile>
-          <MemoryEnv />
-          <Cmp />
-          <Asm />
-          <Linker />
-          <OHString />
-          <InfinionOptionDll />
-          <SLE66CMisc />
-          <SLE66AMisc />
-          <SLE66LinkerMisc />
+          <MemoryEnv></MemoryEnv>
+          <Cmp></Cmp>
+          <Asm></Asm>
+          <Linker></Linker>
+          <OHString></OHString>
+          <InfinionOptionDll></InfinionOptionDll>
+          <SLE66CMisc></SLE66CMisc>
+          <SLE66AMisc></SLE66AMisc>
+          <SLE66LinkerMisc></SLE66LinkerMisc>
           <SFDFile>$$Device:AT32F415KBU7-4$SVD\AT32F415xx.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
-          <BinPath />
-          <IncludePath />
-          <LibPath />
-          <RegisterFilePath />
-          <DBRegisterFilePath />
+          <BinPath></BinPath>
+          <IncludePath></IncludePath>
+          <LibPath></LibPath>
+          <RegisterFilePath></RegisterFilePath>
+          <DBRegisterFilePath></DBRegisterFilePath>
           <TargetStatus>
             <Error>0</Error>
             <ExitCodeStop>0</ExitCodeStop>
@@ -58,8 +61,8 @@
           <BeforeCompile>
             <RunUserProg1>0</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name />
-            <UserProg2Name />
+            <UserProg1Name></UserProg1Name>
+            <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
             <nStopU1X>0</nStopU1X>
@@ -68,8 +71,8 @@
           <BeforeMake>
             <RunUserProg1>0</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name />
-            <UserProg2Name />
+            <UserProg1Name></UserProg1Name>
+            <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
             <nStopB1X>0</nStopB1X>
@@ -79,14 +82,14 @@
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
             <UserProg1Name>fromelf --bin !L --output rtthread.bin</UserProg1Name>
-            <UserProg2Name />
+            <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
             <nStopA1X>0</nStopA1X>
             <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
-          <SVCSIdString />
+          <SVCSIdString></SVCSIdString>
         </TargetCommonOption>
         <CommonProperty>
           <UseCPPCompiler>0</UseCPPCompiler>
@@ -100,8 +103,8 @@
           <AssembleAssemblyFile>0</AssembleAssemblyFile>
           <PublicsOnly>0</PublicsOnly>
           <StopOnExitCode>3</StopOnExitCode>
-          <CustomArgument />
-          <IncludeLibraryModules />
+          <CustomArgument></CustomArgument>
+          <IncludeLibraryModules></IncludeLibraryModules>
           <ComprImg>1</ComprImg>
         </CommonProperty>
         <DllOption>
@@ -110,7 +113,7 @@
           <SimDlgDll>DCM.DLL</SimDlgDll>
           <SimDlgDllArguments>-pCM4</SimDlgDllArguments>
           <TargetDllName>SARMCM3.DLL</TargetDllName>
-          <TargetDllArguments />
+          <TargetDllArguments></TargetDllArguments>
           <TargetDlgDll>TCM.DLL</TargetDlgDll>
           <TargetDlgDllArguments>-pCM4</TargetDlgDllArguments>
         </DllOption>
@@ -134,11 +137,11 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3 />
-          <Flash4 />
-          <pFcarmOut />
-          <pFcarmGrp />
-          <pFcArmRoot />
+          <Flash3></Flash3>
+          <Flash4></Flash4>
+          <pFcarmOut></pFcarmOut>
+          <pFcarmGrp></pFcarmGrp>
+          <pFcArmRoot></pFcArmRoot>
           <FcArmLst>0</FcArmLst>
         </Utilities>
         <TargetArmAds>
@@ -171,7 +174,7 @@
             <RvctClst>0</RvctClst>
             <GenPPlst>0</GenPPlst>
             <AdsCpuType>"Cortex-M4"</AdsCpuType>
-            <RvctDeviceName />
+            <RvctDeviceName></RvctDeviceName>
             <mOS>0</mOS>
             <uocRom>0</uocRom>
             <uocRam>0</uocRam>
@@ -305,7 +308,7 @@
                 <Size>0x0</Size>
               </OCR_RVCT10>
             </OnChipMemories>
-            <RvctStartVector />
+            <RvctStartVector></RvctStartVector>
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
@@ -332,10 +335,10 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls />
-              <Define>RT_USING_ARM_LIBC,  AT32F415KBU7_4, USE_STDPERIPH_DRIVER</Define>
-              <Undefine />
-              <IncludePath>applications;.;..\Libraries\AT32F4xx_StdPeriph_Driver\inc;..\Libraries\CMSIS\Device;..\Libraries\CMSIS\Include;..\Libraries\rt-thread\libcpu\arm\common;..\Libraries\rt-thread\libcpu\arm\cortex-m4;..\Libraries\rt-thread\components\drivers\include;..\Libraries\rt-thread\components\drivers\include;..\Libraries\rt-thread\components\drivers\include;..\Libraries\rt-thread\components\drivers\include;drivers;board;board\msp;..\Libraries\rt-thread\components\dfs\include;..\Libraries\rt-thread\components\dfs\filesystems\elmfat;..\Libraries\rt-thread\components\dfs\filesystems\devfs;..\Libraries\rt-thread\components\finsh;.;..\Libraries\rt-thread\include;..\Libraries\rt-thread\components\libc\compilers\armlibc;..\Libraries\rt-thread\components\libc\compilers\common</IncludePath>
+              <MiscControls></MiscControls>
+              <Define>AT32F415KBU7_4, USE_STDPERIPH_DRIVER</Define>
+              <Undefine></Undefine>
+              <IncludePath>applications;.;..\Libraries\AT32F4xx_StdPeriph_Driver\inc;..\Libraries\CMSIS\Device;..\Libraries\CMSIS\Include;..\Libraries\rt-thread\libcpu\arm\common;..\Libraries\rt-thread\libcpu\arm\cortex-m4;..\Libraries\rt-thread\components\drivers\include;..\Libraries\rt-thread\components\drivers\include;..\Libraries\rt-thread\components\drivers\include;..\Libraries\rt-thread\components\drivers\include;drivers;board;board\msp;..\Libraries\rt-thread\components\dfs\include;..\Libraries\rt-thread\components\dfs\filesystems\elmfat;..\Libraries\rt-thread\components\dfs\filesystems\devfs;..\Libraries\rt-thread\components\finsh;.;..\Libraries\rt-thread\include;..\Libraries\rt-thread\components\libc\compilers\common;..\Libraries\rt-thread\components\drivers\usb\usbdevice;..\Libraries\USB_Device_Library\Core\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -350,10 +353,10 @@
             <useXO>0</useXO>
             <ClangAsOpt>4</ClangAsOpt>
             <VariousControls>
-              <MiscControls />
-              <Define />
-              <Undefine />
-              <IncludePath />
+              <MiscControls></MiscControls>
+              <Define></Define>
+              <Undefine></Undefine>
+              <IncludePath></IncludePath>
             </VariousControls>
           </Aads>
           <LDads>
@@ -365,13 +368,13 @@
             <useFile>0</useFile>
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
-            <pXoBase />
+            <pXoBase></pXoBase>
             <ScatterFile>.\board\linker_scripts\link.sct</ScatterFile>
-            <IncludeLibs />
-            <IncludeLibsPath />
-            <Misc />
-            <LinkerInputFile />
-            <DisabledWarnings />
+            <IncludeLibs></IncludeLibs>
+            <IncludeLibsPath></IncludeLibsPath>
+            <Misc></Misc>
+            <LinkerInputFile></LinkerInputFile>
+            <DisabledWarnings></DisabledWarnings>
           </LDads>
         </TargetArmAds>
       </TargetOption>
@@ -394,176 +397,126 @@
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_adc.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_can.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_can.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_crc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_crc.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_dbgmcu.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_dbgmcu.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_dma.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_dma.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_exti.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_exti.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_flash.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_flash.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_gpio.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_gpio.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_i2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_i2c.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_iwdg.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_iwdg.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_pwr.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_rcc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_rcc.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_spi.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_spi.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_tim.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_tim.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_usart.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_wwdg.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_wwdg.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_sdio.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_sdio.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_acc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_acc.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_bkp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_bkp.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_rtc.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_ertc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_ertc.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_eth.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_eth.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_xmc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_xmc.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_comp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_comp.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32f4xx_dac.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_dac.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>misc.c</FileName>
               <FileType>1</FileType>
@@ -589,29 +542,21 @@
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\libcpu\arm\common\backtrace.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>div0.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\libcpu\arm\common\div0.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>showmem.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\libcpu\arm\common\showmem.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>cpuport.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\libcpu\arm\cortex-m4\cpuport.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>context_rvds.S</FileName>
               <FileType>2</FileType>
@@ -627,71 +572,51 @@
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\drivers\misc\pin.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\drivers\misc\adc.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\drivers\rtc\rtc.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>serial.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\drivers\serial\serial.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>completion.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\drivers\src\completion.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>dataqueue.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\drivers\src\dataqueue.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>pipe.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\drivers\src\pipe.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>ringblk_buf.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\drivers\src\ringblk_buf.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>ringbuffer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\drivers\src\ringbuffer.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>waitqueue.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\drivers\src\waitqueue.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>workqueue.c</FileName>
               <FileType>1</FileType>
@@ -707,36 +632,26 @@
               <FileType>1</FileType>
               <FilePath>drivers\drv_usart.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>drv_gpio.c</FileName>
               <FileType>1</FileType>
               <FilePath>drivers\drv_gpio.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>drv_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>drivers\drv_rtc.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>board.c</FileName>
               <FileType>1</FileType>
               <FilePath>board\board.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>at32_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>board\msp\at32_msp.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>startup_at32f415kbu7-4.s</FileName>
               <FileType>2</FileType>
@@ -752,64 +667,36 @@
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\dfs\src\dfs.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>dfs_file.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\dfs\src\dfs_file.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>dfs_fs.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\dfs\src\dfs_fs.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>dfs_posix.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\dfs\src\dfs_posix.c</FilePath>
             </File>
-          </Files>
-          <Files>
-            <File>
-              <FileName>poll.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\rt-thread\components\dfs\src\poll.c</FilePath>
-            </File>
-          </Files>
-          <Files>
-            <File>
-              <FileName>select.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\rt-thread\components\dfs\src\select.c</FilePath>
-            </File>
-          </Files>
-          <Files>
             <File>
               <FileName>dfs_elm.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\dfs\filesystems\elmfat\dfs_elm.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>ff.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\dfs\filesystems\elmfat\ff.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>ccsbcs.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\dfs\filesystems\elmfat\option\ccsbcs.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>devfs.c</FileName>
               <FileType>1</FileType>
@@ -825,22 +712,16 @@
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\finsh\shell.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>cmd.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\finsh\cmd.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>msh.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\components\finsh\msh.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>msh_file.c</FileName>
               <FileType>1</FileType>
@@ -856,99 +737,71 @@
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\src\clock.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>components.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\src\components.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>device.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\src\device.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>idle.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\src\idle.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>ipc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\src\ipc.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>irq.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\src\irq.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>kservice.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\src\kservice.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>mem.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\src\mem.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>memheap.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\src\memheap.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>mempool.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\src\mempool.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>object.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\src\object.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>scheduler.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\src\scheduler.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>signal.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\src\signal.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>thread.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\rt-thread\src\thread.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
               <FileName>timer.c</FileName>
               <FileType>1</FileType>
@@ -957,63 +810,73 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>libc</GroupName>
+          <GroupName>rt_usbd</GroupName>
           <Files>
             <File>
-              <FileName>libc.c</FileName>
+              <FileName>usbdevice_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Libraries\rt-thread\components\libc\compilers\armlibc\libc.c</FilePath>
+              <FilePath>..\Libraries\rt-thread\components\drivers\usb\usbdevice\core\usbdevice_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbdevice.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\rt-thread\components\drivers\usb\usbdevice\core\usbdevice.c</FilePath>
+            </File>
+            <File>
+              <FileName>cdc_vcom.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\rt-thread\components\drivers\usb\usbdevice\class\cdc_vcom.c</FilePath>
+            </File>
+            <File>
+              <FileName>hid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\rt-thread\components\drivers\usb\usbdevice\class\hid.c</FilePath>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>USB_Device_Library</GroupName>
           <Files>
             <File>
-              <FileName>mem_std.c</FileName>
+              <FileName>usbd_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Libraries\rt-thread\components\libc\compilers\armlibc\mem_std.c</FilePath>
+              <FilePath>..\Libraries\USB_Device_Library\Core\src\usbd_core.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
-              <FileName>stdio.c</FileName>
+              <FileName>usbd_ioreq.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Libraries\rt-thread\components\libc\compilers\armlibc\stdio.c</FilePath>
+              <FilePath>..\Libraries\USB_Device_Library\Core\src\usbd_ioreq.c</FilePath>
             </File>
-          </Files>
-          <Files>
             <File>
-              <FileName>stubs.c</FileName>
+              <FileName>usbd_req.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Libraries\rt-thread\components\libc\compilers\armlibc\stubs.c</FilePath>
-            </File>
-          </Files>
-          <Files>
-            <File>
-              <FileName>time.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\rt-thread\components\libc\compilers\common\time.c</FilePath>
+              <FilePath>..\Libraries\USB_Device_Library\Core\src\usbd_req.c</FilePath>
             </File>
           </Files>
         </Group>
       </Groups>
     </Target>
   </Targets>
+
   <RTE>
-    <apis />
-    <components />
-    <files />
+    <apis/>
+    <components/>
+    <files/>
   </RTE>
+
   <LayerInfo>
     <Layers>
       <Layer>
         <LayName>&lt;Project Info&gt;</LayName>
-        <LayDesc />
-        <LayUrl />
-        <LayKeys />
-        <LayCat />
-        <LayLic />
+        <LayDesc></LayDesc>
+        <LayUrl></LayUrl>
+        <LayKeys></LayKeys>
+        <LayCat></LayCat>
+        <LayLic></LayLic>
         <LayTarg>0</LayTarg>
         <LayPrjMark>1</LayPrjMark>
       </Layer>
     </Layers>
   </LayerInfo>
+
 </Project>

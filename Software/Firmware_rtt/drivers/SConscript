@@ -26,6 +26,9 @@ if GetDepend('RT_USING_RTC'):
 if GetDepend('BSP_USING_ADC'):
     src += ['drv_adc.c']
 
+if GetDepend('BSP_USING_USBD'):
+    src += ['drv_usbd.c']
+
 group = DefineGroup('Drivers', src, depend = [''], CPPPATH = CPPPATH)
 
 for d in list:
