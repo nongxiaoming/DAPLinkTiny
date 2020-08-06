@@ -170,11 +170,6 @@ void USBD_Init (void) {
    RCC_HSI2USB48M(ENABLE);
 	 RCC_USBCLKConfig(RCC_USBCLKSelection_PLL_Div1);
    RCC_AHBPeriphClockCmd(RCC_AHBPERIPH_USB, ENABLE) ; 
-//  usbd_stm32_delay    (100);            /* Wait ~10 ms                        */
-//  RCC->AHB2RSTR   |=  (1 <<  7);        /* Reset OTG FS clock                 */
-//  usbd_stm32_delay    (100);            /* Wait ~10 ms                        */
-//  RCC->AHB2RSTR   &= ~(1 <<  7);
-//  usbd_stm32_delay    (400);            /* Wait ~40 ms                        */
 
   OTG->GUSBCFG    |=  (1 <<  6) ;       /* PHYSEL=1                           */
   usbd_stm32_delay    (200);            /* Wait ~20 ms                        */

@@ -16,14 +16,13 @@
 #define LED3_PORT      GPIOA
 #define LED3_PIN       GPIO_Pins_2
 
-#define LED_R         0x01
-#define LED_G         0x02
-#define LED_B         0x04
-#define LED_ALL       0x07
+#define LED_RED       0x01
+#define LED_BLUE      0x02
+#define LED_ALL       0x03
 
 void LED_Init(void);
-void LED_On(uint16_t leds);
-void LED_Off(uint16_t leds);
-void LED_Toggle(uint16_t leds);
+void LED_On(uint8_t leds);
+void LED_Off(uint8_t leds);
+void LED_Toggle(uint8_t leds);
 
 #endif

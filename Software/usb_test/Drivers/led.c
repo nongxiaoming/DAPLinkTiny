@@ -20,55 +20,44 @@ void LED_Init ( void )
 
     GPIO_InitStructure.GPIO_Pins = LED3_PIN;
     GPIO_Init ( LED3_PORT, &GPIO_InitStructure );
-
-    LED_Off ( LED_ALL );
+	  GPIO_SetBits ( LED1_PORT, LED1_PIN );
+    LED_On ( LED_ALL );
 }
 
 
-void LED_On ( uint16_t leds )
+void LED_On ( uint8_t leds )
 {
 
-    if ( leds & LED_R )
-    {
-        GPIO_ResetBits ( LED1_PORT, LED1_PIN );
-    }
-    if ( leds & LED_G )
+    if ( leds & LED_RED )
     {
         GPIO_ResetBits ( LED2_PORT, LED2_PIN );
     }
-    if ( leds & LED_B )
+    if ( leds & LED_BLUE )
     {
         GPIO_ResetBits ( LED3_PORT, LED3_PIN );
     }
 }
 
-void LED_Off ( uint16_t leds )
+void LED_Off ( uint8_t leds )
 {
-    if ( leds & LED_R )
-    {
-        GPIO_SetBits ( LED1_PORT, LED1_PIN );
-    }
-    if ( leds & LED_G )
+
+    if ( leds & LED_RED )
     {
         GPIO_SetBits ( LED2_PORT, LED2_PIN );
     }
-    if ( leds & LED_B )
+    if ( leds & LED_BLUE )
     {
         GPIO_SetBits ( LED3_PORT, LED3_PIN );
     }
 }
 
-void LED_Toggle ( uint16_t leds )
+void LED_Toggle ( uint8_t leds )
 {
-    if ( leds & LED_R )
-    {
-        LED1_PORT->OPTDT ^= LED1_PIN;
-    }
-    if ( leds & LED_G )
+    if ( leds & LED_RED )
     {
         LED2_PORT->OPTDT ^= LED2_PIN;
     }
-    if ( leds & LED_B )
+    if ( leds & LED_BLUE )
     {
         LED3_PORT->OPTDT ^= LED3_PIN;
     }

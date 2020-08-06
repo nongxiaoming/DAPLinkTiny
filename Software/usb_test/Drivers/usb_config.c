@@ -84,7 +84,7 @@
 //   </h>
 #define USBD_POWER                  0
 #define USBD_MAX_PACKET0            64
-#define USBD_DEVDESC_IDVENDOR       0x0483
+#define USBD_DEVDESC_IDVENDOR       0x0484
 #define USBD_DEVDESC_IDPRODUCT      0xA030
 #define USBD_DEVDESC_BCDDEVICE      0x0100
 
@@ -116,8 +116,8 @@
 //     </e>
 //   </h>
 #define USBD_STRDESC_LANGID         0x0409
-#define USBD_STRDESC_MAN            L"ANOTC Software"
-#define USBD_STRDESC_PROD           L"ANOTC USB Device"
+#define USBD_STRDESC_MAN            L"TinyDAP Software"
+#define USBD_STRDESC_PROD           L"TinyDAP USB Device"
 #define USBD_STRDESC_SER_ENABLE     1
 #define USBD_STRDESC_SER            L"0001A0000000"
 
@@ -169,7 +169,7 @@
 #define USBD_HID_HS_ENABLE          0
 #define USBD_HID_HS_WMAXPACKETSIZE  4
 #define USBD_HID_HS_BINTERVAL       6
-#define USBD_HID_STRDESC            L"ANOTC_HID"
+#define USBD_HID_STRDESC            L"TinyDAP_HID"
 #define USBD_HID_INREPORT_NUM       1
 #define USBD_HID_OUTREPORT_NUM      1
 #define USBD_HID_INREPORT_MAX_SZ    64
@@ -213,9 +213,9 @@
 #define USBD_MSC_HS_ENABLE          0
 #define USBD_MSC_HS_WMAXPACKETSIZE  512
 #define USBD_MSC_HS_BINTERVAL       0
-#define USBD_MSC_STRDESC            L"ANOTC_MSC"
-#define USBD_MSC_INQUIRY_DATA       "ANOTC"         \
-                                    "ANOTC Software" \
+#define USBD_MSC_STRDESC            L"TinyDAP_MSC"
+#define USBD_MSC_INQUIRY_DATA       "TinyDAP"         \
+                                    "TinyDAP Software" \
                                     "1.0 "
 
 //     <e0.0> Audio Device (ADC)
@@ -330,8 +330,8 @@
 #define USBD_CDC_ACM_HS_ENABLE1         0
 #define USBD_CDC_ACM_HS_WMAXPACKETSIZE1 64
 #define USBD_CDC_ACM_HS_BINTERVAL1      0
-#define USBD_CDC_ACM_CIF_STRDESC        L"ANOTC_COM"
-#define USBD_CDC_ACM_DIF_STRDESC        L"ANOTC_COM1"
+#define USBD_CDC_ACM_CIF_STRDESC        L"TinyDAP_COM"
+#define USBD_CDC_ACM_DIF_STRDESC        L"TinyDAP_COM1"
 #define USBD_CDC_ACM_SENDBUF_SIZE       512
 #define USBD_CDC_ACM_RECEIVEBUF_SIZE    512
 #if (((USBD_CDC_ACM_HS_ENABLE1) && (USBD_CDC_ACM_SENDBUF_SIZE    < USBD_CDC_ACM_HS_WMAXPACKETSIZE1)) || (USBD_CDC_ACM_SENDBUF_SIZE    < USBD_CDC_ACM_WMAXPACKETSIZE1))

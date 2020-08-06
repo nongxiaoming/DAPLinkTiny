@@ -10,7 +10,7 @@ __task void led_task(void)
 {
     while(1)
     {
-      LED_Toggle(LED_B);
+      LED_Toggle(LED_RED);
 			os_dly_wait(100);
     }
 }
@@ -29,7 +29,7 @@ __task void main_task(void)
     while(1)
     {
 		os_dly_wait(200);
-    LED_Toggle(LED_R);
+    LED_Toggle(LED_BLUE);
     }
 }
 
