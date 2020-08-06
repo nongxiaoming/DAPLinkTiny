@@ -1,18 +1,3 @@
-/* CMSIS-DAP Interface Firmware
- * Copyright (c) 2009-2013 ARM Limited
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 #include "RTL.h"
 
 /*----------------------------------------------------------------------------
@@ -28,7 +13,7 @@
 //   <i> Define max. number of tasks that will run at the same time.
 //   <i> Default: 6
 #ifndef OS_TASKCNT
-    #define OS_TASKCNT    8
+    #define OS_TASKCNT    12
 #endif
 
 //   <o>Number of tasks with user-provided stack <0-250>
@@ -70,7 +55,7 @@
 //   <i> Default: 6000000  (6MHz)
 #ifndef OS_CLOCK
 
-#define OS_CLOCK       168000000
+#define OS_CLOCK       144000000
 
 #endif
 
@@ -78,7 +63,7 @@
 //   <i> Set the timer tick value for selected timer.
 //   <i> Default: 10000  (10ms)
 #ifndef OS_TICK
- #define OS_TICK        10000
+ #define OS_TICK        1000
 #endif
 
 // </h>
@@ -117,7 +102,7 @@
 //   <i> when they are called from the iterrupt handler.
 //   <i> Default: 16 entries
 #ifndef OS_FIFOSZ
- #define OS_FIFOSZ      4
+ #define OS_FIFOSZ      8
 #endif
 
 // </h>

@@ -12,7 +12,7 @@
 #include <RTL.h>
 #include <rl_usb.h>
 #include "at32f4xx.h" 
-
+#include "usbreg.h"
 #define __NO_USB_LIB_C
 #include "usb_config.c"
 
@@ -137,6 +137,12 @@ void          USBD_IntrEna (void) {
   NVIC_EnableIRQ   (USBOTG_IRQn);       /* Enable OTG interrupt               */
 }
 
+/*define usb pin*/
+#define USB_DP_PIN          GPIO_Pins_12
+#define USB_DM_PIN          GPIO_Pins_11
+
+#define USB_GPIO            GPIOA
+#define USB_GPIO_RCC_CLK    RCC_APB2PERIPH_GPIOA
 
 /*
  *  USB Device Initialize Function
@@ -148,32 +154,27 @@ void USBD_Init (void) {
   int32_t tout;
 
   /* Configure  PA10, PA11, PA12 as alternate OTG_FS                          */
-  RCC->AHB1ENR    |=   RCC_AHB1ENR_GPIOAEN;
+  GPIO_InitType GPIO_InitStructure;
+  /* Enable the USB Clock*/
+  RCC_APB2PeriphClockCmd(USB_GPIO_RCC_CLK, ENABLE);
 
-//  GPIOA->MODER     =  (GPIOA->MODER  & ~(3 << 20)) | (2  << 20);
-//  GPIOA->OTYPER   &= ~(1 << 10);
-//  GPIOA->AFR[1]    =  (GPIOA->AFR[1] & ~(15 << 8)) | (10 <<  8);
-//  GPIOA->OSPEEDR  |=  (3 << 20);
-//  GPIOA->PUPDR    &= ~(3 << 20);
+  /*Configure DP, DM pin as GPIO_Mode_OUT_PP*/
+  GPIO_StructInit(&GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pins  = USB_DP_PIN | USB_DM_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT_PP;
+  GPIO_InitStructure.GPIO_MaxSpeed = GPIO_MaxSpeed_50MHz;
+  GPIO_Init(USB_GPIO, &GPIO_InitStructure);
+  GPIO_ResetBits(USB_GPIO, USB_DP_PIN);
 
-  GPIOA->MODER     =  (GPIOA->MODER  & ~(3  << 22)) | (2  << 22);
-  GPIOA->OTYPER   &= ~(1 << 11);
-  GPIOA->AFR[1]    =  (GPIOA->AFR[1] & ~(15 << 12)) | (10 << 12);
-  GPIOA->OSPEEDR  |=  (3 << 22);
-  GPIOA->PUPDR    &= ~(3 << 22);
-
-  GPIOA->MODER     =  (GPIOA->MODER  & ~(3  << 24)) | (2  << 24);
-  GPIOA->OTYPER   &= ~(1 << 12);
-  GPIOA->AFR[1]    =  (GPIOA->AFR[1] & ~(15 << 16)) | (10 << 16);
-  GPIOA->OSPEEDR  |=  (3 << 24);
-  GPIOA->PUPDR    &= ~(3 << 24);
-
-  RCC->AHB2ENR    |=  (1 <<  7);        /* Enable clock for OTG FS            */
-  usbd_stm32_delay    (100);            /* Wait ~10 ms                        */
-  RCC->AHB2RSTR   |=  (1 <<  7);        /* Reset OTG FS clock                 */
-  usbd_stm32_delay    (100);            /* Wait ~10 ms                        */
-  RCC->AHB2RSTR   &= ~(1 <<  7);
-  usbd_stm32_delay    (400);            /* Wait ~40 ms                        */
+  	/* Set usbclk from HSI */
+   RCC_HSI2USB48M(ENABLE);
+	 RCC_USBCLKConfig(RCC_USBCLKSelection_PLL_Div1);
+   RCC_AHBPeriphClockCmd(RCC_AHBPERIPH_USB, ENABLE) ; 
+//  usbd_stm32_delay    (100);            /* Wait ~10 ms                        */
+//  RCC->AHB2RSTR   |=  (1 <<  7);        /* Reset OTG FS clock                 */
+//  usbd_stm32_delay    (100);            /* Wait ~10 ms                        */
+//  RCC->AHB2RSTR   &= ~(1 <<  7);
+//  usbd_stm32_delay    (400);            /* Wait ~40 ms                        */
 
   OTG->GUSBCFG    |=  (1 <<  6) ;       /* PHYSEL=1                           */
   usbd_stm32_delay    (200);            /* Wait ~20 ms                        */
@@ -777,7 +778,7 @@ uint32_t USBD_GetFrame (void) {
 /*
  *  USB Device Interrupt Service Routine
  */
-void OTG_FS_IRQHandler(void) {
+void USBOTG_IRQHandler(void) {
   uint32_t istr, val, num, i, msk;
   static uint32_t IsoInIncomplete = 0;
 

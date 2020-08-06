@@ -1,44 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_proj.xsd">
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_projx.xsd">
 
-  <SchemaVersion>1.1</SchemaVersion>
+  <SchemaVersion>2.1</SchemaVersion>
 
   <Header>### uVision Project, (C) Keil Software</Header>
 
   <Targets>
     <Target>
-      <TargetName>bootloader</TargetName>
+      <TargetName>at32_usb</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
-          <Device>STM32F407VG</Device>
-          <Vendor>STMicroelectronics</Vendor>
-          <Cpu>IRAM(0x20000000-0x2001FFFF) IRAM2(0x10000000-0x1000FFFF) IROM(0x8000000-0x80FFFFF) CLOCK(25000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
+          <Device>AT32F415KBU7-4</Device>
+          <Vendor>ArteryTek</Vendor>
+          <PackID>Keil.AT32F4xx_DFP.1.3.1</PackID>
+          <Cpu>IRAM(0x20000000,0x8000) IROM(0x08000000,0x20000) CPUTYPE("Cortex-M4") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
-          <StartupFile>"Startup\ST\STM32F4xx\startup_stm32f40_41xxx.s" ("STM32F40/41xxx Startup Code")</StartupFile>
-          <FlashDriverDll>UL2CM3(-O207 -S0 -C0 -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F4xx_1024 -FS08000000 -FL0100000)</FlashDriverDll>
-          <DeviceId>6103</DeviceId>
-          <RegisterFile>stm32f4xx.h</RegisterFile>
+          <StartupFile></StartupFile>
+          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0AT32F415_128 -FS08000000 -FL020000 -FP0($$Device:AT32F415KBU7-4$Flash\AT32F415_128.FLM))</FlashDriverDll>
+          <DeviceId>0</DeviceId>
+          <RegisterFile>$$Device:AT32F415KBU7-4$Device\Include\at32f4xx.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
           <Linker></Linker>
           <OHString></OHString>
           <InfinionOptionDll></InfinionOptionDll>
-          <SLE66CMisc>-DSTM32F40_41xxx</SLE66CMisc>
+          <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>SFD\ST\STM32F4xx\STM32F40x.sfr</SFDFile>
+          <SFDFile>$$Device:AT32F415KBU7-4$SVD\AT32F415xx.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
           <LibPath></LibPath>
-          <RegisterFilePath>ST\STM32F4xx\</RegisterFilePath>
-          <DBRegisterFilePath>ST\STM32F4xx\</DBRegisterFilePath>
+          <RegisterFilePath></RegisterFilePath>
+          <DBRegisterFilePath></DBRegisterFilePath>
           <TargetStatus>
             <Error>0</Error>
             <ExitCodeStop>0</ExitCodeStop>
@@ -46,14 +47,14 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
-          <OutputDirectory>.\Obj\</OutputDirectory>
-          <OutputName>bootloader</OutputName>
+          <OutputDirectory>.\build\</OutputDirectory>
+          <OutputName>usb_test</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
-          <BrowseInformation>1</BrowseInformation>
-          <ListingPath>.\Lst\</ListingPath>
+          <BrowseInformation>0</BrowseInformation>
+          <ListingPath>.\build\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
           <CreateBatchFile>0</CreateBatchFile>
@@ -70,7 +71,7 @@
           <BeforeMake>
             <RunUserProg1>0</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name>python ..\..\..\tools\pre_build_script.py</UserProg1Name>
+            <UserProg1Name></UserProg1Name>
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
@@ -78,9 +79,9 @@
             <nStopB2X>0</nStopB2X>
           </BeforeMake>
           <AfterMake>
-            <RunUserProg1>0</RunUserProg1>
+            <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name></UserProg1Name>
+            <UserProg1Name>fromelf.exe --bin -o ./usb_test.bin ./build/usb_test.axf</UserProg1Name>
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
@@ -108,11 +109,11 @@
         </CommonProperty>
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
-          <SimDllArguments>-MPU -REMAP</SimDllArguments>
+          <SimDllArguments> -REMAP</SimDllArguments>
           <SimDlgDll>DCM.DLL</SimDlgDll>
           <SimDlgDllArguments>-pCM4</SimDlgDllArguments>
           <TargetDllName>SARMCM3.DLL</TargetDllName>
-          <TargetDllArguments>-MPU</TargetDllArguments>
+          <TargetDllArguments></TargetDllArguments>
           <TargetDlgDll>TCM.DLL</TargetDlgDll>
           <TargetDlgDllArguments>-pCM4</TargetDlgDllArguments>
         </DllOption>
@@ -124,47 +125,6 @@
             <HexOffset>0</HexOffset>
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
-          <Simulator>
-            <UseSimulator>0</UseSimulator>
-            <LoadApplicationAtStartup>0</LoadApplicationAtStartup>
-            <RunToMain>0</RunToMain>
-            <RestoreBreakpoints>1</RestoreBreakpoints>
-            <RestoreWatchpoints>1</RestoreWatchpoints>
-            <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
-            <RestoreFunctions>1</RestoreFunctions>
-            <RestoreToolbox>1</RestoreToolbox>
-            <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
-            <RestoreSysVw>1</RestoreSysVw>
-          </Simulator>
-          <Target>
-            <UseTarget>1</UseTarget>
-            <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
-            <RunToMain>1</RunToMain>
-            <RestoreBreakpoints>1</RestoreBreakpoints>
-            <RestoreWatchpoints>1</RestoreWatchpoints>
-            <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
-            <RestoreFunctions>0</RestoreFunctions>
-            <RestoreToolbox>1</RestoreToolbox>
-            <RestoreTracepoints>0</RestoreTracepoints>
-            <RestoreSysVw>1</RestoreSysVw>
-          </Target>
-          <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>4</TargetSelection>
-          <SimDlls>
-            <CpuDll></CpuDll>
-            <CpuDllArguments></CpuDllArguments>
-            <PeripheralDll></PeripheralDll>
-            <PeripheralDllArguments></PeripheralDllArguments>
-            <InitializationFile></InitializationFile>
-          </SimDlls>
-          <TargetDlls>
-            <CpuDll></CpuDll>
-            <CpuDllArguments></CpuDllArguments>
-            <PeripheralDll></PeripheralDll>
-            <PeripheralDllArguments></PeripheralDllArguments>
-            <InitializationFile></InitializationFile>
-            <Driver>Segger\JL2CM3.dll</Driver>
-          </TargetDlls>
         </DebugOption>
         <Utilities>
           <Flash1>
@@ -177,7 +137,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -222,10 +182,10 @@
             <hadIRAM>1</hadIRAM>
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
-            <RvdsVP>2</RvdsVP>
+            <RvdsVP>0</RvdsVP>
             <RvdsMve>0</RvdsMve>
             <RvdsCdeCp>0</RvdsCdeCp>
-            <hadIRAM2>1</hadIRAM2>
+            <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
             <useUlib>1</useUlib>
@@ -285,12 +245,12 @@
               <IRAM>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x20000</Size>
+                <Size>0x8000</Size>
               </IRAM>
               <IROM>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x100000</Size>
+                <Size>0x20000</Size>
               </IROM>
               <XRAM>
                 <Type>0</Type>
@@ -315,7 +275,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x100000</Size>
+                <Size>0x20000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -340,19 +300,19 @@
               <OCR_RVCT9>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x20000</Size>
+                <Size>0x8000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
-                <StartAddress>0x10000000</StartAddress>
-                <Size>0x10000</Size>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
               </OCR_RVCT10>
             </OnChipMemories>
             <RvctStartVector></RvctStartVector>
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>3</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -363,7 +323,7 @@
             <Rwpi>0</Rwpi>
             <wLevel>0</wLevel>
             <uThumb>0</uThumb>
-            <uSurpInc>0</uSurpInc>
+            <uSurpInc>1</uSurpInc>
             <uC99>1</uC99>
             <uGnu>0</uGnu>
             <useXO>0</useXO>
@@ -375,10 +335,10 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls>--diag_suppress=2532</MiscControls>
-              <Define>__RTX, AT32F415KBU7_4,USE_STDPERIPH_DRIVER</Define>
+              <MiscControls>--diag_suppress=2532,1461</MiscControls>
+              <Define>__RTX,AT32F415KBU7_4,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\USBStack\INC;..\Drivers;..\Applications;..\..\Libraries\CMSIS\Include;..\..\Libraries\CMSIS\Device;..\..\Libraries\AT32F4xx_StdPeriph_Driver\inc</IncludePath>
+              <IncludePath>.\Applications;.\Drivers;.\Libraries\USBStack\INC;..\Libraries\CMSIS\Include;..\Libraries\CMSIS\Device;..\Libraries\AT32F4xx_StdPeriph_Driver\inc;.\Libraries\RTX</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -423,39 +383,24 @@
           <GroupName>Applications</GroupName>
           <Files>
             <File>
-              <FileName>flash_svc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Applications\flash_svc.c</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Applications\main.c</FilePath>
+              <FilePath>.\Applications\main.c</FilePath>
             </File>
             <File>
-              <FileName>RTX_Config.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Applications\RTX_Config.c</FilePath>
+              <FileName>SVC_Table.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\Applications\SVC_Table.s</FilePath>
             </File>
             <File>
               <FileName>usbd_user_cdc_acm.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Applications\usbd_user_cdc_acm.c</FilePath>
+              <FilePath>.\Applications\usbd_user_cdc_acm.c</FilePath>
             </File>
             <File>
               <FileName>usbd_user_hid.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Applications\usbd_user_hid.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_user_msc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Applications\usbd_user_msc.c</FilePath>
-            </File>
-            <File>
-              <FileName>version.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Applications\version.c</FilePath>
+              <FilePath>.\Applications\usbd_user_hid.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -463,34 +408,24 @@
           <GroupName>Drivers</GroupName>
           <Files>
             <File>
-              <FileName>flash_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\flash_hal.c</FilePath>
-            </File>
-            <File>
-              <FileName>gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>read_uid.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\read_uid.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Drivers\usb_config.c</FilePath>
-            </File>
-            <File>
-              <FileName>vector_table.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\vector_table.c</FilePath>
+              <FilePath>.\Drivers\usb_config.c</FilePath>
             </File>
             <File>
               <FileName>usbd_STM32F4xx_FS.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Drivers\usbd_STM32F4xx_FS.c</FilePath>
+              <FilePath>.\Drivers\usbd_STM32F4xx_FS.c</FilePath>
+            </File>
+            <File>
+              <FileName>RTX_Config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\RTX_Config.c</FilePath>
+            </File>
+            <File>
+              <FileName>led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\led.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -542,7 +477,7 @@
                   <MiscControls></MiscControls>
                   <Define></Define>
                   <Undefine></Undefine>
-                  <IncludePath>..\USBStack\INC</IncludePath>
+                  <IncludePath>..\libraries\USBStack\INC</IncludePath>
                 </VariousControls>
               </Cads>
               <Aads>
@@ -569,137 +504,27 @@
             <File>
               <FileName>usbd_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USBStack\SRC\usbd_core.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_msc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USBStack\SRC\usbd_msc.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_core_msc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USBStack\SRC\usbd_core_msc.c</FilePath>
+              <FilePath>.\libraries\USBStack\SRC\usbd_core.c</FilePath>
             </File>
             <File>
               <FileName>usbd_core_hid.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USBStack\SRC\usbd_core_hid.c</FilePath>
+              <FilePath>.\libraries\USBStack\SRC\usbd_core_hid.c</FilePath>
             </File>
             <File>
               <FileName>usbd_hid.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USBStack\SRC\usbd_hid.c</FilePath>
+              <FilePath>.\libraries\USBStack\SRC\usbd_hid.c</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>CMSIS</GroupName>
-          <Files>
             <File>
-              <FileName>system_at32f4xx.c</FileName>
+              <FileName>usbd_cdc_acm.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Libraries\CMSIS\Device\system_at32f4xx.c</FilePath>
+              <FilePath>.\Libraries\USBStack\SRC\usbd_cdc_acm.c</FilePath>
             </File>
             <File>
-              <FileName>startup_at32f415kbu7-4.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\..\Libraries\CMSIS\Device\startup\mdk\startup_at32f415kbu7-4.s</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>AT32F4xx_StdPeriph_Driver</GroupName>
-          <Files>
-            <File>
-              <FileName>at32f4xx_acc.c</FileName>
+              <FileName>usbd_core_cdc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_acc.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_bkp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_bkp.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_crc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_crc.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_dbgmcu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_dbgmcu.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_dma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_dma.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_iwdg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_iwdg.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_pwr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_pwr.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_rcc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_rcc.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_tim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_tim.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_usart.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_wwdg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_wwdg.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f4xx_xmc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_xmc.c</FilePath>
-            </File>
-            <File>
-              <FileName>misc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Libraries\AT32F4xx_StdPeriph_Driver\src\misc.c</FilePath>
+              <FilePath>.\Libraries\USBStack\SRC\usbd_core_cdc.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -709,68 +534,174 @@
             <File>
               <FileName>rt_Event.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtos\rt_Event.c</FilePath>
+              <FilePath>.\Libraries\RTX\rt_Event.c</FilePath>
             </File>
             <File>
               <FileName>rt_Mailbox.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtos\rt_Mailbox.c</FilePath>
+              <FilePath>.\Libraries\RTX\rt_Mailbox.c</FilePath>
             </File>
             <File>
               <FileName>rt_MemBox.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtos\rt_MemBox.c</FilePath>
+              <FilePath>.\Libraries\RTX\rt_MemBox.c</FilePath>
             </File>
             <File>
               <FileName>rt_Mutex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtos\rt_Mutex.c</FilePath>
+              <FilePath>.\Libraries\RTX\rt_Mutex.c</FilePath>
             </File>
             <File>
               <FileName>rt_Robin.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtos\rt_Robin.c</FilePath>
+              <FilePath>.\Libraries\RTX\rt_Robin.c</FilePath>
             </File>
             <File>
               <FileName>rt_Semaphore.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtos\rt_Semaphore.c</FilePath>
+              <FilePath>.\Libraries\RTX\rt_Semaphore.c</FilePath>
             </File>
             <File>
               <FileName>rt_System.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtos\rt_System.c</FilePath>
+              <FilePath>.\Libraries\RTX\rt_System.c</FilePath>
             </File>
             <File>
               <FileName>rt_Task.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtos\rt_Task.c</FilePath>
+              <FilePath>.\Libraries\RTX\rt_Task.c</FilePath>
             </File>
             <File>
               <FileName>rt_Time.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtos\rt_Time.c</FilePath>
+              <FilePath>.\Libraries\RTX\rt_Time.c</FilePath>
             </File>
             <File>
               <FileName>rt_Timer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtos\rt_Timer.c</FilePath>
+              <FilePath>.\Libraries\RTX\rt_Timer.c</FilePath>
             </File>
             <File>
               <FileName>rt_List.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtos\rt_List.c</FilePath>
+              <FilePath>.\Libraries\RTX\rt_List.c</FilePath>
             </File>
             <File>
-              <FileName>HAL_CM4.c</FileName>
+              <FileName>HAL_CM3.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtos\HAL_CM4.c</FilePath>
+              <FilePath>.\Libraries\RTX\HAL_CM3.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>CMSIS</GroupName>
+          <Files>
+            <File>
+              <FileName>system_at32f4xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\CMSIS\Device\system_at32f4xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>startup_at32f415kbu7-4.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\Libraries\CMSIS\Device\startup\mdk\startup_at32f415kbu7-4.s</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AT32F4xx_StdPeriph_Driver</GroupName>
+          <Files>
+            <File>
+              <FileName>at32f4xx_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_bkp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_bkp.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_dbgmcu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_dbgmcu.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_iwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_iwdg.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_pwr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_pwr.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_rcc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_rcc.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f4xx_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\at32f4xx_usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>misc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\AT32F4xx_StdPeriph_Driver\src\misc.c</FilePath>
             </File>
           </Files>
         </Group>
       </Groups>
     </Target>
   </Targets>
+
+  <RTE>
+    <apis/>
+    <components/>
+    <files/>
+  </RTE>
 
   <LayerInfo>
     <Layers>

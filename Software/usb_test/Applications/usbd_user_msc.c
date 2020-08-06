@@ -20,7 +20,7 @@
 #include "main.h"
 #include "tasks.h"
 #include "version.h"
-#include "at32f4xx.h"
+#include "stm32f4xx.h"
 
 #define WANTED_SIZE_IN_KB     (1024)
 
@@ -452,13 +452,13 @@ static void initDisconnect(uint8_t success) {
 
 static void disable_usb_irq(void){
 
-    NVIC_DisableIRQ(USBOTG_IRQn);
+    NVIC_DisableIRQ(OTG_FS_IRQn);
 
 }
 
 static void enable_usb_irq(void){
 
-    NVIC_EnableIRQ(USBOTG_IRQn);
+    NVIC_EnableIRQ(OTG_FS_IRQn);
 
 }
 

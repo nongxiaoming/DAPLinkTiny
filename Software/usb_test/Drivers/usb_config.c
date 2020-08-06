@@ -83,9 +83,9 @@
 //       <i> Device release number in binary-coded decimal (bcdDevice)
 //   </h>
 #define USBD_POWER                  0
-#define USBD_MAX_PACKET0            8
-#define USBD_DEVDESC_IDVENDOR       0xC251
-#define USBD_DEVDESC_IDPRODUCT      0x3502
+#define USBD_MAX_PACKET0            64
+#define USBD_DEVDESC_IDVENDOR       0x0483
+#define USBD_DEVDESC_IDPRODUCT      0xA030
 #define USBD_DEVDESC_BCDDEVICE      0x0100
 
 //   <h> Configuration Settings
@@ -117,7 +117,7 @@
 //   </h>
 #define USBD_STRDESC_LANGID         0x0409
 #define USBD_STRDESC_MAN            L"ANOTC Software"
-#define USBD_STRDESC_PROD           L"Anopilot USB Device"
+#define USBD_STRDESC_PROD           L"ANOTC USB Device"
 #define USBD_STRDESC_SER_ENABLE     1
 #define USBD_STRDESC_SER            L"0001A0000000"
 
@@ -164,16 +164,16 @@
 #define USBD_HID_ENABLE             1
 #define USBD_HID_EP_INTIN           1
 #define USBD_HID_EP_INTOUT          1
-#define USBD_HID_WMAXPACKETSIZE     4
-#define USBD_HID_BINTERVAL          32
+#define USBD_HID_WMAXPACKETSIZE     64
+#define USBD_HID_BINTERVAL          1
 #define USBD_HID_HS_ENABLE          0
 #define USBD_HID_HS_WMAXPACKETSIZE  4
 #define USBD_HID_HS_BINTERVAL       6
-#define USBD_HID_STRDESC            L"ANO_Pilot_HID"
+#define USBD_HID_STRDESC            L"ANOTC_HID"
 #define USBD_HID_INREPORT_NUM       1
 #define USBD_HID_OUTREPORT_NUM      1
-#define USBD_HID_INREPORT_MAX_SZ    1
-#define USBD_HID_OUTREPORT_MAX_SZ   1
+#define USBD_HID_INREPORT_MAX_SZ    64
+#define USBD_HID_OUTREPORT_MAX_SZ   64
 #define USBD_HID_FEATREPORT_MAX_SZ  1
 
 //     <e0.0> Mass Storage Device (MSC)
@@ -206,16 +206,16 @@
 //         </h>
 //       </h>
 //     </e>
-#define USBD_MSC_ENABLE             1
+#define USBD_MSC_ENABLE             0
 #define USBD_MSC_EP_BULKIN          3
 #define USBD_MSC_EP_BULKOUT         3
 #define USBD_MSC_WMAXPACKETSIZE     64
 #define USBD_MSC_HS_ENABLE          0
 #define USBD_MSC_HS_WMAXPACKETSIZE  512
 #define USBD_MSC_HS_BINTERVAL       0
-#define USBD_MSC_STRDESC            L"ANO_Pilot_MSC"
-#define USBD_MSC_INQUIRY_DATA       "ANO"         \
-                                    "Pilot Bootloader" \
+#define USBD_MSC_STRDESC            L"ANOTC_MSC"
+#define USBD_MSC_INQUIRY_DATA       "ANOTC"         \
+                                    "ANOTC Software" \
                                     "1.0 "
 
 //     <e0.0> Audio Device (ADC)
@@ -317,8 +317,8 @@
 //            <256=> 256 Bytes <512=> 512 Bytes <1024=> 1024 Bytes
 //       </h>
 //     </e>
-#define USBD_CDC_ACM_ENABLE             0
-#define USBD_CDC_ACM_EP_INTIN           1
+#define USBD_CDC_ACM_ENABLE             1
+#define USBD_CDC_ACM_EP_INTIN           4
 #define USBD_CDC_ACM_WMAXPACKETSIZE     16
 #define USBD_CDC_ACM_BINTERVAL          2
 #define USBD_CDC_ACM_HS_ENABLE          0
@@ -330,10 +330,10 @@
 #define USBD_CDC_ACM_HS_ENABLE1         0
 #define USBD_CDC_ACM_HS_WMAXPACKETSIZE1 64
 #define USBD_CDC_ACM_HS_BINTERVAL1      0
-#define USBD_CDC_ACM_CIF_STRDESC        L"USB_CDC"
-#define USBD_CDC_ACM_DIF_STRDESC        L"USB_CDC1"
-#define USBD_CDC_ACM_SENDBUF_SIZE       128
-#define USBD_CDC_ACM_RECEIVEBUF_SIZE    128
+#define USBD_CDC_ACM_CIF_STRDESC        L"ANOTC_COM"
+#define USBD_CDC_ACM_DIF_STRDESC        L"ANOTC_COM1"
+#define USBD_CDC_ACM_SENDBUF_SIZE       512
+#define USBD_CDC_ACM_RECEIVEBUF_SIZE    512
 #if (((USBD_CDC_ACM_HS_ENABLE1) && (USBD_CDC_ACM_SENDBUF_SIZE    < USBD_CDC_ACM_HS_WMAXPACKETSIZE1)) || (USBD_CDC_ACM_SENDBUF_SIZE    < USBD_CDC_ACM_WMAXPACKETSIZE1))
 #error "Send Buffer size must be larger or equal to Bulk In maximum packet size!"
 #endif
@@ -508,7 +508,7 @@
 #define  __USB_CONFIG__
 
 #ifndef  __NO_USB_LIB_C
-#include <usb_lib.c>
+#include "usb_lib.c"
 #endif
 
 #endif  /* __USB_CONFIG__ */

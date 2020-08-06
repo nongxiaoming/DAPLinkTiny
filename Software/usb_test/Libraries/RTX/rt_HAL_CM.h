@@ -20,11 +20,110 @@
 #define ITM_ITMENA      0x00000001
 #define MAGIC_WORD      0xE25A2EA5
 
-#if ((__TARGET_ARCH_7_M || __TARGET_ARCH_7E_M) && !NO_EXCLUSIVE_ACCESS)
+#if defined (__CC_ARM)          /* ARM Compiler */
+
+#if (0)
  #define __USE_EXCLUSIVE_ACCESS
 #else
  #undef  __USE_EXCLUSIVE_ACCESS
 #endif
+
+#ifndef __CMSIS_GENERIC
+#define __DMB() do {\
+                   __schedule_barrier();\
+                   __dmb(0xF);\
+                   __schedule_barrier();\
+                } while (0)
+#endif
+
+#elif defined (__GNUC__)        /* GNU Compiler */
+
+#undef  __USE_EXCLUSIVE_ACCESS
+
+#if defined (__CORTEX_M0)
+#define __TARGET_ARCH_6S_M
+#endif
+
+#if defined (__VFP_FP__) && !defined(__SOFTFP__)
+#define __TARGET_FPU_VFP
+#endif
+
+#define __inline inline
+#define __weak   __attribute__((weak))
+
+#ifndef __CMSIS_GENERIC
+
+__attribute__((always_inline)) static inline void __enable_irq(void)
+{
+  __asm volatile ("cpsie i");
+}
+
+__attribute__((always_inline)) static inline U32 __disable_irq(void)
+{
+  U32 result;
+
+  __asm volatile ("mrs %0, primask" : "=r" (result));
+  __asm volatile ("cpsid i");
+  return(result & 1);
+}
+
+__attribute__((always_inline)) static inline void __DMB(void)
+{
+  __asm volatile ("dmb 0xF":::"memory");
+}
+
+#endif
+
+__attribute__(( always_inline)) static inline U8 __clz(U32 value)
+{
+  U8 result;
+  
+  __asm volatile ("clz %0, %1" : "=r" (result) : "r" (value));
+  return(result);
+}
+
+#elif defined (__ICCARM__)      /* IAR Compiler */
+
+#undef  __USE_EXCLUSIVE_ACCESS
+
+#if (__CORE__ == __ARM6M__)
+#define __TARGET_ARCH_6S_M 1
+#endif
+
+#if defined __ARMVFP__
+#define __TARGET_FPU_VFP 1
+#endif
+
+#define __inline inline
+
+#ifndef __CMSIS_GENERIC
+
+static inline void __enable_irq(void)
+{
+  __asm volatile ("cpsie i");
+}
+
+static inline U32 __disable_irq(void)
+{
+  U32 result;
+  
+  __asm volatile ("mrs %0, primask" : "=r" (result));
+  __asm volatile ("cpsid i");
+  return(result & 1);
+}
+
+#endif
+
+static inline U8 __clz(U32 value)
+{
+  U8 result;
+  
+  __asm volatile ("clz %0, %1" : "=r" (result) : "r" (value));
+  return(result);
+}
+
+#endif
+
 
 /* NVIC registers */
 #define NVIC_ST_CTRL    (*((volatile U32 *)0xE000E010))
@@ -78,8 +177,8 @@ extern BIT dbg_msg;
 
 /* Functions */
 #ifdef __USE_EXCLUSIVE_ACCESS
- #define rt_inc(p)     while(__strex((__ldrex(p)+1),p))
- #define rt_dec(p)     while(__strex((__ldrex(p)-1),p))
+ #define rt_inc(p)     while(__strex((__ldrex(p)+1U),p))
+ #define rt_dec(p)     while(__strex((__ldrex(p)-1U),p))
 #else
  #define rt_inc(p)     __disable_irq();(*p)++;__enable_irq();
  #define rt_dec(p)     __disable_irq();(*p)--;__enable_irq();
@@ -92,18 +191,18 @@ __inline U32 rt_inc_qi (U32 size, U8 *count, U8 *first) {
     if ((cnt = __ldrex(count)) == size) {
       __clrex();
       return (cnt); }
-  } while (__strex(cnt+1, count));
+  } while (__strex(cnt+1U, count));
   do {
-    c2 = (cnt = __ldrex(first)) + 1;
-    if (c2 == size) c2 = 0;
+    c2 = (cnt = __ldrex(first)) + 1U;
+    if (c2 == size) { c2 = 0U; }
   } while (__strex(c2, first));
 #else
   __disable_irq();
   if ((cnt = *count) < size) {
-    *count = cnt+1;
-    c2 = (cnt = *first) + 1;
-    if (c2 == size) c2 = 0;
-    *first = c2;
+    *count = (U8)(cnt+1U);
+    c2 = (cnt = *first) + 1U;
+    if (c2 == size) { c2 = 0U; }
+    *first = (U8)c2; 
   }
   __enable_irq ();
 #endif
