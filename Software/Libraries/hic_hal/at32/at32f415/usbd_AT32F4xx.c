@@ -1111,10 +1111,13 @@ uint32_t USBD_GetFrame (void) {
 //    }
 //  }
 //}
-#define ISTR_RESUME (0x01UL<<31)
-#define ISTR_RESET  (0x01UL<<12)
-#define ISTR_SUSP   (0x01UL<<11)
-#define ISTR_SOF    (0x01UL<<3)
+#define ISTR_RESUME        (0x01UL<<31)
+#define ISTR_INCOMISOIN    (0x01UL<<20)
+#define ISTR_OEPTINT       (0x01UL<<19)
+#define ISTR_IEPTINT       (0x01UL<<18)
+#define ISTR_RESET         (0x01UL<<12)
+#define ISTR_SUSP          (0x01UL<<11)
+#define ISTR_SOF           (0x01UL<<3)
 
 void USBD_Handler(void)
 {

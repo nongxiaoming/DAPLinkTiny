@@ -421,4 +421,20 @@ typedef struct
 #define OTG_FS_DFIFO6       (((uint32_t *) OTG_FS_DFIFO6_BASE)  )
 #define OTG_FS_DFIFO7       (((uint32_t *) OTG_FS_DFIFO7_BASE)  )
 
+
+
+#define ISTR_RESUME        (0x01UL<<31)
+#define ISTR_INCOMISOOUTM  (0x01UL<<21)
+#define ISTR_INCOMISOIN    (0x01UL<<20)
+#define ISTR_OEPTINT       (0x01UL<<19)
+#define ISTR_IEPTINT       (0x01UL<<18)
+#define ISTR_EOPF          (0x01UL<<15)
+#define ISTR_ISOOUTDR      (0x01UL<<14)
+#define ISTR_ENUMDONE      (0x01UL<<13)
+#define ISTR_RESET         (0x01UL<<12)
+#define ISTR_SUSP          (0x01UL<<11)
+#define ISTR_ERLYSUSP      (0x01UL<<10)
+#define ISTR_RXFLVL        (0x01UL<<4)
+#define ISTR_SOF           (0x01UL<<3)
+
 #endif  /* __USBREG_H */
