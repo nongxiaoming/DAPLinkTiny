@@ -26,8 +26,8 @@ extern "C" {
 #define AT32_FLASH_SIZE                 (128 * 1024)
 #define AT32_FLASH_END_ADDRESS          ((uint32_t)(AT32_FLASH_START_ADRESS + AT32_FLASH_SIZE))
 
-/* internal sram memory size[kbytes] <20>, default: 20*/
-#define AT32_SRAM_SIZE                  20
+/* internal sram memory size[kbytes] <32>, default: 32*/
+#define AT32_SRAM_SIZE                  32
 #define AT32_SRAM_END                   (0x20000000 + AT32_SRAM_SIZE * 1024)
 
 #if defined(__ARMCC_VERSION)
