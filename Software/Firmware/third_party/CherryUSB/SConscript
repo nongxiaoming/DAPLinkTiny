@@ -1,0 +1,24 @@
+# for module compiling
+from building import *
+import os
+
+cwd = GetCurrentDir()
+
+src = Split('''
+CherryUSB/core/usbd_core.c
+CherryUSB/class/cdc/usbd_cdc.c
+CherryUSB/port/dwc2/usb_dc_dwc2.c
+''')
+
+path = []
+path += [cwd + '/CherryUSB/core']
+path += [cwd + '/CherryUSB/common']
+
+path += [cwd + '/CherryUSB/class/cdc']
+
+path += [cwd + '/CherryUSB/port/dwc2']
+
+
+group = DefineGroup('CherryUSB', src, depend = [''], CPPPATH = path)
+
+Return('group')
