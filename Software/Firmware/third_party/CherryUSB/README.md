@@ -4,7 +4,7 @@
 
 CherryUSB is a tiny, beautiful and portable USB host and device stack for embedded system with USB IP.
 
-![CherryUSB](./docs/assets/usb_outline.png)
+![CherryUSB](./docs/assets/CherryUSB.svg)
 
 ## Why choose
 
@@ -85,12 +85,13 @@ CherryUSB Device Stack resource usage (GCC 10.2 with -O2):
 
 |   file        |  FLASH (Byte)  |  No Cache RAM (Byte)      |  RAM (Byte)   |  Heap (Byte)     |
 |:-------------:|:--------------:|:-------------------------:|:-------------:|:----------------:|
-|usbd_core.c    |  3263          | 384                       | 17            | 0                |
-|usbd_cdc.c     |  490           | 0                         | 0             | 0                |
-|usbd_msc.c     |  2772          | 128 + 512(default)        | 16            | 0                |
-|usbd_hid.c     |  501           | 0                         | 0             | 0                |
-|usbd_audio.c   |  1208          | 0                         | 4             | 0                |
-|usbd_video.c   |  2272          | 0                         | 82            | 0                |
+|usbd_core.c    |  3516          | 256(default) + 320        | 0             | 0                |
+|usbd_cdc.c     |  392           | 0                         | 0             | 0                |
+|usbd_msc.c     |  2839          | 128 + 512(default)        | 16            | 0                |
+|usbd_hid.c     |  364           | 0                         | 0             | 0                |
+|usbd_audio.c   |  1455          | 0                         | 0             | 0                |
+|usbd_video.c   |  2494          | 0                         | 84            | 0                |
+|usbd_rndis.c   |  2109          | 3340                      | 76            | 0                |
 
 ## Host Stack Overview
 
@@ -116,13 +117,14 @@ CherryUSB Host Stack resource usage (GCC 10.2 with -O2):
 
 |   file        |  FLASH (Byte)  |  No Cache RAM (Byte)            |  RAM (Byte)                 |  Heap (Byte)                    |
 |:-------------:|:--------------:|:-------------------------------:|:---------------------------:|:-------------------------------:|
-|usbh_core.c    |  4417          | 512                             | 28                          | sizeof(struct usbh_urb)         |
-|usbh_hub.c     |  4895          | 32 + 4* (1+n) | 16 + sizeof(struct usbh_hub) * (1+n)          | 0                               |
-|usbh_cdc_acm.c |  1064          | 7                               | 4                           | sizeof(struct usbh_cdc_acm) * x |
-|usbh_msc.c     |  1776          | 32                              | 4                           | sizeof(struct usbh_msc) * x     |
-|usbh_hid.c     |  922           | 128                             | 4                           | sizeof(struct usbh_hid) * x     |
-|usbh_video.c   |  3592          | 128                             | 4                           | sizeof(struct usbh_video) * x   |
-|usbh_audio.c   |  3230          | 128                             | 4                           | sizeof(struct usbh_audio) * x   |
+|usbh_core.c    |  4237          | 512 + 8 * (1+x) *n              | 28                          | sizeof(struct usbh_urb)         |
+|usbh_hub.c     |  2919          | 32 + 4* (1+x) | 12 + sizeof(struct usbh_hub) * (1+x)          | 0                               |
+|usbh_cdc_acm.c |  1099          | 7             | 4  + sizeof(struct usbh_cdc_acm) * x          | 0                               |
+|usbh_msc.c     |  2502          | 32            | 4  + sizeof(struct usbh_msc) * x              | 0                               |
+|usbh_hid.c     |  956           | 128           | 4  + sizeof(struct usbh_hid) * x              | 0                               |
+|usbh_video.c   |  2330          | 128           | 4  + sizeof(struct usbh_video) * x            | 0                               |
+|usbh_audio.c   |  3168          | 128           | 4  + sizeof(struct usbh_audio) * x            | 0                               |
+|usbh_rndis.c   |  3030          | 4096          | 4  + sizeof(struct usbh_rndis) * x            | 0                               |
 
 Among them, `sizeof(struct usbh_hub)` and `sizeof(struct usbh_hubport)` are affected by the following macros：
 
@@ -132,6 +134,18 @@ Among them, `sizeof(struct usbh_hub)` and `sizeof(struct usbh_hubport)` are affe
 #define CONFIG_USBHOST_MAX_INTERFACES       6
 #define CONFIG_USBHOST_MAX_INTF_ALTSETTINGS 1
 #define CONFIG_USBHOST_MAX_ENDPOINTS        4
+```
+
+x is affected by the following macros：
+
+```
+#define CONFIG_USBHOST_MAX_CDC_ACM_CLASS 4
+#define CONFIG_USBHOST_MAX_HID_CLASS     4
+#define CONFIG_USBHOST_MAX_MSC_CLASS     2
+#define CONFIG_USBHOST_MAX_AUDIO_CLASS   1
+#define CONFIG_USBHOST_MAX_VIDEO_CLASS   1
+#define CONFIG_USBHOST_MAX_RNDIS_CLASS   1
+
 ```
 
 ## Documentation Tutorial
@@ -150,13 +164,13 @@ USB basic concepts and how the CherryUSB Device stack is implemented, see [Cherr
 
 |   Manufacturer       |  CHIP or Series    | USB IP| Repo Url |Corresponds to master version|
 |:--------------------:|:------------------:|:-----:|:--------:|:---------------------------:|
-|Bouffalolab    |  BL702/BL616/BL808 | bouffalolab/ehci|[bouffalo_sdk](https://github.com/CherryUSB/cherryusb_bouffalolab)| latest |
+|Bouffalolab    |  BL702/BL616/BL808 | bouffalolab/ehci|[bouffalo_sdk](https://github.com/CherryUSB/cherryusb_bouffalolab)| v0.9.0 |
 |ST    |  STM32F1x | fsdev |[stm32_repo](https://github.com/CherryUSB/cherryusb_stm32)|latest |
 |ST    |  STM32F4/STM32H7 | dwc2 |[stm32_repo](https://github.com/CherryUSB/cherryusb_stm32)|latest |
-|HPMicro    |  HPM6750 | hpm/ehci |[hpm_sdk](https://github.com/CherryUSB/cherryusb_hpmicro)|v0.7.0 |
+|HPMicro    |  HPM6750 | hpm/ehci |[hpm_sdk](https://github.com/CherryUSB/cherryusb_hpmicro)|v0.8.0 |
 |Essemi    |  ES32F36xx | musb |[es32f369_repo](https://github.com/CherryUSB/cherryusb_es32)|latest |
 |AllwinnerTech    |  F1C100S/F1C200S | musb |[cherryusb_rtt_f1c100s](https://github.com/CherryUSB/cherryusb_rtt_f1c100s)|latest |
-|Phytium |  e2000 | xhci |[phytium_repo](https://gitee.com/phytium_embedded/phytium-free-rtos-sdk)|latest |
+|Phytium |  e2000 | xhci |[phytium_repo](https://gitee.com/phytium_embedded/phytium-free-rtos-sdk)|v0.9.0 |
 |Raspberry pi |  rp2040 | rp2040 |[pico-examples](https://github.com/CherryUSB/pico-examples)|latest |
 |WCH    |  CH32V307/ch58x | ch32_usbfs/ch32_usbhs/ch58x |[wch_repo](https://github.com/CherryUSB/cherryusb_wch)|latest |
 |Nordicsemi |  Nrf52840 | nrf5x |[nrf5x_repo](https://github.com/CherryUSB/cherryusb_nrf5x)|latest |

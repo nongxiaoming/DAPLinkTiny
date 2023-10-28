@@ -630,6 +630,21 @@ int usbh_pipe_alloc(usbh_pipe_t *pipe, const struct usbh_endpoint_cfg *ep_cfg)
 
 int usbh_pipe_free(usbh_pipe_t pipe)
 {
+    struct musb_pipe *ppipe;
+    struct usbh_urb *urb;
+
+    ppipe = (struct musb_pipe *)pipe;
+
+    if (!ppipe) {
+        return -EINVAL;
+    }
+
+    urb = ppipe->urb;
+
+    if (urb) {
+        usbh_kill_urb(urb);
+    }
+
     return 0;
 }
 
@@ -704,6 +719,20 @@ errout_timeout:
 
 int usbh_kill_urb(struct usbh_urb *urb)
 {
+    struct musb_pipe *pipe;
+
+    pipe = urb->pipe;
+
+    if (!urb || !pipe) {
+        return -EINVAL;
+    }
+
+    if (pipe->waiter) {
+        pipe->waiter = false;
+        urb->errorcode = -ESHUTDOWN;
+        usb_osal_sem_give(pipe->waitsem);
+    }
+
     return 0;
 }
 
@@ -877,17 +906,6 @@ void USBH_IRQHandler(void)
         g_musb_hcd.port_csc = 1;
         g_musb_hcd.port_pec = 1;
         g_musb_hcd.port_pe = 0;
-        for (uint8_t index = 0; index < CONFIG_USBHOST_PIPE_NUM; index++) {
-            for (uint8_t j = 0; j < 2; j++) {
-                struct musb_pipe *pipe = &g_musb_hcd.pipe_pool[index][j];
-                struct usbh_urb *urb = pipe->urb;
-                if (pipe->waiter) {
-                    pipe->waiter = false;
-                    urb->errorcode = -ESHUTDOWN;
-                    usb_osal_sem_give(pipe->waitsem);
-                }
-            }
-        }
         usbh_roothub_thread_wakeup(1);
     }
 

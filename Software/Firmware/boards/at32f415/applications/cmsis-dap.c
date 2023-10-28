@@ -114,12 +114,9 @@ __ALIGN_BEGIN const uint8_t WINUSB_IF0_WCIDProperties[142] __ALIGN_END =
 struct usb_msosv1_descriptor msosv1_desc =
 {
     .string = (uint8_t *)WCID_StringDescriptor_MSOS,
-    .string_len = 18,
     .vendor_code = WCID_VENDOR_CODE,
     .compat_id = (uint8_t *)WINUSB_WCIDDescriptor,
-    .compat_id_len = sizeof(WINUSB_WCIDDescriptor),
-    .comp_id_property = (uint8_t *)WINUSB_IF0_WCIDProperties,
-    .comp_id_property_len = sizeof(WINUSB_IF0_WCIDProperties),
+    .comp_id_property =(const uint8_t **) &WINUSB_IF0_WCIDProperties,
 };
 
 const uint8_t daplink_descriptor[] =
@@ -133,7 +130,7 @@ const uint8_t daplink_descriptor[] =
     USB_ENDPOINT_DESCRIPTOR_INIT(DAP_IN_EP, USB_ENDPOINT_TYPE_BULK, CDC_MAX_MPS, 0x00),
     /* Endpoint IN 2 */
     USB_ENDPOINT_DESCRIPTOR_INIT(DAP_OUT_EP, USB_ENDPOINT_TYPE_BULK, CDC_MAX_MPS, 0x00),
-    CDC_ACM_DESCRIPTOR_INIT(0x01, CDC_INT_EP, CDC_OUT_EP, CDC_IN_EP, 0x00),
+    CDC_ACM_DESCRIPTOR_INIT(0x01, CDC_INT_EP, CDC_OUT_EP, CDC_IN_EP, CDC_MAX_MPS, 0x00),
     /* String 0 (LANGID) */
     USB_LANGID_INIT(USBD_LANGID_STRING),
     /* String 1 (Manufacturer) */
@@ -369,13 +366,12 @@ static void usb_clock48m_select(usb_clk48_s clk_s)
 
 void at32_msp_usb_init(void *instance)
 {
+    crm_periph_clock_enable(CRM_GPIOA_PERIPH_CLOCK, TRUE);
       /* enable otgfs clock */
     crm_periph_clock_enable(CRM_OTGFS1_PERIPH_CLOCK, TRUE);
 
-    crm_usb_clock_source_select(CRM_USB_CLOCK_SOURCE_HICK);
-
-  /* select usb 48m clcok source */
-  usb_clock48m_select(USB_CLK_HEXT);
+     /* select usb 48m clcok source */
+     usb_clock48m_select(USB_CLK_HICK);
 
 }
 

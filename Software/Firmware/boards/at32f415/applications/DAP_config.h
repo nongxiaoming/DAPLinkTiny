@@ -81,10 +81,10 @@ DAP Hardware I/O Pin Access Functions
 #define SWD_RST_PORT        GPIOA
 #define SWD_RST_PIN         GPIO_PINS_1
 
-#define LED_CONNECTED_PORT  GPIOB
+#define LED_CONNECTED_PORT  GPIOA
 #define LED_CONNECTED_PIN   GPIO_PINS_0
 #define LED_RUNNING_PORT    GPIOB
-#define LED_RUNNING_PIN     GPIO_PINS_12
+#define LED_RUNNING_PIN     GPIO_PINS_0
 
 
 /** Setup JTAG I/O pins: TCK, TMS, TDI, TDO, nTRST, and nRESET.

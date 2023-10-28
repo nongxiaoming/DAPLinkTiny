@@ -14,8 +14,13 @@ usb_osal_thread_t usb_osal_thread_create(const char *name, uint32_t stack_size, 
 {
     TaskHandle_t htask = NULL;
     stack_size /= sizeof(StackType_t);
-    xTaskCreate(entry, name, stack_size, args, prio, &htask);
+    xTaskCreate(entry, name, stack_size, args, configMAX_PRIORITIES - 1 - prio, &htask);
     return (usb_osal_thread_t)htask;
+}
+
+void usb_osal_thread_delete(usb_osal_thread_t thread)
+{
+    vTaskDelete(thread);
 }
 
 usb_osal_sem_t usb_osal_sem_create(uint32_t initial_count)
@@ -38,9 +43,13 @@ int usb_osal_sem_give(usb_osal_sem_t sem)
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     int ret;
 
-    ret = xSemaphoreGiveFromISR((SemaphoreHandle_t)sem, &xHigherPriorityTaskWoken);
-    if (ret == pdPASS) {
-        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    if (xPortIsInsideInterrupt()) {
+        ret = xSemaphoreGiveFromISR((SemaphoreHandle_t)sem, &xHigherPriorityTaskWoken);
+        if (ret == pdPASS) {
+            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+        }
+    } else {
+        ret = xSemaphoreGive((SemaphoreHandle_t)sem);
     }
 
     return (ret == pdPASS) ? 0 : -ETIMEDOUT;

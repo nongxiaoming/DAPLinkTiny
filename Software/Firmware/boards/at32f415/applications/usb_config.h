@@ -10,10 +10,10 @@
 #define CONFIG_USB_DWC2_PORT        FS_PORT
 /* ================ USB common Configuration ================ */
 
-#define CONFIG_USB_PRINTF(...) printf(__VA_ARGS__)
+#define CONFIG_USB_PRINTF(...) 
 
-#define usb_malloc(size) malloc(size)
-#define usb_free(ptr)    free(ptr)
+#define usb_malloc(size) rt_malloc(size)
+#define usb_free(ptr)    rt_free(ptr)
 
 #ifndef CONFIG_USB_DBG_LEVEL
 #define CONFIG_USB_DBG_LEVEL USB_DBG_INFO
@@ -130,7 +130,6 @@
 // #define CONFIG_USB_ECHI_HCOR_RESERVED_DISABLE
 // #define CONFIG_USB_EHCI_CONFIGFLAG
 // #define CONFIG_USB_EHCI_PORT_POWER
-#define PMA_ACCESS 2
 
 #define SystemCoreClock   system_core_clock
 #endif

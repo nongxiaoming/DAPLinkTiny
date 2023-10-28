@@ -13,9 +13,9 @@
 /**
   * @brief  system clock config program
   * @note   the system clock is configured as follow:
-  *         system clock (sclk)   = hext / 2 * pll_mult
-  *         system clock source   = pll (hext)
-  *         - hext                = HEXT_VALUE
+  *         system clock (sclk)   = hick / 2 *  pll_mult
+  *         system clock source   = pll (hick)
+  *         - hext                = HICK_VALUE
   *         - sclk                = 144000000
   *         - ahbdiv              = 1
   *         - ahbclk              = 144000000
@@ -36,15 +36,10 @@ void system_clock_config(void)
   /* config flash psr register */
   flash_psr_set(FLASH_WAIT_CYCLE_4);
 
-  crm_clock_source_enable(CRM_CLOCK_SOURCE_HEXT, TRUE);
-
-  /* wait till hext is ready */
-  while(crm_hext_stable_wait() == ERROR)
-  {
-  }
+  crm_clock_source_enable(CRM_CLOCK_SOURCE_HICK, TRUE);
 
   /* config pll clock resource */
-  crm_pll_config(CRM_PLL_SOURCE_HEXT_DIV, CRM_PLL_MULT_36);
+  crm_pll_config(CRM_PLL_SOURCE_HICK, CRM_PLL_MULT_36);
 
   /* enable pll */
   crm_clock_source_enable(CRM_CLOCK_SOURCE_PLL, TRUE);

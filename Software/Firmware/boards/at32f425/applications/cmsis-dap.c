@@ -114,12 +114,9 @@ __ALIGN_BEGIN const uint8_t WINUSB_IF0_WCIDProperties[142] __ALIGN_END =
 struct usb_msosv1_descriptor msosv1_desc =
 {
     .string = (uint8_t *)WCID_StringDescriptor_MSOS,
-    .string_len = 18,
     .vendor_code = WCID_VENDOR_CODE,
     .compat_id = (uint8_t *)WINUSB_WCIDDescriptor,
-    .compat_id_len = sizeof(WINUSB_WCIDDescriptor),
-    .comp_id_property = (uint8_t *)WINUSB_IF0_WCIDProperties,
-    .comp_id_property_len = sizeof(WINUSB_IF0_WCIDProperties),
+    .comp_id_property = (const uint8_t **)&WINUSB_IF0_WCIDProperties,
 };
 
 const uint8_t daplink_descriptor[] =
@@ -133,7 +130,7 @@ const uint8_t daplink_descriptor[] =
     USB_ENDPOINT_DESCRIPTOR_INIT(DAP_IN_EP, USB_ENDPOINT_TYPE_BULK, CDC_MAX_MPS, 0x00),
     /* Endpoint IN 2 */
     USB_ENDPOINT_DESCRIPTOR_INIT(DAP_OUT_EP, USB_ENDPOINT_TYPE_BULK, CDC_MAX_MPS, 0x00),
-    CDC_ACM_DESCRIPTOR_INIT(0x01, CDC_INT_EP, CDC_OUT_EP, CDC_IN_EP, 0x00),
+    CDC_ACM_DESCRIPTOR_INIT(0x01, CDC_INT_EP, CDC_OUT_EP, CDC_IN_EP, CDC_MAX_MPS, 0x00),
     /* String 0 (LANGID) */
     USB_LANGID_INIT(USBD_LANGID_STRING),
     /* String 1 (Manufacturer) */
