@@ -336,9 +336,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>AT32F425K8U7_4, USE_STDPERIPH_DRIVER, RT_USING_ARM_LIBC, RT_USING_LIBC, __RTTHREAD__, __CLK_TCK=RT_TICK_PER_SECOND, __STDC_LIMIT_MACROS</Define>
+              <Define>__RTTHREAD__, RT_USING_ARM_LIBC, USE_STDPERIPH_DRIVER, __STDC_LIMIT_MACROS, __CLK_TCK=RT_TICK_PER_SECOND, RT_USING_LIBC, AT32F425K8U7_4</Define>
               <Undefine></Undefine>
-              <IncludePath>board;rt-thread\components\drivers\include;rt-thread\include;rt-thread\components\libc\compilers\common\include;applications;ports\USB\CherryUSB\core;rt-thread\components\libc\compilers\common\extension\fcntl\octal;board\inc;rt-thread\components\libc\posix\ipc;ports\DAPLink\DAP;.;rt-thread\libcpu\arm\common;ports\USB\CherryUSB\class\cdc;rt-thread\components\libc\compilers\common\extension;ports\USB\CherryUSB\port\dwc2;libraries\rt_drivers;libraries\AT32F425_Firmware_Library\cmsis\cm4\device_support;rt-thread\components\libc\posix\io\poll;rt-thread\components\libc\posix\io\stdio;libraries\rt_drivers\config;ports\DAPLink\SWD_host;libraries\AT32F425_Firmware_Library\drivers\inc;ports\USB\CherryUSB\common;libraries\AT32F425_Firmware_Library\cmsis\cm4\core_support;rt-thread\libcpu\arm\cortex-m4;rt-thread\components\drivers\include;rt-thread\components\drivers\include</IncludePath>
+              <IncludePath>..\..\rt-thread\components\libc\compilers\common\extension;..\..\rt-thread\libcpu\arm\common;..\..\rt-thread\components\libc\posix\io\poll;..\..\rt-thread\libcpu\arm\cortex-m4;libraries\AT32F425_Firmware_Library\drivers\inc;..\..\rt-thread\components\libc\posix\io\stdio;..\..\third_party\DAPLink\DAP;..\..\rt-thread\components\libc\compilers\common\include;..\..\rt-thread\include;..\..\rt-thread\components\drivers\include;..\..\third_party\CherryUSB\core;..\..\third_party\CherryUSB\port\dwc2;..\..\third_party\CherryUSB\class\cdc;..\..\rt-thread\components\libc\posix\ipc;.;..\..\rt-thread\components\drivers\include;board\inc;libraries\AT32F425_Firmware_Library\cmsis\cm4\core_support;..\..\third_party\CherryUSB\common;drivers\config;board;libraries\AT32F425_Firmware_Library\cmsis\cm4\device_support;drivers;..\..\rt-thread\components\drivers\include;..\..\third_party\DAPLink\SWD_host;applications;..\..\rt-thread\components\libc\compilers\common\extension\fcntl\octal</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -398,19 +398,19 @@
           <GroupName>CherryUSB</GroupName>
           <Files>
             <File>
-              <FileName>usbd_cdc.c</FileName>
+              <FileName>usb_dc_dwc2.c</FileName>
               <FileType>1</FileType>
-              <FilePath>ports\USB\CherryUSB\class\cdc\usbd_cdc.c</FilePath>
+              <FilePath>..\..\third_party\CherryUSB\port\dwc2\usb_dc_dwc2.c</FilePath>
             </File>
             <File>
               <FileName>usbd_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>ports\USB\CherryUSB\core\usbd_core.c</FilePath>
+              <FilePath>..\..\third_party\CherryUSB\core\usbd_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_dc_dwc2.c</FileName>
+              <FileName>usbd_cdc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>ports\USB\CherryUSB\port\dwc2\usb_dc_dwc2.c</FilePath>
+              <FilePath>..\..\third_party\CherryUSB\class\cdc\usbd_cdc.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -420,42 +420,42 @@
             <File>
               <FileName>syscall_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\armlibc\syscall_mem.c</FilePath>
+              <FilePath>..\..\rt-thread\components\libc\compilers\armlibc\syscall_mem.c</FilePath>
             </File>
             <File>
               <FileName>syscalls.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\armlibc\syscalls.c</FilePath>
+              <FilePath>..\..\rt-thread\components\libc\compilers\armlibc\syscalls.c</FilePath>
             </File>
             <File>
               <FileName>cctype.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\common\cctype.c</FilePath>
+              <FilePath>..\..\rt-thread\components\libc\compilers\common\cctype.c</FilePath>
             </File>
             <File>
               <FileName>cstdio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\common\cstdio.c</FilePath>
+              <FilePath>..\..\rt-thread\components\libc\compilers\common\cstdio.c</FilePath>
             </File>
             <File>
               <FileName>cstdlib.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\common\cstdlib.c</FilePath>
+              <FilePath>..\..\rt-thread\components\libc\compilers\common\cstdlib.c</FilePath>
             </File>
             <File>
               <FileName>cstring.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\common\cstring.c</FilePath>
+              <FilePath>..\..\rt-thread\components\libc\compilers\common\cstring.c</FilePath>
             </File>
             <File>
               <FileName>ctime.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\common\ctime.c</FilePath>
+              <FilePath>..\..\rt-thread\components\libc\compilers\common\ctime.c</FilePath>
             </File>
             <File>
               <FileName>cwchar.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\common\cwchar.c</FilePath>
+              <FilePath>..\..\rt-thread\components\libc\compilers\common\cwchar.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -465,27 +465,27 @@
             <File>
               <FileName>backtrace.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\libcpu\arm\common\backtrace.c</FilePath>
+              <FilePath>..\..\rt-thread\libcpu\arm\common\backtrace.c</FilePath>
             </File>
             <File>
               <FileName>div0.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\libcpu\arm\common\div0.c</FilePath>
+              <FilePath>..\..\rt-thread\libcpu\arm\common\div0.c</FilePath>
             </File>
             <File>
               <FileName>showmem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\libcpu\arm\common\showmem.c</FilePath>
+              <FilePath>..\..\rt-thread\libcpu\arm\common\showmem.c</FilePath>
             </File>
             <File>
               <FileName>context_gcc.S</FileName>
               <FileType>2</FileType>
-              <FilePath>rt-thread\libcpu\arm\cortex-m4\context_gcc.S</FilePath>
+              <FilePath>..\..\rt-thread\libcpu\arm\cortex-m4\context_gcc.S</FilePath>
             </File>
             <File>
               <FileName>cpuport.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\libcpu\arm\cortex-m4\cpuport.c</FilePath>
+              <FilePath>..\..\rt-thread\libcpu\arm\cortex-m4\cpuport.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -493,19 +493,19 @@
           <GroupName>DAPLink</GroupName>
           <Files>
             <File>
-              <FileName>SWD_host.c</FileName>
+              <FileName>SW_DP.c</FileName>
               <FileType>1</FileType>
-              <FilePath>ports\DAPLink\SWD_host\SWD_host.c</FilePath>
+              <FilePath>..\..\third_party\DAPLink\DAP\SW_DP.c</FilePath>
             </File>
             <File>
               <FileName>DAP.c</FileName>
               <FileType>1</FileType>
-              <FilePath>ports\DAPLink\DAP\DAP.c</FilePath>
+              <FilePath>..\..\third_party\DAPLink\DAP\DAP.c</FilePath>
             </File>
             <File>
-              <FileName>SW_DP.c</FileName>
+              <FileName>SWD_host.c</FileName>
               <FileType>1</FileType>
-              <FilePath>ports\DAPLink\DAP\SW_DP.c</FilePath>
+              <FilePath>..\..\third_party\DAPLink\SWD_host\SWD_host.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -515,47 +515,47 @@
             <File>
               <FileName>completion.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\ipc\completion.c</FilePath>
+              <FilePath>..\..\rt-thread\components\drivers\ipc\completion.c</FilePath>
             </File>
             <File>
               <FileName>dataqueue.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\ipc\dataqueue.c</FilePath>
+              <FilePath>..\..\rt-thread\components\drivers\ipc\dataqueue.c</FilePath>
             </File>
             <File>
               <FileName>pipe.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\ipc\pipe.c</FilePath>
+              <FilePath>..\..\rt-thread\components\drivers\ipc\pipe.c</FilePath>
             </File>
             <File>
               <FileName>ringblk_buf.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\ipc\ringblk_buf.c</FilePath>
+              <FilePath>..\..\rt-thread\components\drivers\ipc\ringblk_buf.c</FilePath>
             </File>
             <File>
               <FileName>ringbuffer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\ipc\ringbuffer.c</FilePath>
+              <FilePath>..\..\rt-thread\components\drivers\ipc\ringbuffer.c</FilePath>
             </File>
             <File>
               <FileName>waitqueue.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\ipc\waitqueue.c</FilePath>
+              <FilePath>..\..\rt-thread\components\drivers\ipc\waitqueue.c</FilePath>
             </File>
             <File>
               <FileName>workqueue.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\ipc\workqueue.c</FilePath>
+              <FilePath>..\..\rt-thread\components\drivers\ipc\workqueue.c</FilePath>
             </File>
             <File>
               <FileName>pin.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\misc\pin.c</FilePath>
+              <FilePath>..\..\rt-thread\components\drivers\misc\pin.c</FilePath>
             </File>
             <File>
               <FileName>serial_v2.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\serial\serial_v2.c</FilePath>
+              <FilePath>..\..\rt-thread\components\drivers\serial\serial_v2.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -573,24 +573,24 @@
               <FilePath>board\src\board.c</FilePath>
             </File>
             <File>
-              <FileName>startup_at32f425.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\cmsis\cm4\device_support\startup\mdk\startup_at32f425.s</FilePath>
-            </File>
-            <File>
               <FileName>drv_common.c</FileName>
               <FileType>1</FileType>
-              <FilePath>libraries\rt_drivers\drv_common.c</FilePath>
+              <FilePath>drivers\drv_common.c</FilePath>
             </File>
             <File>
               <FileName>drv_gpio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>libraries\rt_drivers\drv_gpio.c</FilePath>
+              <FilePath>drivers\drv_gpio.c</FilePath>
             </File>
             <File>
               <FileName>drv_usart_v2.c</FileName>
               <FileType>1</FileType>
-              <FilePath>libraries\rt_drivers\drv_usart_v2.c</FilePath>
+              <FilePath>drivers\drv_usart_v2.c</FilePath>
+            </File>
+            <File>
+              <FileName>startup_at32f425.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\cmsis\cm4\device_support\startup\mdk\startup_at32f425.s</FilePath>
             </File>
           </Files>
         </Group>
@@ -600,68 +600,168 @@
             <File>
               <FileName>clock.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\clock.c</FilePath>
+              <FilePath>..\..\rt-thread\src\clock.c</FilePath>
             </File>
             <File>
               <FileName>components.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\components.c</FilePath>
+              <FilePath>..\..\rt-thread\src\components.c</FilePath>
             </File>
             <File>
               <FileName>device.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\device.c</FilePath>
+              <FilePath>..\..\rt-thread\src\device.c</FilePath>
             </File>
             <File>
               <FileName>idle.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\idle.c</FilePath>
+              <FilePath>..\..\rt-thread\src\idle.c</FilePath>
             </File>
             <File>
               <FileName>ipc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\ipc.c</FilePath>
+              <FilePath>..\..\rt-thread\src\ipc.c</FilePath>
             </File>
             <File>
               <FileName>irq.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\irq.c</FilePath>
+              <FilePath>..\..\rt-thread\src\irq.c</FilePath>
             </File>
             <File>
               <FileName>kservice.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\kservice.c</FilePath>
+              <FilePath>..\..\rt-thread\src\kservice.c</FilePath>
             </File>
             <File>
               <FileName>mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\mem.c</FilePath>
+              <FilePath>..\..\rt-thread\src\mem.c</FilePath>
             </File>
             <File>
               <FileName>object.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\object.c</FilePath>
+              <FilePath>..\..\rt-thread\src\object.c</FilePath>
             </File>
             <File>
               <FileName>scheduler.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\scheduler.c</FilePath>
+              <FilePath>..\..\rt-thread\src\scheduler.c</FilePath>
             </File>
             <File>
               <FileName>thread.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\thread.c</FilePath>
+              <FilePath>..\..\rt-thread\src\thread.c</FilePath>
             </File>
             <File>
               <FileName>timer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\timer.c</FilePath>
+              <FilePath>..\..\rt-thread\src\timer.c</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Libraries</GroupName>
           <Files>
+            <File>
+              <FileName>at32f425_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_exint.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_exint.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_scfg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_scfg.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_ertc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_ertc.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_tmr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_tmr.c</FilePath>
+            </File>
+            <File>
+              <FileName>system_at32f425.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\cmsis\cm4\device_support\system_at32f425.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_pwc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_pwc.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_acc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_acc.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_wwdt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_wwdt.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_misc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_misc.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_usb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_usb.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_wdt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_wdt.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_crm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_crm.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_can.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_can.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f425_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_usart.c</FilePath>
+            </File>
             <File>
               <FileName>at32f425_i2c.c</FileName>
               <FileType>1</FileType>
@@ -671,106 +771,6 @@
               <FileName>at32f425_gpio.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>system_at32f425.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\cmsis\cm4\device_support\system_at32f425.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_tmr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_tmr.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_dma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_dma.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_wdt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_wdt.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_misc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_misc.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_crc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_crc.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_usb.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_usb.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_debug.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_debug.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_can.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_can.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_ertc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_ertc.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_scfg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_scfg.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_pwc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_pwc.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_wwdt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_wwdt.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_acc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_acc.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_usart.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_exint.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_exint.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f425_crm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\AT32F425_Firmware_Library\drivers\src\at32f425_crm.c</FilePath>
             </File>
           </Files>
         </Group>
