@@ -10,16 +10,41 @@
 
 #include "board.h"
 
+/**
+  * @brief  system clock config program
+  * @note   the system clock is configured as follow:
+  *         system clock (sclk)   = hext / 2 * pll_mult
+  *         system clock source   = pll (hext)
+  *         - hext                = HEXT_VALUE
+  *         - sclk                = 144000000
+  *         - ahbdiv              = 1
+  *         - ahbclk              = 144000000
+  *         - apb2div             = 2
+  *         - apb2clk             = 72000000
+  *         - apb1div             = 2
+  *         - apb1clk             = 72000000
+  *         - pll_mult            = 36
+  *         - flash_wtcyc         = 4 cycle
+  * @param  none
+  * @retval none
+  */
 void system_clock_config(void)
 {
-  /* config flash psr register */
-  flash_psr_set(FLASH_WAIT_CYCLE_2);
-
   /* reset crm */
   crm_reset();
 
+  /* config flash psr register */
+  flash_psr_set(FLASH_WAIT_CYCLE_4);
+
+  crm_clock_source_enable(CRM_CLOCK_SOURCE_HEXT, TRUE);
+
+  /* wait till hext is ready */
+  while(crm_hext_stable_wait() == ERROR)
+  {
+  }
+
   /* config pll clock resource */
-  crm_pll_config(CRM_PLL_SOURCE_HICK, CRM_PLL_MULT_24);
+  crm_pll_config(CRM_PLL_SOURCE_HEXT_DIV, CRM_PLL_MULT_36);
 
   /* enable pll */
   crm_clock_source_enable(CRM_CLOCK_SOURCE_PLL, TRUE);
@@ -32,11 +57,14 @@ void system_clock_config(void)
   /* config ahbclk */
   crm_ahb_div_set(CRM_AHB_DIV_1);
 
-  /* config apb2clk, the maximum frequency of APB1/APB2 clock is 96 MHz  */
-  crm_apb2_div_set(CRM_APB2_DIV_1);
+  /* config apb2clk, the maximum frequency of APB1/APB2 clock is 72 MHz  */
+  crm_apb2_div_set(CRM_APB2_DIV_2);
 
-  /* config apb1clk, the maximum frequency of APB1/APB2 clock is 96 MHz  */
-  crm_apb1_div_set(CRM_APB1_DIV_1);
+  /* config apb1clk, the maximum frequency of APB1/APB2 clock is 72 MHz  */
+  crm_apb1_div_set(CRM_APB1_DIV_2);
+
+  /* enable auto step mode */
+  crm_auto_step_mode_enable(TRUE);
 
   /* select pll as system clock source */
   crm_sysclk_switch(CRM_SCLK_PLL);
@@ -45,6 +73,9 @@ void system_clock_config(void)
   while(crm_sysclk_switch_status_get() != CRM_SCLK_PLL)
   {
   }
+
+  /* disable auto step mode */
+  crm_auto_step_mode_enable(FALSE);
 
   /* update system_core_clock global variable */
   system_core_clock_update();
