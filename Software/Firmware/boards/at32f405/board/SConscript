@@ -18,12 +18,12 @@ path += [cwd + '/inc']
 startup_path_prefix = SDK_LIB
 
 if rtconfig.PLATFORM in ['gcc']:
-    src += [os.path.relpath(startup_path_prefix + '/AT32F425_Firmware_Library/cmsis/cm4/device_support/startup/gcc/startup_at32f425.s', cwd)]
+    src += [os.path.relpath(startup_path_prefix + '/AT32F405_Firmware_Library/cmsis/cm4/device_support/startup/gcc/startup_at32f402_405.s', cwd)]
 elif rtconfig.PLATFORM in ['armcc', 'armclang']:
-    src += [os.path.relpath(startup_path_prefix + '/AT32F425_Firmware_Library/cmsis/cm4/device_support/startup/mdk/startup_at32f425.s', cwd)]
+    src += [os.path.relpath(startup_path_prefix + '/AT32F405_Firmware_Library/cmsis/cm4/device_support/startup/mdk/startup_at32f402_405.s', cwd)]
 elif rtconfig.PLATFORM in ['iccarm']:
-    src += [os.path.relpath(startup_path_prefix + '/AT32F425_Firmware_Library/cmsis/cm4/device_support/startup/iar/startup_at32f425.s', cwd)]
+    src += [os.path.relpath(startup_path_prefix + '/AT32F405_Firmware_Library/cmsis/cm4/device_support/startup/iar/startup_at32f402_405.s', cwd)]
 
-CPPDEFINES = ['AT32F425K8U7_4']
+CPPDEFINES = ['AT32F405RCT7']
 group = DefineGroup('Drivers', src, depend = [''], CPPPATH = path, CPPDEFINES = CPPDEFINES)
 Return('group')
