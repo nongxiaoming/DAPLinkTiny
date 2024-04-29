@@ -324,25 +324,45 @@ void daplink_init(void)
     usbd_initialize();
 }
 
-void at32_msp_usb_init(void *instance)
+/**
+  * @brief  usb 48M clock select
+  * @param  clk_s:USB_CLK_HICK, USB_CLK_HEXT
+  * @retval none
+  */
+void usb_clock48m_select(usb_clk48_s clk_s)
 {
-    crm_periph_clock_enable(CRM_OTGFS1_PERIPH_CLOCK, TRUE);
-
+  if(clk_s == USB_CLK_HICK)
+  {
     crm_usb_clock_source_select(CRM_USB_CLOCK_SOURCE_HICK);
 
+    /* enable the acc calibration ready interrupt */
     crm_periph_clock_enable(CRM_ACC_PERIPH_CLOCK, TRUE);
 
+    /* update the c1\c2\c3 value */
     acc_write_c1(7980);
     acc_write_c2(8000);
     acc_write_c3(8020);
 
+    /* open acc calibration */
     acc_calibration_mode_enable(ACC_CAL_HICKTRIM, TRUE);
+  }
+  else
+  {
+    crm_pllu_output_set(TRUE);
+    /* wait till pll is ready */
+    while(crm_flag_get(CRM_PLLU_STABLE_FLAG) != SET)
+    {
+    }
+    crm_usb_clock_source_select(CRM_USB_CLOCK_SOURCE_PLLU);
+  }
 }
 
 void usb_dc_low_level_init(void)
 {
-    at32_msp_usb_init(NULL);
-    nvic_irq_enable(OTGFS1_IRQn, 0, 0);
+    /* enable otg clock */
+    crm_periph_clock_enable(CRM_OTGHS_PERIPH_CLOCK, TRUE);
+    usb_clock48m_select(USB_CLK_HEXT);
+    nvic_irq_enable(OTGHS_IRQn, 0, 0);
 }
 
 static rt_err_t uart_input(rt_device_t dev, rt_size_t size)

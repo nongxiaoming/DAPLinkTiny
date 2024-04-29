@@ -35,8 +35,8 @@ void at32_msp_usart_init(void *instance)
         gpio_init_struct.gpio_pins = GPIO_PINS_10;
         gpio_init(GPIOA, &gpio_init_struct);
 
-        gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE9, GPIO_MUX_1);
-        gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE10, GPIO_MUX_1);
+        gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE9, GPIO_MUX_7);
+        gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE10, GPIO_MUX_7);
     }
 #endif
 #ifdef BSP_USING_UART2
@@ -54,8 +54,8 @@ void at32_msp_usart_init(void *instance)
         gpio_init_struct.gpio_pins = GPIO_PINS_3;
         gpio_init(GPIOA, &gpio_init_struct);
 
-        gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE2, GPIO_MUX_1);
-        gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE3, GPIO_MUX_1);
+        gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE2, GPIO_MUX_7);
+        gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE3, GPIO_MUX_7);
     }
 #endif
 #ifdef BSP_USING_UART3
@@ -73,8 +73,8 @@ void at32_msp_usart_init(void *instance)
         gpio_init_struct.gpio_pins = GPIO_PINS_11;
         gpio_init(GPIOB, &gpio_init_struct);
 
-        gpio_pin_mux_config(GPIOB, GPIO_PINS_SOURCE10, GPIO_MUX_4);
-        gpio_pin_mux_config(GPIOB, GPIO_PINS_SOURCE11, GPIO_MUX_4);
+        gpio_pin_mux_config(GPIOB, GPIO_PINS_SOURCE10, GPIO_MUX_7);
+        gpio_pin_mux_config(GPIOB, GPIO_PINS_SOURCE11, GPIO_MUX_7);
     }
 #endif
     /* add others */
@@ -105,9 +105,9 @@ void at32_msp_spi_init(void *instance)
         gpio_init_struct.gpio_pins = GPIO_PINS_5 | GPIO_PINS_6 | GPIO_PINS_7;
         gpio_init(GPIOA, &gpio_init_struct);
 
-        gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE5, GPIO_MUX_0);
-        gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE6, GPIO_MUX_0);
-        gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE7, GPIO_MUX_0);
+        gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE5, GPIO_MUX_5);
+        gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE6, GPIO_MUX_5);
+        gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE7, GPIO_MUX_5);
     }
 #endif
 #ifdef BSP_USING_SPI2
@@ -126,9 +126,9 @@ void at32_msp_spi_init(void *instance)
         gpio_init_struct.gpio_pins = GPIO_PINS_13 | GPIO_PINS_14 | GPIO_PINS_15;
         gpio_init(GPIOB, &gpio_init_struct);
 
-        gpio_pin_mux_config(GPIOB, GPIO_PINS_SOURCE13, GPIO_MUX_0);
-        gpio_pin_mux_config(GPIOB, GPIO_PINS_SOURCE14, GPIO_MUX_0);
-        gpio_pin_mux_config(GPIOB, GPIO_PINS_SOURCE15, GPIO_MUX_0);
+        gpio_pin_mux_config(GPIOB, GPIO_PINS_SOURCE13, GPIO_MUX_5);
+        gpio_pin_mux_config(GPIOB, GPIO_PINS_SOURCE14, GPIO_MUX_5);
+        gpio_pin_mux_config(GPIOB, GPIO_PINS_SOURCE15, GPIO_MUX_5);
     }
 #endif
     /* add others */
@@ -221,79 +221,3 @@ void at32_msp_hwtmr_init(void *instance)
 }
 #endif
 
-#ifdef BSP_USING_CAN
-void at32_msp_can_init(void *instance)
-{
-    gpio_init_type gpio_init_struct;
-    can_type *can_x = (can_type *)instance;
-
-    gpio_default_para_init(&gpio_init_struct);
-    gpio_init_struct.gpio_drive_strength = GPIO_DRIVE_STRENGTH_STRONGER;
-#ifdef BSP_USING_CAN1
-    if(CAN1 == can_x)
-    {
-        crm_periph_clock_enable(CRM_CAN1_PERIPH_CLOCK, TRUE);
-        crm_periph_clock_enable(CRM_GPIOB_PERIPH_CLOCK, TRUE);
-
-        gpio_init_struct.gpio_mode = GPIO_MODE_MUX;
-        gpio_init_struct.gpio_out_type = GPIO_OUTPUT_PUSH_PULL;
-        gpio_init_struct.gpio_pull = GPIO_PULL_NONE;
-        gpio_init_struct.gpio_pins = GPIO_PINS_8 | GPIO_PINS_9;
-        gpio_init(GPIOB, &gpio_init_struct);
-
-        gpio_pin_mux_config(GPIOB, GPIO_PINS_SOURCE8, GPIO_MUX_4);
-        gpio_pin_mux_config(GPIOB, GPIO_PINS_SOURCE9, GPIO_MUX_4);
-    }
-#endif
-}
-#endif /* BSP_USING_CAN */
-
-#ifdef BSP_USING_USBFS
-void at32_msp_usb_init(void *instance)
-{
-    /* defalut usb clock from hext */
-    usb_clk48_s clk_s = USB_CLK_HEXT;
-
-    crm_periph_clock_enable(CRM_OTGFS1_PERIPH_CLOCK, TRUE);
-
-    if(clk_s == USB_CLK_HICK)
-    {
-        crm_usb_clock_source_select(CRM_USB_CLOCK_SOURCE_HICK);
-
-        /* enable the acc calibration ready interrupt */
-        crm_periph_clock_enable(CRM_ACC_PERIPH_CLOCK, TRUE);
-
-        /* update the c1\c2\c3 value */
-        acc_write_c1(7980);
-        acc_write_c2(8000);
-        acc_write_c3(8020);
-
-        /* open acc calibration */
-        acc_calibration_mode_enable(ACC_CAL_HICKTRIM, TRUE);
-    }
-    else
-    {
-        switch(system_core_clock)
-        {
-            /* 48MHz */
-            case 48000000:
-                crm_usb_clock_div_set(CRM_USB_DIV_1);
-                break;
-
-            /* 72MHz */
-            case 72000000:
-                crm_usb_clock_div_set(CRM_USB_DIV_1_5);
-                break;
-
-            /* 96MHz */
-            case 96000000:
-                crm_usb_clock_div_set(CRM_USB_DIV_2);
-                break;
-
-            default:
-                break;
-        }
-    }
-}
-
-#endif /* BSP_USING_USBFS */

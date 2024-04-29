@@ -5,10 +5,10 @@
 #define DEBUG(...)
 
 
-#define CPU_CLOCK               96000000        ///< Specifies the CPU Clock in Hz
+#define CPU_CLOCK               216000000        ///< Specifies the CPU Clock in Hz
 
 
-#define IO_PORT_WRITE_CYCLES    2               ///< I/O Cycles: 2=default, 1=Cortex-M0+ fast I/0
+#define IO_PORT_WRITE_CYCLES    1               ///< I/O Cycles: 2=default, 1=Cortex-M0+ fast I/0
 
 
 #define DAP_SWD                 1               ///< SWD Mode:  1 = available, 0 = not available
@@ -19,7 +19,7 @@
 
 #define DAP_DEFAULT_PORT        1               ///< Default JTAG/SWJ Port Mode: 1 = SWD, 2 = JTAG.
 
-#define DAP_DEFAULT_SWJ_CLOCK   4000000         ///< Default SWD/JTAG clock frequency in Hz.
+#define DAP_DEFAULT_SWJ_CLOCK   5000000         ///< Default SWD/JTAG clock frequency in Hz.
 
 
 /// Maximum Package Size for Command and Response data.
@@ -81,10 +81,10 @@ DAP Hardware I/O Pin Access Functions
 #define SWD_RST_PORT        GPIOA
 #define SWD_RST_PIN         GPIO_PINS_1
 
-#define LED_CONNECTED_PORT  GPIOB
-#define LED_CONNECTED_PIN   GPIO_PINS_0
-#define LED_RUNNING_PORT    GPIOB
-#define LED_RUNNING_PIN     GPIO_PINS_12
+#define LED_CONNECTED_PORT  GPIOF
+#define LED_CONNECTED_PIN   GPIO_PINS_5
+#define LED_RUNNING_PORT    GPIOF
+#define LED_RUNNING_PIN     GPIO_PINS_6
 
 
 /** Setup JTAG I/O pins: TCK, TMS, TDI, TDO, nTRST, and nRESET.
@@ -106,6 +106,7 @@ static void PORT_SWD_SETUP(void)
     
     crm_periph_clock_enable(CRM_GPIOA_PERIPH_CLOCK, TRUE);
     crm_periph_clock_enable(CRM_GPIOB_PERIPH_CLOCK, TRUE);
+    crm_periph_clock_enable(CRM_GPIOF_PERIPH_CLOCK, TRUE);
     crm_periph_clock_enable(CRM_SCFG_PERIPH_CLOCK, TRUE);
     
     gpio_default_para_init(&gpio_init_struct);
@@ -359,8 +360,8 @@ __STATIC_INLINE uint8_t DAP_GetSerNumString(char *str)
 */
 __STATIC_INLINE uint8_t DAP_ProductFirmwareVerString(char *str)
 {
-    memcpy((unsigned char *)str, "V1.0", sizeof("V1.0"));
-    return sizeof("V1.0");
+    memcpy((unsigned char *)str, "V2.0", sizeof("V2.0"));
+    return sizeof("V2.0");
 }
 
 

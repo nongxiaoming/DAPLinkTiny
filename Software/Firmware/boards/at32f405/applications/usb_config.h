@@ -7,7 +7,8 @@
 #define CHERRYUSB_CONFIG_H
 
 #define CHERRYUSB_VERSION 0x000700
-#define CONFIG_USB_DWC2_PORT        FS_PORT
+#define CONFIG_USB_DWC2_PORT        HS_PORT
+#define CONFIG_DWC2_AT32
 /* ================ USB common Configuration ================ */
 
 #define CONFIG_USB_PRINTF(...) printf(__VA_ARGS__)
@@ -113,8 +114,8 @@
 
 /* ================ USB Device Port Configuration ================*/
 
-#define USBD_IRQHandler     OTGFS1_IRQHandler
-#define USB_BASE (0x50000000UL)
+#define USBD_IRQHandler     OTGHS_IRQHandler
+#define USB_BASE (0x40040000UL)
 #define USB_NUM_BIDIR_ENDPOINTS 8
 
 /* ================ USB Host Port Configuration ==================*/
