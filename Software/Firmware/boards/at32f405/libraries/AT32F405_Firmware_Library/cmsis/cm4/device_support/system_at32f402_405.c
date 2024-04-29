@@ -43,7 +43,7 @@
 /** @addtogroup AT32F402_405_system_private_variables
   * @{
   */
-unsigned int system_core_clock           = HICK_VALUE; /*!< system clock frequency (core clock) */
+unsigned int SystemCoreClock           = HICK_VALUE; /*!< system clock frequency (core clock) */
 /**
   * @}
   */
@@ -132,17 +132,17 @@ void system_core_clock_update(void)
   {
     case CRM_SCLK_HICK:
       if(((CRM->misc1_bit.hick_to_sclk) != RESET) && ((CRM->misc1_bit.hickdiv) != RESET))
-        system_core_clock = HICK_VALUE * 6;
+        SystemCoreClock = HICK_VALUE * 6;
       else
-        system_core_clock = HICK_VALUE;
+        SystemCoreClock = HICK_VALUE;
 
       psc = CRM->misc2_bit.hick_to_sclk_div;
-      system_core_clock = system_core_clock >> psc;
+      SystemCoreClock = SystemCoreClock >> psc;
       break;
     case CRM_SCLK_HEXT:
-      system_core_clock = HEXT_VALUE;
+      SystemCoreClock = HEXT_VALUE;
       psc = CRM->misc2_bit.hext_to_sclk_div;
-      system_core_clock = system_core_clock >> psc;
+      SystemCoreClock = SystemCoreClock >> psc;
       break;
     case CRM_SCLK_PLL:
       /* get pll clock source */
@@ -164,10 +164,10 @@ void system_core_clock_update(void)
         pllrcsfreq = HEXT_VALUE;
       }
 
-      system_core_clock = (pllrcsfreq * pll_ns) / (pll_ms * pll_fr);
+      SystemCoreClock = (pllrcsfreq * pll_ns) / (pll_ms * pll_fr);
       break;
     default:
-      system_core_clock = HICK_VALUE;
+      SystemCoreClock = HICK_VALUE;
       break;
   }
 
@@ -176,7 +176,7 @@ void system_core_clock_update(void)
   temp = CRM->cfg_bit.ahbdiv;
   div_value = sys_ahb_div_table[temp];
   /* ahbclk frequency */
-  system_core_clock = system_core_clock >> div_value;
+  SystemCoreClock = SystemCoreClock >> div_value;
 }
 
 /**

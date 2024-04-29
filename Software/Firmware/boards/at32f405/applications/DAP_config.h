@@ -66,7 +66,7 @@ nRESET: Device Reset         | nRESET: Device Reset | Output Open Drain with pul
 
 DAP Hardware I/O Pin Access Functions
 */
-#include "at32f425.h"
+#include "at32f402_405.h"
 
 // Configure DAP I/O pins ------------------------------
 

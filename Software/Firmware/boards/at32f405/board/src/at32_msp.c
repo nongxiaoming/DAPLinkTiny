@@ -9,7 +9,7 @@
  */
 
 #include <rtthread.h>
-#include "at32f425.h"
+#include "at32f402_405.h"
 #include "at32_msp.h"
 
 #ifdef BSP_USING_UART

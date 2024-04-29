@@ -21,6 +21,7 @@
 
 #if defined (SOC_SERIES_AT32F435) || defined (SOC_SERIES_AT32F437) || \
     defined (SOC_SERIES_AT32F421) || defined (SOC_SERIES_AT32F425) || \
+    defined (SOC_SERIES_AT32F402) || defined (SOC_SERIES_AT32F405) || \
     defined (SOC_SERIES_AT32F423)
 #define PIN_ATPORTSOURCE(pin)           (scfg_port_source_type)((uint8_t)(((pin) & 0xF0u) >> 4))
 #define PIN_ATPINSOURCE(pin)            (scfg_pins_source_type)((uint8_t)((pin) & 0xFu))
@@ -710,6 +711,7 @@ int rt_hw_pin_init(void)
 
 #if defined (SOC_SERIES_AT32F435) || defined (SOC_SERIES_AT32F437) || \
     defined (SOC_SERIES_AT32F421) || defined (SOC_SERIES_AT32F425) || \
+    defined (SOC_SERIES_AT32F402) || defined (SOC_SERIES_AT32F405) || \
     defined (SOC_SERIES_AT32F423)
     crm_periph_clock_enable(CRM_SCFG_PERIPH_CLOCK, TRUE);
 #else

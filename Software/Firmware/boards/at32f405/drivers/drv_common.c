@@ -34,7 +34,7 @@ static uint32_t _systick_ms = 1;
 void rt_hw_systick_init(void)
 {
     systick_clock_source_config(SYSTICK_CLOCK_SOURCE_AHBCLK_NODIV);
-    SysTick_Config(system_core_clock / RT_TICK_PER_SECOND);
+    SysTick_Config(SystemCoreClock / RT_TICK_PER_SECOND);
 
     nvic_irq_enable(SysTick_IRQn, 0, 0);
 

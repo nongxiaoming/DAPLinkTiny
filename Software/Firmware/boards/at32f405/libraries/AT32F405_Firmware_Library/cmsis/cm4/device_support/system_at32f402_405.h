@@ -40,7 +40,7 @@ extern "C" {
 /** @defgroup AT32F402_405_system_exported_variables 
   * @{
   */
-extern unsigned int system_core_clock; /*!< system clock frequency (core clock) */
+extern unsigned int SystemCoreClock; /*!< system clock frequency (core clock) */
 
 /**
   * @}

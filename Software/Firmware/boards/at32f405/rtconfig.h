@@ -190,7 +190,7 @@
 /* Uncategorized */
 
 #define SOC_FAMILY_AT32
-#define SOC_SERIES_AT32F425
+#define SOC_SERIES_AT32F405
 
 /* Hardware Drivers Config */
 
