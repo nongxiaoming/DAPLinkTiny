@@ -427,6 +427,7 @@ static rt_err_t at32_pin_irq_enable(struct rt_device *device, rt_base_t pin,
 
 #if defined (SOC_SERIES_AT32F435) || defined (SOC_SERIES_AT32F437) || \
     defined (SOC_SERIES_AT32F421) || defined (SOC_SERIES_AT32F425) || \
+    defined (SOC_SERIES_AT32F402) || defined (SOC_SERIES_AT32F405) || \
     defined (SOC_SERIES_AT32F423)
         scfg_exint_line_config(PIN_ATPORTSOURCE(pin), PIN_ATPINSOURCE(pin));
 #else

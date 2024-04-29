@@ -132,5 +132,5 @@
 // #define CONFIG_USB_EHCI_PORT_POWER
 #define PMA_ACCESS 2
 
-#define SystemCoreClock   system_core_clock
+//#define SystemCoreClock   system_core_clock
 #endif

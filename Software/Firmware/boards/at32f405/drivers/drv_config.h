@@ -57,6 +57,12 @@ extern "C" {
 #include "f435_437/spi_config.h"
 #include "f435_437/usb_config.h"
 #include "f435_437/dac_config.h"
+#elif defined(SOC_SERIES_AT32F402) || defined (SOC_SERIES_AT32F405)
+#include "f435_437/dma_config.h"
+#include "f435_437/uart_config.h"
+#include "f435_437/spi_config.h"
+#include "f435_437/usb_config.h"
+#include "f435_437/dac_config.h"
 #endif
 
 #ifdef __cplusplus
