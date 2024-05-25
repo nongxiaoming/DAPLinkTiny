@@ -53,8 +53,8 @@ rtconfig.BSP_LIBRARY_TYPE = ft32_library
 # include libraries
 objs.extend(SConscript(os.path.join(libraries_path_prefix, ft32_library, 'SConscript')))
 
-# include drivers
-#objs.extend(SConscript(os.path.join(libraries_path_prefix, 'Drivers', 'SConscript')))
+# include third_party
+objs.extend(SConscript(os.path.join('./../..', 'third_party', 'SConscript'), variant_dir="build/third_party", duplicate=0))
 
 # make a building
 DoBuilding(TARGET, objs)

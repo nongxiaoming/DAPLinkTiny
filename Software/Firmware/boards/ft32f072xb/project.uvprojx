@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>__STDC_LIMIT_MACROS, RT_USING_LIBC, FT32F072xB, __CLK_TCK=RT_TICK_PER_SECOND, __RTTHREAD__, RT_USING_ARM_LIBC</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\rt-thread\components\libc\posix\io\stdio;libraries\FT32F0xx\FT32F0xx_Driver\Inc;..\..\rt-thread\components\drivers\include;..\..\rt-thread\components\libc\posix\io\poll;..\..\rt-thread\components\libc\compilers\common\include;board;libraries\FT32F0xx\CMSIS\FT32F0xx\Include;applications;..\..\rt-thread\include;..\..\rt-thread\components\libc\compilers\common\extension\fcntl\octal;.;..\..\rt-thread\components\finsh;..\..\rt-thread\libcpu\arm\common;..\..\rt-thread\libcpu\arm\cortex-m0;Drivers;libraries\FT32F0xx\FT32F0xx_Driver\templates\Inc;..\..\rt-thread\components\libc\compilers\common\extension;..\..\rt-thread\components\drivers\include;..\..\rt-thread\components\drivers\include;..\..\rt-thread\components\libc\posix\ipc</IncludePath>
+              <IncludePath>..\..\rt-thread\components\libc\posix\io\stdio;.;..\..\third_party\CherryUSB\class\msc;..\..\rt-thread\include;..\..\third_party\CherryUSB\class\video;..\..\rt-thread\components\finsh;..\..\rt-thread\libcpu\arm\cortex-m0;..\..\third_party\DAPLink\SWD_host;..\..\third_party\CherryUSB\class\dfu;..\..\third_party\CherryUSB\class\audio;..\..\rt-thread\components\libc\posix\ipc;applications;..\..\third_party\CherryUSB\core;..\..\third_party\CherryUSB\class\cdc;..\..\rt-thread\components\libc\compilers\common\extension;..\..\rt-thread\components\drivers\include;..\..\rt-thread\components\drivers\include;board;libraries\FT32F0xx\CMSIS\FT32F0xx\Include;..\..\third_party\CherryUSB\class\wireless;libraries\FT32F0xx\FT32F0xx_Driver\Inc;..\..\rt-thread\components\drivers\include;..\..\rt-thread\components\libc\posix\io\poll;..\..\third_party\CherryUSB\common;..\..\third_party\CherryUSB\class\hid;..\..\rt-thread\components\libc\compilers\common\include;..\..\third_party\DAPLink\DAP;..\..\rt-thread\libcpu\arm\common;..\..\rt-thread\components\libc\compilers\common\extension\fcntl\octal;Drivers;libraries\FT32F0xx\FT32F0xx_Driver\templates\Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -387,6 +387,41 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>applications\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>cmsis-dap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\cmsis-dap.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>CherryUSB</GroupName>
+          <Files>
+            <File>
+              <FileName>usbd_cdc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\third_party\CherryUSB\class\cdc\usbd_cdc.c</FilePath>
+            </File>
+            <File>
+              <FileName>hid_mouse_template.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\third_party\CherryUSB\demo\hid_mouse_template.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\third_party\CherryUSB\core\usbd_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_hid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\third_party\CherryUSB\class\hid\usbd_hid.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_dc_musb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\third_party\CherryUSB\port\musb\usb_dc_musb.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -462,6 +497,26 @@
               <FileName>cpuport.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\rt-thread\libcpu\arm\cortex-m0\cpuport.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>DAPLink</GroupName>
+          <Files>
+            <File>
+              <FileName>DAP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\third_party\DAPLink\DAP\DAP.c</FilePath>
+            </File>
+            <File>
+              <FileName>SWD_host.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\third_party\DAPLink\SWD_host\SWD_host.c</FilePath>
+            </File>
+            <File>
+              <FileName>SW_DP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\third_party\DAPLink\DAP\SW_DP.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -717,11 +772,6 @@
               <FileName>ft32f0xx_misc.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\FT32F0xx\FT32F0xx_Driver\Src\ft32f0xx_misc.c</FilePath>
-            </File>
-            <File>
-              <FileName>ft32f0xx_opa.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\FT32F0xx\FT32F0xx_Driver\Src\ft32f0xx_opa.c</FilePath>
             </File>
           </Files>
         </Group>
