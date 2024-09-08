@@ -1,27 +1,28 @@
+/*
+ * Copyright (c) 2022, sakumisu
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 #include "usbd_core.h"
+
+#ifndef CONFIG_USBDEV_FSDEV_PMA_ACCESS
+#error "please define CONFIG_USBDEV_FSDEV_PMA_ACCESS in usb_config.h"
+#endif
+
+#define PMA_ACCESS CONFIG_USBDEV_FSDEV_PMA_ACCESS
 #include "usb_fsdev_reg.h"
 
-#ifndef USBD_IRQHandler
-#define USBD_IRQHandler USB_LP_CAN1_RX0_IRQHandler //use actual usb irq name instead
+#ifndef CONFIG_USB_FSDEV_RAM_SIZE
+#define CONFIG_USB_FSDEV_RAM_SIZE 512
 #endif
 
-#ifndef USB_BASE
-#define USB_BASE (0x40005C00UL) /*!< USB_IP Peripheral Registers base address */
+#ifndef CONFIG_USBDEV_EP_NUM
+#define CONFIG_USBDEV_EP_NUM 8
 #endif
 
-#ifndef USB_NUM_BIDIR_ENDPOINTS
-#define USB_NUM_BIDIR_ENDPOINTS 8
-#endif
+#define USB ((USB_TypeDef *)g_usbdev_bus[0].reg_base)
 
-#ifndef USB_RAM_SIZE
-#define USB_RAM_SIZE 512
-#endif
-
-#warning please check your PMA_ACCESS is 1 or 2
-
-#define USB ((USB_TypeDef *)USB_BASE)
-
-#define USB_BTABLE_SIZE (8 * USB_NUM_BIDIR_ENDPOINTS)
+#define USB_BTABLE_SIZE (8 * CONFIG_USBDEV_EP_NUM)
 
 static void fsdev_write_pma(USB_TypeDef *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes);
 static void fsdev_read_pma(USB_TypeDef *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes);
@@ -42,10 +43,10 @@ struct fsdev_ep_state {
 /* Driver state */
 struct fsdev_udc {
     struct usb_setup_packet setup;
-    volatile uint8_t dev_addr;                             /*!< USB Address */
-    volatile uint32_t pma_offset;                          /*!< pma offset */
-    struct fsdev_ep_state in_ep[USB_NUM_BIDIR_ENDPOINTS];  /*!< IN endpoint parameters*/
-    struct fsdev_ep_state out_ep[USB_NUM_BIDIR_ENDPOINTS]; /*!< OUT endpoint parameters */
+    volatile uint8_t dev_addr;                          /*!< USB Address */
+    volatile uint32_t pma_offset;                       /*!< pma offset */
+    struct fsdev_ep_state in_ep[CONFIG_USBDEV_EP_NUM];  /*!< IN endpoint parameters*/
+    struct fsdev_ep_state out_ep[CONFIG_USBDEV_EP_NUM]; /*!< OUT endpoint parameters */
 } g_fsdev_udc;
 
 __WEAK void usb_dc_low_level_init(void)
@@ -56,7 +57,7 @@ __WEAK void usb_dc_low_level_deinit(void)
 {
 }
 
-int usb_dc_init(void)
+int usb_dc_init(uint8_t busid)
 {
     usb_dc_low_level_init();
 
@@ -90,7 +91,7 @@ int usb_dc_init(void)
     return 0;
 }
 
-int usb_dc_deinit(void)
+int usb_dc_deinit(uint8_t busid)
 {
     /* disable all interrupts and force USB reset */
     USB->CNTR = (uint16_t)USB_CNTR_FRES;
@@ -105,7 +106,7 @@ int usb_dc_deinit(void)
     return 0;
 }
 
-int usbd_set_address(const uint8_t addr)
+int usbd_set_address(uint8_t busid, const uint8_t addr)
 {
     if (addr == 0U) {
         /* set device address and enable function */
@@ -116,24 +117,29 @@ int usbd_set_address(const uint8_t addr)
     return 0;
 }
 
-uint8_t usbd_get_port_speed(const uint8_t port)
+int usbd_set_remote_wakeup(uint8_t busid)
+{
+    return -1;
+}
+
+uint8_t usbd_get_port_speed(uint8_t busid)
 {
     return USB_SPEED_FULL;
 }
 
-int usbd_ep_open(const struct usbd_endpoint_cfg *ep_cfg)
+int usbd_ep_open(uint8_t busid, const struct usb_endpoint_descriptor *ep)
 {
-    uint8_t ep_idx = USB_EP_GET_IDX(ep_cfg->ep_addr);
+    uint8_t ep_idx = USB_EP_GET_IDX(ep->bEndpointAddress);
 
-    if (ep_idx > (USB_NUM_BIDIR_ENDPOINTS - 1)) {
-        USB_LOG_ERR("Ep addr %d overflow\r\n", ep_cfg->ep_addr);
+    if (ep_idx > (CONFIG_USBDEV_EP_NUM - 1)) {
+        USB_LOG_ERR("Ep addr %02x overflow\r\n", ep->bEndpointAddress);
         return -1;
     }
 
     uint16_t wEpRegVal;
 
     /* initialize Endpoint */
-    switch (ep_cfg->ep_type) {
+    switch (USB_GET_ENDPOINT_TYPE(ep->bmAttributes)) {
         case USB_ENDPOINT_TYPE_CONTROL:
             wEpRegVal = USB_EP_CONTROL;
             break;
@@ -157,42 +163,42 @@ int usbd_ep_open(const struct usbd_endpoint_cfg *ep_cfg)
     PCD_SET_EPTYPE(USB, ep_idx, wEpRegVal);
 
     PCD_SET_EP_ADDRESS(USB, ep_idx, ep_idx);
-    if (USB_EP_DIR_IS_OUT(ep_cfg->ep_addr)) {
-        g_fsdev_udc.out_ep[ep_idx].ep_mps = ep_cfg->ep_mps;
-        g_fsdev_udc.out_ep[ep_idx].ep_type = ep_cfg->ep_type;
+    if (USB_EP_DIR_IS_OUT(ep->bEndpointAddress)) {
+        g_fsdev_udc.out_ep[ep_idx].ep_mps = USB_GET_MAXPACKETSIZE(ep->wMaxPacketSize);
+        g_fsdev_udc.out_ep[ep_idx].ep_type = USB_GET_ENDPOINT_TYPE(ep->bmAttributes);
         g_fsdev_udc.out_ep[ep_idx].ep_enable = true;
         if (g_fsdev_udc.out_ep[ep_idx].ep_mps > g_fsdev_udc.out_ep[ep_idx].ep_pma_buf_len) {
-            if (g_fsdev_udc.pma_offset + g_fsdev_udc.out_ep[ep_idx].ep_mps > USB_RAM_SIZE) {
-                USB_LOG_ERR("Ep pma %d overflow\r\n", ep_cfg->ep_addr);
+            if (g_fsdev_udc.pma_offset + g_fsdev_udc.out_ep[ep_idx].ep_mps > CONFIG_USB_FSDEV_RAM_SIZE) {
+                USB_LOG_ERR("Ep pma %02x overflow\r\n", ep->bEndpointAddress);
                 return -1;
             }
-            g_fsdev_udc.out_ep[ep_idx].ep_pma_buf_len = ep_cfg->ep_mps;
+            g_fsdev_udc.out_ep[ep_idx].ep_pma_buf_len = USB_GET_MAXPACKETSIZE(ep->wMaxPacketSize);
             g_fsdev_udc.out_ep[ep_idx].ep_pma_addr = g_fsdev_udc.pma_offset;
             /*Set the endpoint Receive buffer address */
             PCD_SET_EP_RX_ADDRESS(USB, ep_idx, g_fsdev_udc.pma_offset);
-            g_fsdev_udc.pma_offset += ep_cfg->ep_mps;
+            g_fsdev_udc.pma_offset += USB_GET_MAXPACKETSIZE(ep->wMaxPacketSize);
         }
         /*Set the endpoint Receive buffer counter*/
-        PCD_SET_EP_RX_CNT(USB, ep_idx, ep_cfg->ep_mps);
+        PCD_SET_EP_RX_CNT(USB, ep_idx, USB_GET_MAXPACKETSIZE(ep->wMaxPacketSize));
         PCD_CLEAR_RX_DTOG(USB, ep_idx);
     } else {
-        g_fsdev_udc.in_ep[ep_idx].ep_mps = ep_cfg->ep_mps;
-        g_fsdev_udc.in_ep[ep_idx].ep_type = ep_cfg->ep_type;
+        g_fsdev_udc.in_ep[ep_idx].ep_mps = USB_GET_MAXPACKETSIZE(ep->wMaxPacketSize);
+        g_fsdev_udc.in_ep[ep_idx].ep_type = USB_GET_ENDPOINT_TYPE(ep->bmAttributes);
         g_fsdev_udc.in_ep[ep_idx].ep_enable = true;
         if (g_fsdev_udc.in_ep[ep_idx].ep_mps > g_fsdev_udc.in_ep[ep_idx].ep_pma_buf_len) {
-            if (g_fsdev_udc.pma_offset + g_fsdev_udc.in_ep[ep_idx].ep_mps > USB_RAM_SIZE) {
-                USB_LOG_ERR("Ep pma %d overflow\r\n", ep_cfg->ep_addr);
+            if (g_fsdev_udc.pma_offset + g_fsdev_udc.in_ep[ep_idx].ep_mps > CONFIG_USB_FSDEV_RAM_SIZE) {
+                USB_LOG_ERR("Ep pma %02x overflow\r\n", ep->bEndpointAddress);
                 return -1;
             }
-            g_fsdev_udc.in_ep[ep_idx].ep_pma_buf_len = ep_cfg->ep_mps;
+            g_fsdev_udc.in_ep[ep_idx].ep_pma_buf_len = USB_GET_MAXPACKETSIZE(ep->wMaxPacketSize);
             g_fsdev_udc.in_ep[ep_idx].ep_pma_addr = g_fsdev_udc.pma_offset;
             /*Set the endpoint Transmit buffer address */
             PCD_SET_EP_TX_ADDRESS(USB, ep_idx, g_fsdev_udc.pma_offset);
-            g_fsdev_udc.pma_offset += ep_cfg->ep_mps;
+            g_fsdev_udc.pma_offset += USB_GET_MAXPACKETSIZE(ep->wMaxPacketSize);
         }
 
         PCD_CLEAR_TX_DTOG(USB, ep_idx);
-        if (ep_cfg->ep_type != USB_ENDPOINT_TYPE_ISOCHRONOUS) {
+        if (USB_GET_ENDPOINT_TYPE(ep->bmAttributes) != USB_ENDPOINT_TYPE_ISOCHRONOUS) {
             /* Configure NAK status for the Endpoint */
             PCD_SET_EP_TX_STATUS(USB, ep_idx, USB_EP_TX_NAK);
         } else {
@@ -203,7 +209,7 @@ int usbd_ep_open(const struct usbd_endpoint_cfg *ep_cfg)
     return 0;
 }
 
-int usbd_ep_close(const uint8_t ep)
+int usbd_ep_close(uint8_t busid, const uint8_t ep)
 {
     uint8_t ep_idx = USB_EP_GET_IDX(ep);
 
@@ -221,7 +227,7 @@ int usbd_ep_close(const uint8_t ep)
     return 0;
 }
 
-int usbd_ep_set_stall(const uint8_t ep)
+int usbd_ep_set_stall(uint8_t busid, const uint8_t ep)
 {
     uint8_t ep_idx = USB_EP_GET_IDX(ep);
 
@@ -233,7 +239,7 @@ int usbd_ep_set_stall(const uint8_t ep)
     return 0;
 }
 
-int usbd_ep_clear_stall(const uint8_t ep)
+int usbd_ep_clear_stall(uint8_t busid, const uint8_t ep)
 {
     uint8_t ep_idx = USB_EP_GET_IDX(ep);
 
@@ -252,15 +258,27 @@ int usbd_ep_clear_stall(const uint8_t ep)
     return 0;
 }
 
-int usbd_ep_is_stalled(const uint8_t ep, uint8_t *stalled)
+int usbd_ep_is_stalled(uint8_t busid, const uint8_t ep, uint8_t *stalled)
 {
+    uint8_t ep_idx = USB_EP_GET_IDX(ep);
+
     if (USB_EP_DIR_IS_OUT(ep)) {
+        if (PCD_GET_EP_RX_STATUS(USB, ep_idx) & USB_EP_RX_STALL) {
+            *stalled = 1;
+        } else {
+            *stalled = 0;
+        }
     } else {
+        if (PCD_GET_EP_TX_STATUS(USB, ep_idx) & USB_EP_TX_STALL) {
+            *stalled = 1;
+        } else {
+            *stalled = 0;
+        }
     }
     return 0;
 }
 
-int usbd_ep_start_write(const uint8_t ep, const uint8_t *data, uint32_t data_len)
+int usbd_ep_start_write(uint8_t busid, const uint8_t ep, const uint8_t *data, uint32_t data_len)
 {
     uint8_t ep_idx = USB_EP_GET_IDX(ep);
 
@@ -285,7 +303,7 @@ int usbd_ep_start_write(const uint8_t ep, const uint8_t *data, uint32_t data_len
     return 0;
 }
 
-int usbd_ep_start_read(const uint8_t ep, uint8_t *data, uint32_t data_len)
+int usbd_ep_start_read(uint8_t busid, const uint8_t ep, uint8_t *data, uint32_t data_len)
 {
     uint8_t ep_idx = USB_EP_GET_IDX(ep);
 
@@ -305,7 +323,7 @@ int usbd_ep_start_read(const uint8_t ep, uint8_t *data, uint32_t data_len)
     return 0;
 }
 
-void USBD_IRQHandler(void)
+void USBD_IRQHandler(uint8_t busid)
 {
     uint16_t wIstr, wEPVal;
     uint8_t ep_idx;
@@ -331,14 +349,14 @@ void USBD_IRQHandler(void)
                     g_fsdev_udc.in_ep[ep_idx].xfer_len -= write_count;
                     g_fsdev_udc.in_ep[ep_idx].actual_xfer_len += write_count;
 
-                    usbd_event_ep_in_complete_handler(ep_idx | 0x80, g_fsdev_udc.in_ep[ep_idx].actual_xfer_len);
+                    usbd_event_ep_in_complete_handler(0, ep_idx | 0x80, g_fsdev_udc.in_ep[ep_idx].actual_xfer_len);
 
                     if (g_fsdev_udc.setup.wLength == 0) {
                         /* In status, start reading setup */
-                        usbd_ep_start_read(0x00, NULL, 0);
+                        usbd_ep_start_read(0, 0x00, NULL, 0);
                     } else if (g_fsdev_udc.setup.wLength && ((g_fsdev_udc.setup.bmRequestType & USB_REQUEST_DIR_MASK) == USB_REQUEST_DIR_OUT)) {
                         /* In status, start reading setup */
-                        usbd_ep_start_read(0x00, NULL, 0);
+                        usbd_ep_start_read(0, 0x00, NULL, 0);
                     }
 
                     if ((g_fsdev_udc.dev_addr > 0U) && (write_count == 0U)) {
@@ -355,7 +373,7 @@ void USBD_IRQHandler(void)
                         read_count = PCD_GET_EP_RX_CNT(USB, ep_idx);
                         fsdev_read_pma(USB, (uint8_t *)&g_fsdev_udc.setup, g_fsdev_udc.out_ep[ep_idx].ep_pma_addr, (uint16_t)read_count);
 
-                        usbd_event_ep0_setup_complete_handler((uint8_t *)&g_fsdev_udc.setup);
+                        usbd_event_ep0_setup_complete_handler(0, (uint8_t *)&g_fsdev_udc.setup);
 
                     } else if ((wEPVal & USB_EP_CTR_RX) != 0U) {
                         PCD_CLEAR_RX_EP_CTR(USB, ep_idx);
@@ -368,11 +386,11 @@ void USBD_IRQHandler(void)
                         g_fsdev_udc.out_ep[ep_idx].xfer_len -= read_count;
                         g_fsdev_udc.out_ep[ep_idx].actual_xfer_len += read_count;
 
-                        usbd_event_ep_out_complete_handler(ep_idx, g_fsdev_udc.out_ep[ep_idx].actual_xfer_len);
+                        usbd_event_ep_out_complete_handler(0, ep_idx, g_fsdev_udc.out_ep[ep_idx].actual_xfer_len);
 
                         if (read_count == 0) {
                             /* Out status, start reading setup */
-                            usbd_ep_start_read(0x00, NULL, 0);
+                            usbd_ep_start_read(0, 0x00, NULL, 0);
                         }
                     }
                 }
@@ -389,7 +407,7 @@ void USBD_IRQHandler(void)
 
                     if ((read_count < g_fsdev_udc.out_ep[ep_idx].ep_mps) ||
                         (g_fsdev_udc.out_ep[ep_idx].xfer_len == 0)) {
-                        usbd_event_ep_out_complete_handler(ep_idx, g_fsdev_udc.out_ep[ep_idx].actual_xfer_len);
+                        usbd_event_ep_out_complete_handler(0, ep_idx, g_fsdev_udc.out_ep[ep_idx].actual_xfer_len);
                     } else {
                         PCD_SET_EP_RX_STATUS(USB, ep_idx, USB_EP_RX_VALID);
                     }
@@ -404,7 +422,7 @@ void USBD_IRQHandler(void)
                     g_fsdev_udc.in_ep[ep_idx].actual_xfer_len += write_count;
 
                     if (g_fsdev_udc.in_ep[ep_idx].xfer_len == 0) {
-                        usbd_event_ep_in_complete_handler(ep_idx | 0x80, g_fsdev_udc.in_ep[ep_idx].actual_xfer_len);
+                        usbd_event_ep_in_complete_handler(0, ep_idx | 0x80, g_fsdev_udc.in_ep[ep_idx].actual_xfer_len);
                     } else {
                         write_count = MIN(g_fsdev_udc.in_ep[ep_idx].xfer_len, g_fsdev_udc.in_ep[ep_idx].ep_mps);
                         fsdev_write_pma(USB, g_fsdev_udc.in_ep[ep_idx].xfer_buf, g_fsdev_udc.in_ep[ep_idx].ep_pma_addr, (uint16_t)write_count);
@@ -418,7 +436,7 @@ void USBD_IRQHandler(void)
     if (wIstr & USB_ISTR_RESET) {
         memset(&g_fsdev_udc, 0, sizeof(struct fsdev_udc));
         g_fsdev_udc.pma_offset = USB_BTABLE_SIZE;
-        usbd_event_reset_handler();
+        usbd_event_reset_handler(0);
         /* start reading setup packet */
         PCD_SET_EP_RX_STATUS(USB, 0, USB_EP_RX_VALID);
         USB->ISTR &= (uint16_t)(~USB_ISTR_RESET);

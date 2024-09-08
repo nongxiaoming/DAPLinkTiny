@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022, sakumisu
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 #ifndef __USB_FSDEV_REG_H__
 #define __USB_FSDEV_REG_H__
 
@@ -1472,9 +1477,6 @@ typedef struct
     _wRegVal = (__IO uint16_t *)(_wRegBase + 0x400U + ((((uint32_t)(bEpNum) * 8U) + 4U) * PMA_ACCESS)); \
     *_wRegVal = ((wAddr) >> 1) << 1; \
   } while(0) /* PCD_SET_EP_RX_ADDRESS */
-
-#define PCD_EP_TX_ADDRESS(USBx, bEpNum) ((uint16_t *)((uint32_t)((((USBx)->BTABLE+(bEpNum)*8)+     ((uint32_t)(USBx) + 0x400U)))))
-#define PCD_EP_RX_ADDRESS(USBx, bEpNum) ((uint16_t *)((uint32_t)((((USBx)->BTABLE+(bEpNum)*8+4)+ ((uint32_t)(USBx) + 0x400U)))))
 
 /**
   * @brief  Gets address of the tx/rx buffer.

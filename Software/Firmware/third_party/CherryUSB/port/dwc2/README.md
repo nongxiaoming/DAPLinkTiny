@@ -1,5 +1,7 @@
 # Note
 
+If you are using more than one port, all ip parameters must be the same(like fifo num, endpoint num, dma support and so on), otherwise give up using multi ports.
+
 ## Support Chip List
 
 ## STM32
@@ -14,7 +16,7 @@
 
 ## AT32
 
-- AT32F415xx
+- AT32F402xx、AT32F405xx、AT32F415xx、AT32F423xx、AT32F425xx、AT32F435xx、AT32F437xx
 
 ## GD32
 
@@ -30,9 +32,10 @@
 
 - ESP32S2、ESP32S3
 
-## Before Use
+## Sophgo
 
-Your should implement `usb_dc_low_level_init` and `usb_dc_low_level_deinit`.
-- Enable or disable USB clock and set USB clock for 48M.
-- Enable or disable gpio and gpio clk for usb dp and dm.
-- Enable or disable usb irq
+- CV18xx
+
+## Kendryte
+
+- K230

@@ -5,14 +5,14 @@ import os
 cwd = GetCurrentDir()
 
 src = Split('''
-DAP/DAP.c
-DAP/SW_DP.c
-SWD_host/SWD_host.c
+Source/DAP.c
+Source/SW_DP.c
+Source/JTAG_DP.c
+Source/DAP_vendor.c
 ''')
 
 path = []
-path += [cwd + '/DAP']
-path += [cwd + '/SWD_host']
+path += [cwd + '/Include']
 
 
 group = DefineGroup('DAPLink', src, depend = [''], CPPPATH = path)

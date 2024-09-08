@@ -1,10 +1,15 @@
+/*
+ * Copyright (c) 2024, sakumisu
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 #include "usbd_core.h"
 #include "usbd_hid.h"
 
 /*!< endpoint address */
 #define HID_INT_EP          0x81
 #define HID_INT_EP_SIZE     4
-#define HID_INT_EP_INTERVAL 10
+#define HID_INT_EP_INTERVAL 1
 
 #define USBD_VID           0xffff
 #define USBD_PID           0xffff
@@ -194,7 +199,7 @@ static USB_NOCACHE_RAM_SECTION USB_MEM_ALIGNX struct hid_mouse mouse_cfg;
 /*!< hid state ! Data can be sent only when state is idle  */
 static volatile uint8_t hid_state = HID_STATE_IDLE;
 
-void usbd_event_handler(uint8_t event)
+static void usbd_event_handler(uint8_t busid, uint8_t event)
 {
     switch (event) {
         case USBD_EVENT_RESET:
@@ -208,6 +213,7 @@ void usbd_event_handler(uint8_t event)
         case USBD_EVENT_SUSPEND:
             break;
         case USBD_EVENT_CONFIGURED:
+            hid_state = HID_STATE_IDLE;
             break;
         case USBD_EVENT_SET_REMOTE_WAKEUP:
             break;
@@ -220,7 +226,7 @@ void usbd_event_handler(uint8_t event)
 }
 
 /* function ------------------------------------------------------------------*/
-static void usbd_hid_int_callback(uint8_t ep, uint32_t nbytes)
+static void usbd_hid_int_callback(uint8_t busid, uint8_t ep, uint32_t nbytes)
 {
     hid_state = HID_STATE_IDLE;
 }
@@ -233,13 +239,13 @@ static struct usbd_endpoint hid_in_ep = {
 
 struct usbd_interface intf0;
 
-void hid_mouse_init(void)
+void hid_mouse_init(uint8_t busid, uintptr_t reg_base)
 {
-    usbd_desc_register(hid_descriptor);
-    usbd_add_interface(usbd_hid_init_intf(&intf0, hid_mouse_report_desc, HID_MOUSE_REPORT_DESC_SIZE));
-    usbd_add_endpoint(&hid_in_ep);
+    usbd_desc_register(busid, hid_descriptor);
+    usbd_add_interface(busid, usbd_hid_init_intf(busid, &intf0, hid_mouse_report_desc, HID_MOUSE_REPORT_DESC_SIZE));
+    usbd_add_endpoint(busid, &hid_in_ep);
 
-    usbd_initialize();
+    usbd_initialize(busid, reg_base, usbd_event_handler);
 
     /*!< init mouse report data */
     mouse_cfg.buttons = 0;
@@ -248,23 +254,67 @@ void hid_mouse_init(void)
     mouse_cfg.y = 0;
 }
 
-/**
-  * @brief            hid mouse test
-  * @pre              none
-  * @param[in]        none
-  * @retval           none
-  */
-void hid_mouse_test(void)
-{
-    /*!< move mouse pointer */
-    mouse_cfg.x += 10;
-    mouse_cfg.y = 0;
+#define CURSOR_STEP  2U
+#define CURSOR_WIDTH 20U
 
-    int ret = usbd_ep_start_write(HID_INT_EP, (uint8_t *)&mouse_cfg, 4);
-    if (ret < 0) {
-        return;
+void draw_circle(uint8_t *buf)
+{
+    static int32_t move_cnt = 0;
+    static uint8_t step_x_y = 0;
+    static int8_t x = 0, y = 0;
+
+    move_cnt++;
+    if (move_cnt > CURSOR_WIDTH) {
+        step_x_y++;
+        step_x_y = step_x_y % 4;
+        move_cnt = 0;
     }
-    hid_state = HID_STATE_BUSY;
-    while (hid_state == HID_STATE_BUSY) {
+    switch (step_x_y) {
+        case 0: {
+            y = 0;
+            x = CURSOR_STEP;
+
+        } break;
+
+        case 1: {
+            x = 0;
+            y = CURSOR_STEP;
+
+        } break;
+
+        case 2: {
+            y = 0;
+            x = (int8_t)(-CURSOR_STEP);
+
+        } break;
+
+        case 3: {
+            x = 0;
+            y = (int8_t)(-CURSOR_STEP);
+
+        } break;
+    }
+
+    buf[0] = 0;
+    buf[1] = x;
+    buf[2] = y;
+    buf[3] = 0;
+}
+
+/* https://cps-check.com/cn/polling-rate-check */
+void hid_mouse_test(uint8_t busid)
+{
+    int counter = 0;
+    while (counter < 1000) {
+        draw_circle((uint8_t *)&mouse_cfg);
+        int ret = usbd_ep_start_write(busid, HID_INT_EP, (uint8_t *)&mouse_cfg, 4);
+        if (ret < 0) {
+            return;
+        }
+        hid_state = HID_STATE_BUSY;
+        while (hid_state == HID_STATE_BUSY) {
+        }
+
+        counter++;
     }
 }

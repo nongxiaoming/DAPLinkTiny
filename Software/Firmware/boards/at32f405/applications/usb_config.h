@@ -11,10 +11,10 @@
 #define CONFIG_DWC2_AT32
 /* ================ USB common Configuration ================ */
 
-#define CONFIG_USB_PRINTF(...) printf(__VA_ARGS__)
+#define CONFIG_USB_PRINTF(...) //printf(__VA_ARGS__)
 
-#define usb_malloc(size) malloc(size)
-#define usb_free(ptr)    free(ptr)
+#define usb_malloc(size) rt_malloc(size)
+#define usb_free(ptr)    rt_free(ptr)
 
 #ifndef CONFIG_USB_DBG_LEVEL
 #define CONFIG_USB_DBG_LEVEL USB_DBG_INFO
@@ -116,7 +116,7 @@
 
 #define USBD_IRQHandler     OTGHS_IRQHandler
 #define USB_BASE (0x40040000UL)
-#define USB_NUM_BIDIR_ENDPOINTS 8
+#define USB_NUM_BIDIR_ENDPOINTS 6
 
 /* ================ USB Host Port Configuration ==================*/
 

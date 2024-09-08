@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2024, sakumisu
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 #include "usbd_core.h"
 #include "usb_midi.h"
 
@@ -146,7 +151,10 @@ const uint8_t midi_descriptor[] = {
     0x00
 };
 
-void usbd_event_handler(uint8_t event)
+USB_NOCACHE_RAM_SECTION USB_MEM_ALIGNX uint8_t read_buffer[MIDI_EP_MPS];
+USB_NOCACHE_RAM_SECTION USB_MEM_ALIGNX uint8_t write_buffer[MIDI_EP_MPS];
+
+static void usbd_event_handler(uint8_t busid, uint8_t event)
 {
     switch (event) {
         case USBD_EVENT_RESET:
@@ -160,6 +168,7 @@ void usbd_event_handler(uint8_t event)
         case USBD_EVENT_SUSPEND:
             break;
         case USBD_EVENT_CONFIGURED:
+            usbd_ep_start_read(busid, MIDI_OUT_EP, read_buffer, MIDI_EP_MPS);
             break;
         case USBD_EVENT_SET_REMOTE_WAKEUP:
             break;
@@ -171,11 +180,12 @@ void usbd_event_handler(uint8_t event)
     }
 }
 
-void usbd_midi_bulk_out(uint8_t ep, uint32_t nbytes)
+void usbd_midi_bulk_out(uint8_t busid, uint8_t ep, uint32_t nbytes)
 {
+    usbd_ep_start_read(busid, MIDI_OUT_EP, read_buffer, MIDI_EP_MPS);
 }
 
-void usbd_midi_bulk_in(uint8_t ep, uint32_t nbytes)
+void usbd_midi_bulk_in(uint8_t busid, uint8_t ep, uint32_t nbytes)
 {
 }
 
@@ -192,13 +202,13 @@ struct usbd_endpoint midi_in_ep = {
     .ep_cb = usbd_midi_bulk_in
 };
 
-void midi_init(void)
+void midi_init(uint8_t busid, uintptr_t reg_base)
 {
-    usbd_desc_register(midi_descriptor);
-    usbd_add_interface(&intf0);
-    usbd_add_interface(&intf1);
-    usbd_add_endpoint(&midi_out_ep);
-    usbd_add_endpoint(&midi_in_ep);
+    usbd_desc_register(busid, midi_descriptor);
+    usbd_add_interface(busid, &intf0);
+    usbd_add_interface(busid, &intf1);
+    usbd_add_endpoint(busid, &midi_out_ep);
+    usbd_add_endpoint(busid, &midi_in_ep);
 
-    usbd_initialize();
+    usbd_initialize(busid, reg_base, usbd_event_handler);
 }

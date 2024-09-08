@@ -6,23 +6,16 @@
 #include "usbd_core.h"
 #include "usb_musb_reg.h"
 
-#define HWREG(x) \
-    (*((volatile uint32_t *)(x)))
+//#define HWREG(x) \
+//    (*((volatile uint32_t *)(x)))
 #define HWREGH(x) \
     (*((volatile uint16_t *)(x)))
 #define HWREGB(x) \
     (*((volatile uint8_t *)(x)))
 
+#define USB_BASE (g_usbdev_bus[0].reg_base)
+
 #if defined(CONFIG_USB_MUSB_SUNXI)
-
-#ifndef USB_BASE
-#define USB_BASE (0x01c13000)
-#endif
-
-#ifndef USBD_IRQHandler
-#define USBD_IRQHandler USBD_IRQHandler //use actual usb irq name instead
-#endif
-
 #define MUSB_FADDR_OFFSET 0x98
 #define MUSB_POWER_OFFSET 0x40
 #define MUSB_TXIS_OFFSET  0x44
@@ -51,52 +44,67 @@
 #define MUSB_RXFIFOADD_OFFSET 0x96
 
 #elif defined(CONFIG_USB_MUSB_CUSTOM)
-
+#include "musb_custom.h"
+#define USB_Register_FADDR              ((uint8_t)0x00)
+#define USB_Register_POWER              ((uint8_t)0x01)
+#define USB_Register_INTRIN             ((uint8_t)0x02)
+#define USB_Register_INTROUT            ((uint8_t)0x04)
+#define USB_Register_INTRUSB            ((uint8_t)0x06)
+#define USB_Register_INTRINE            ((uint8_t)0x07)
+#define USB_Register_INTROUTE           ((uint8_t)0x09)
+#define USB_Register_INTRUSBE           ((uint8_t)0x0B)
+#define USB_Register_FRAM1              ((uint8_t)0x0C)
+#define USB_Register_FRAM2              ((uint8_t)0x0D)
+#define USB_Register_INDEX              ((uint8_t)0x0E)
+#define USB_Register_PDCTRL             ((uint8_t)0x0F)
+#define USB_Register_INMAXP             ((uint8_t)0x10)
+#define USB_Register_INCSR0             ((uint8_t)0x11)
+#define USB_Register_INCSR1             ((uint8_t)0x11)
+#define USB_Register_INCSR2             ((uint8_t)0x12)
+#define USB_Register_OUTMAXP            ((uint8_t)0x13)
+#define USB_Register_OUTCSR1            ((uint8_t)0x14)
+#define USB_Register_OUTCSR2            ((uint8_t)0x15)
+#define USB_Register_OUTCOUNTER         ((uint8_t)0x16)
+#define USB_Register_FIFO0              ((uint8_t)0x20)
+#define USB_Register_FIFO1              ((uint8_t)0x24)
+#define USB_Register_FIFO2              ((uint8_t)0x28)
+#define USB_Register_FIFO3              ((uint8_t)0x2C)
+#define USB_Register_FIFO4              ((uint8_t)0x30)
+#define USB_Register_FIFO5              ((uint8_t)0x34)
+#define USB_Register_FIFO6              ((uint8_t)0x38)
+#define USB_Register_FIFO7              ((uint8_t)0x3C)
 #else
-
-#ifndef USBD_IRQHandler
-#define USBD_IRQHandler USB_INT_Handler //use actual usb irq name instead
-#endif
-
-#ifndef USB_BASE
-#define USB_BASE (0x40086400UL)
-#endif
-
 #define MUSB_FADDR_OFFSET 0x00
 #define MUSB_POWER_OFFSET 0x01
 #define MUSB_TXIS_OFFSET  0x02
 #define MUSB_RXIS_OFFSET  0x04
-#define MUSB_TXIE_OFFSET  0x06
-#define MUSB_RXIE_OFFSET  0x08
-#define MUSB_IS_OFFSET    0x0A
+#define MUSB_TXIE_OFFSET  0x07
+#define MUSB_RXIE_OFFSET  0x09
+#define MUSB_IS_OFFSET    0x06
 #define MUSB_IE_OFFSET    0x0B
 
 #define MUSB_EPIDX_OFFSET 0x0E
 
 #define MUSB_IND_TXMAP_OFFSET   0x10
-#define MUSB_IND_TXCSRL_OFFSET  0x12
-#define MUSB_IND_TXCSRH_OFFSET  0x13
-#define MUSB_IND_RXMAP_OFFSET   0x14
-#define MUSB_IND_RXCSRL_OFFSET  0x16
-#define MUSB_IND_RXCSRH_OFFSET  0x17
-#define MUSB_IND_RXCOUNT_OFFSET 0x18
+#define MUSB_IND_TXCSRL_OFFSET  0x11
+#define MUSB_IND_TXCSRH_OFFSET  0x12
+#define MUSB_IND_RXMAP_OFFSET   0x13
+#define MUSB_IND_RXCSRL_OFFSET  0x14
+#define MUSB_IND_RXCSRH_OFFSET  0x15
+#define MUSB_IND_RXCOUNT_OFFSET 0x16
 
 #define MUSB_FIFO_OFFSET 0x20
 
-#define MUSB_DEVCTL_OFFSET 0x60
+//#define MUSB_DEVCTL_OFFSET 0x60
 
-#define MUSB_TXFIFOSZ_OFFSET  0x62
-#define MUSB_RXFIFOSZ_OFFSET  0x63
-#define MUSB_TXFIFOADD_OFFSET 0x64
-#define MUSB_RXFIFOADD_OFFSET 0x66
+//#define MUSB_TXFIFOSZ_OFFSET  0x62
+//#define MUSB_RXFIFOSZ_OFFSET  0x63
+//#define MUSB_TXFIFOADD_OFFSET 0x64
+//#define MUSB_RXFIFOADD_OFFSET 0x66
 
 #endif // CONFIG_USB_MUSB_SUNXI
 
 #define USB_FIFO_BASE(ep_idx) (USB_BASE + MUSB_FIFO_OFFSET + 0x4 * ep_idx)
-
-#ifndef USB_NUM_BIDIR_ENDPOINTS
-#define USB_NUM_BIDIR_ENDPOINTS 8
-#endif
 
 typedef enum {
     USB_EP0_STATE_SETUP = 0x0,      /**< SETUP DATA */
@@ -122,14 +130,12 @@ struct musb_ep_state {
 /* Driver state */
 struct musb_udc {
     volatile uint8_t dev_addr;
-    volatile uint32_t fifo_size_offset;
     __attribute__((aligned(32))) struct usb_setup_packet setup;
-    struct musb_ep_state in_ep[USB_NUM_BIDIR_ENDPOINTS];  /*!< IN endpoint parameters*/
-    struct musb_ep_state out_ep[USB_NUM_BIDIR_ENDPOINTS]; /*!< OUT endpoint parameters */
+    struct musb_ep_state in_ep[CONFIG_USBDEV_EP_NUM];  /*!< IN endpoint parameters*/
+    struct musb_ep_state out_ep[CONFIG_USBDEV_EP_NUM]; /*!< OUT endpoint parameters */
 } g_musb_udc;
 
 static volatile uint8_t usb_ep0_state = USB_EP0_STATE_SETUP;
-volatile bool zlp_flag = 0;
 
 /* get current active ep */
 static uint8_t musb_get_active_ep(void)
@@ -145,64 +151,25 @@ static void musb_set_active_ep(uint8_t ep_index)
 
 static void musb_write_packet(uint8_t ep_idx, uint8_t *buffer, uint16_t len)
 {
-    uint32_t *buf32;
-    uint8_t *buf8;
-    uint32_t count32;
-    uint32_t count8;
+    uint8_t *buf;
     int i;
 
-    if ((uint32_t)buffer & 0x03) {
-        buf8 = buffer;
+            buf = buffer;
         for (i = 0; i < len; i++) {
-            HWREGB(USB_FIFO_BASE(ep_idx)) = *buf8++;
+            HWREGB(USB_FIFO_BASE(ep_idx)) = *buf++;
         }
-    } else {
-        count32 = len >> 2;
-        count8 = len & 0x03;
-
-        buf32 = (uint32_t *)buffer;
-
-        while (count32--) {
-            HWREG(USB_FIFO_BASE(ep_idx)) = *buf32++;
-        }
-
-        buf8 = (uint8_t *)buf32;
-
-        while (count8--) {
-            HWREGB(USB_FIFO_BASE(ep_idx)) = *buf8++;
-        }
-    }
+        
 }
 
 static void musb_read_packet(uint8_t ep_idx, uint8_t *buffer, uint16_t len)
 {
-    uint32_t *buf32;
-    uint8_t *buf8;
-    uint32_t count32;
-    uint32_t count8;
+    uint8_t *buf;
     int i;
 
-    if ((uint32_t)buffer & 0x03) {
-        buf8 = buffer;
+        buf = buffer;
         for (i = 0; i < len; i++) {
-            *buf8++ = HWREGB(USB_FIFO_BASE(ep_idx));
+            *buf++ = HWREGB(USB_FIFO_BASE(ep_idx));
         }
-    } else {
-        count32 = len >> 2;
-        count8 = len & 0x03;
-
-        buf32 = (uint32_t *)buffer;
-
-        while (count32--) {
-            *buf32++ = HWREG(USB_FIFO_BASE(ep_idx));
-        }
-
-        buf8 = (uint8_t *)buf32;
-
-        while (count8--) {
-            *buf8++ = HWREGB(USB_FIFO_BASE(ep_idx));
-        }
-    }
 }
 
 static uint32_t musb_get_fifo_size(uint16_t mps, uint16_t *used)
@@ -221,6 +188,40 @@ static uint32_t musb_get_fifo_size(uint16_t mps, uint16_t *used)
     return USB_TXFIFOSZ_SIZE_8;
 }
 
+static uint32_t usbd_musb_fifo_config(struct musb_fifo_cfg *cfg, uint32_t offset)
+{
+    uint16_t fifo_used;
+    uint8_t c_size;
+    uint16_t c_off;
+
+    c_off = offset >> 3;
+    c_size = musb_get_fifo_size(cfg->maxpacket, &fifo_used);
+
+    musb_set_active_ep(cfg->ep_num);
+
+    switch (cfg->style) {
+        case FIFO_TX:
+//            HWREGB(USB_BASE + MUSB_TXFIFOSZ_OFFSET) = c_size & 0x0f;
+//            HWREGH(USB_BASE + MUSB_TXFIFOADD_OFFSET) = c_off;
+            break;
+        case FIFO_RX:
+//            HWREGB(USB_BASE + MUSB_RXFIFOSZ_OFFSET) = c_size & 0x0f;
+//            HWREGH(USB_BASE + MUSB_RXFIFOADD_OFFSET) = c_off;
+            break;
+        case FIFO_TXRX:
+//            HWREGB(USB_BASE + MUSB_TXFIFOSZ_OFFSET) = c_size & 0x0f;
+//            HWREGH(USB_BASE + MUSB_TXFIFOADD_OFFSET) = c_off;
+//            HWREGB(USB_BASE + MUSB_RXFIFOSZ_OFFSET) = c_size & 0x0f;
+//            HWREGH(USB_BASE + MUSB_RXFIFOADD_OFFSET) = c_off;
+            break;
+
+        default:
+            break;
+    }
+
+    return (offset + fifo_used);
+}
+
 __WEAK void usb_dc_low_level_init(void)
 {
 }
@@ -229,36 +230,52 @@ __WEAK void usb_dc_low_level_deinit(void)
 {
 }
 
-int usb_dc_init(void)
+int usb_dc_init(uint8_t busid)
 {
+    uint16_t offset = 0;
+    uint8_t cfg_num;
+    struct musb_fifo_cfg *cfg;
+
     usb_dc_low_level_init();
 
-#ifdef CONFIG_USB_HS
-    HWREGB(USB_BASE + MUSB_POWER_OFFSET) |= USB_POWER_HSENAB;
-#else
-    HWREGB(USB_BASE + MUSB_POWER_OFFSET) &= ~USB_POWER_HSENAB;
-#endif
+//#ifdef CONFIG_USB_HS
+//    HWREGB(USB_BASE + MUSB_POWER_OFFSET) |= USB_POWER_HSENAB;
+//#else
+//    HWREGB(USB_BASE + MUSB_POWER_OFFSET) &= ~USB_POWER_HSENAB;
+//#endif
 
     musb_set_active_ep(0);
     HWREGB(USB_BASE + MUSB_FADDR_OFFSET) = 0;
 
-    HWREGB(USB_BASE + MUSB_DEVCTL_OFFSET) |= USB_DEVCTL_SESSION;
+    //HWREGB(USB_BASE + MUSB_DEVCTL_OFFSET) |= USB_DEVCTL_SESSION;
+
+    cfg_num = usbd_get_musb_fifo_cfg(&cfg);
+
+    for (uint8_t i = 0; i < cfg_num; i++) {
+        offset = usbd_musb_fifo_config(&cfg[i], offset);
+    }
+
+    if (offset > usb_get_musb_ram_size()) {
+        USB_LOG_ERR("offset:%d is overflow, please check your table\r\n", offset);
+        while (1) {
+        }
+    }
 
     /* Enable USB interrupts */
-    HWREGB(USB_BASE + MUSB_IE_OFFSET) = USB_IE_RESET;
-    HWREGH(USB_BASE + MUSB_TXIE_OFFSET) = USB_TXIE_EP0;
-    HWREGH(USB_BASE + MUSB_RXIE_OFFSET) = 0;
+    HWREGB(USB_BASE + MUSB_IE_OFFSET) = USB_IE_RESET | USB_IE_SUSPND | USB_IE_RESUME | USB_IE_SOF;
+    HWREGB(USB_BASE + MUSB_TXIE_OFFSET) = USB_TXIE_EP0;
+    HWREGB(USB_BASE + MUSB_RXIE_OFFSET) = 0;
 
     HWREGB(USB_BASE + MUSB_POWER_OFFSET) |= USB_POWER_SOFTCONN;
     return 0;
 }
 
-int usb_dc_deinit(void)
+int usb_dc_deinit(uint8_t busid)
 {
     return 0;
 }
 
-int usbd_set_address(const uint8_t addr)
+int usbd_set_address(uint8_t busid, const uint8_t addr)
 {
     if (addr == 0) {
         HWREGB(USB_BASE + MUSB_FADDR_OFFSET) = 0;
@@ -268,31 +285,26 @@ int usbd_set_address(const uint8_t addr)
     return 0;
 }
 
-uint8_t usbd_get_port_speed(const uint8_t port)
+int usbd_set_remote_wakeup(uint8_t busid)
 {
-    uint8_t speed;
+    HWREGB(USB_BASE + MUSB_POWER_OFFSET) |= USB_POWER_RESUME;
+    usbd_musb_delay_ms(10);
+    HWREGB(USB_BASE + MUSB_POWER_OFFSET) &= ~USB_POWER_RESUME;
+    return 0;
+}
 
-    if (HWREGB(USB_BASE + MUSB_POWER_OFFSET) & USB_POWER_HSMODE)
-        speed = USB_SPEED_HIGH;
-    else if (HWREGB(USB_BASE + MUSB_DEVCTL_OFFSET) & USB_DEVCTL_FSDEV)
-        speed = USB_SPEED_FULL;
-    else if (HWREGB(USB_BASE + MUSB_DEVCTL_OFFSET) & USB_DEVCTL_LSDEV)
-        speed = USB_SPEED_LOW;
+uint8_t usbd_get_port_speed(uint8_t busid)
+{
+    uint8_t speed = USB_SPEED_UNKNOWN;
+
+   speed = USB_SPEED_LOW;
 
     return speed;
 }
 
-uint8_t usbd_force_full_speed(const uint8_t port)
+int usbd_ep_open(uint8_t busid, const struct usb_endpoint_descriptor *ep)
 {
-    HWREGB(USB_BASE + MUSB_POWER_OFFSET) &= ~USB_POWER_HSENAB;
-    return (HWREGB(USB_BASE + MUSB_POWER_OFFSET) & USB_POWER_HSENAB);
-}
-
-int usbd_ep_open(const struct usbd_endpoint_cfg *ep_cfg)
-{
-    uint16_t used = 0;
-    uint16_t fifo_size = 0;
-    uint8_t ep_idx = USB_EP_GET_IDX(ep_cfg->ep_addr);
+    uint8_t ep_idx = USB_EP_GET_IDX(ep->bEndpointAddress);
     uint8_t old_ep_idx;
     uint32_t ui32Flags = 0;
     uint16_t ui32Register = 0;
@@ -307,20 +319,25 @@ int usbd_ep_open(const struct usbd_endpoint_cfg *ep_cfg)
         return 0;
     }
 
-    if (ep_idx > (USB_NUM_BIDIR_ENDPOINTS - 1)) {
-        USB_LOG_ERR("Ep addr %d overflow\r\n", ep_cfg->ep_addr);
+    if (ep_idx > (CONFIG_USBDEV_EP_NUM - 1)) {
+        USB_LOG_ERR("Ep addr %02x overflow\r\n", ep->bEndpointAddress);
         return -1;
     }
 
     old_ep_idx = musb_get_active_ep();
     musb_set_active_ep(ep_idx);
 
-    if (USB_EP_DIR_IS_OUT(ep_cfg->ep_addr)) {
-        g_musb_udc.out_ep[ep_idx].ep_mps = ep_cfg->ep_mps;
-        g_musb_udc.out_ep[ep_idx].ep_type = ep_cfg->ep_type;
+    if (USB_EP_DIR_IS_OUT(ep->bEndpointAddress)) {
+        g_musb_udc.out_ep[ep_idx].ep_mps = USB_GET_MAXPACKETSIZE(ep->wMaxPacketSize);
+        g_musb_udc.out_ep[ep_idx].ep_type = USB_GET_ENDPOINT_TYPE(ep->bmAttributes);
         g_musb_udc.out_ep[ep_idx].ep_enable = true;
 
-        HWREGH(USB_BASE + MUSB_IND_RXMAP_OFFSET) = ep_cfg->ep_mps;
+//        if ((8 << HWREGB(USB_BASE + MUSB_RXFIFOSZ_OFFSET)) < g_musb_udc.out_ep[ep_idx].ep_mps) {
+//            USB_LOG_ERR("Ep %02x fifo is overflow\r\n", ep->bEndpointAddress);
+//            return -2;
+//        }
+
+        HWREGB(USB_BASE + MUSB_IND_RXMAP_OFFSET) = USB_GET_MAXPACKETSIZE(ep->wMaxPacketSize);
 
         //
         // Allow auto clearing of RxPktRdy when packet of size max packet
@@ -348,7 +365,7 @@ int usbd_ep_open(const struct usbd_endpoint_cfg *ep_cfg)
         //
         // Enable isochronous mode if requested.
         //
-        if (ep_cfg->ep_type == 0x01) {
+        if (USB_GET_ENDPOINT_TYPE(ep->bmAttributes) == 0x01) {
             ui32Register |= USB_RXCSRH1_ISO;
         }
 
@@ -359,19 +376,17 @@ int usbd_ep_open(const struct usbd_endpoint_cfg *ep_cfg)
             HWREGB(USB_BASE + MUSB_IND_RXCSRL_OFFSET) = (USB_RXCSRL1_CLRDT | USB_RXCSRL1_FLUSH);
         else
             HWREGB(USB_BASE + MUSB_IND_RXCSRL_OFFSET) = USB_RXCSRL1_CLRDT;
-
-        fifo_size = musb_get_fifo_size(ep_cfg->ep_mps, &used);
-
-        HWREGB(USB_BASE + MUSB_RXFIFOSZ_OFFSET) = fifo_size & 0x0f;
-        HWREGH(USB_BASE + MUSB_RXFIFOADD_OFFSET) = (g_musb_udc.fifo_size_offset >> 3);
-
-        g_musb_udc.fifo_size_offset += used;
     } else {
-        g_musb_udc.in_ep[ep_idx].ep_mps = ep_cfg->ep_mps;
-        g_musb_udc.in_ep[ep_idx].ep_type = ep_cfg->ep_type;
+        g_musb_udc.in_ep[ep_idx].ep_mps = USB_GET_MAXPACKETSIZE(ep->wMaxPacketSize);
+        g_musb_udc.in_ep[ep_idx].ep_type = USB_GET_ENDPOINT_TYPE(ep->bmAttributes);
         g_musb_udc.in_ep[ep_idx].ep_enable = true;
 
-        HWREGH(USB_BASE + MUSB_IND_TXMAP_OFFSET) = ep_cfg->ep_mps;
+//        if ((8 << HWREGB(USB_BASE + MUSB_TXFIFOSZ_OFFSET)) < g_musb_udc.in_ep[ep_idx].ep_mps) {
+//            USB_LOG_ERR("Ep %02x fifo is overflow\r\n", ep->bEndpointAddress);
+//            return -2;
+//        }
+
+        HWREGB(USB_BASE + MUSB_IND_TXMAP_OFFSET) = USB_GET_MAXPACKETSIZE(ep->wMaxPacketSize);
 
         //
         // Allow auto setting of TxPktRdy when max packet size has been loaded
@@ -393,7 +408,7 @@ int usbd_ep_open(const struct usbd_endpoint_cfg *ep_cfg)
         //
         // Enable isochronous mode if requested.
         //
-        if (ep_cfg->ep_type == 0x01) {
+        if (USB_GET_ENDPOINT_TYPE(ep->bmAttributes) == 0x01) {
             ui32Register |= USB_TXCSRH1_ISO;
         }
 
@@ -404,13 +419,6 @@ int usbd_ep_open(const struct usbd_endpoint_cfg *ep_cfg)
             HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) = (USB_TXCSRL1_CLRDT | USB_TXCSRL1_FLUSH);
         else
             HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) = USB_TXCSRL1_CLRDT;
-
-        fifo_size = musb_get_fifo_size(ep_cfg->ep_mps, &used);
-
-        HWREGB(USB_BASE + MUSB_TXFIFOSZ_OFFSET) = fifo_size & 0x0f;
-        HWREGH(USB_BASE + MUSB_TXFIFOADD_OFFSET) = (g_musb_udc.fifo_size_offset >> 3);
-
-        g_musb_udc.fifo_size_offset += used;
     }
 
     musb_set_active_ep(old_ep_idx);
@@ -418,12 +426,12 @@ int usbd_ep_open(const struct usbd_endpoint_cfg *ep_cfg)
     return 0;
 }
 
-int usbd_ep_close(const uint8_t ep)
+int usbd_ep_close(uint8_t busid, const uint8_t ep)
 {
     return 0;
 }
 
-int usbd_ep_set_stall(const uint8_t ep)
+int usbd_ep_set_stall(uint8_t busid, const uint8_t ep)
 {
     uint8_t ep_idx = USB_EP_GET_IDX(ep);
     uint8_t old_ep_idx;
@@ -451,7 +459,7 @@ int usbd_ep_set_stall(const uint8_t ep)
     return 0;
 }
 
-int usbd_ep_clear_stall(const uint8_t ep)
+int usbd_ep_clear_stall(uint8_t busid, const uint8_t ep)
 {
     uint8_t ep_idx = USB_EP_GET_IDX(ep);
     uint8_t old_ep_idx;
@@ -483,139 +491,32 @@ int usbd_ep_clear_stall(const uint8_t ep)
     return 0;
 }
 
-int usbd_ep_is_stalled(const uint8_t ep, uint8_t *stalled)
+int usbd_ep_is_stalled(uint8_t busid, const uint8_t ep, uint8_t *stalled)
 {
-    return 0;
-}
+    uint8_t ep_idx = USB_EP_GET_IDX(ep);
+    uint8_t old_ep_idx;
 
-int usb_ep_out_data_avail(uint8_t ep_addr)
-{
-    uint16_t old_ep_idx, length;
-    uint8_t ep_idx = USB_EP_GET_IDX(ep_addr);
-    
     old_ep_idx = musb_get_active_ep();
     musb_set_active_ep(ep_idx);
-    
-    if (ep_idx == 0){
-        if (!(HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) & USB_CSRL0_RXRDY)){
-            musb_set_active_ep(old_ep_idx);
-            return 0;
-        }
-        length = HWREGH(USB_BASE + MUSB_IND_RXCOUNT_OFFSET);
-        musb_set_active_ep(old_ep_idx);
-        return length;
-    }
-    else{
-        if (!(HWREGB(USB_BASE + MUSB_IND_RXCSRL_OFFSET) & USB_RXCSRL1_RXRDY)){
-            musb_set_active_ep(old_ep_idx);
-            return 0;
-        }
-        length = HWREGH(USB_BASE + MUSB_IND_RXCOUNT_OFFSET);
-        musb_set_active_ep(old_ep_idx);
-        return length;
-    }
-}
 
-int usb_ep_in_data_avail(uint8_t ep_addr)
-{
-    uint16_t old_ep_idx, length;
-    uint8_t ep_idx = USB_EP_GET_IDX(ep_addr);
-    
-    old_ep_idx = musb_get_active_ep();
-    musb_set_active_ep(ep_idx);
-    
-    if (ep_idx == 0){
-        if (HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) & USB_CSRL0_TXRDY){
-            musb_set_active_ep(old_ep_idx);
-            return 0;
+    if (USB_EP_DIR_IS_OUT(ep)) {
+        if(HWREGB(USB_BASE + MUSB_IND_RXCSRL_OFFSET) & USB_RXCSRL1_STALL) {
+            *stalled = 1;
+        } else {
+            *stalled = 0;
+        }
+    } else {
+        if(HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) & USB_TXCSRL1_STALL) {
+            *stalled = 1;
+        } else {
+            *stalled = 0;
         }
     }
-    else{
-        if (HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) & USB_TXCSRL1_TXRDY){
-            musb_set_active_ep(old_ep_idx);
-            return 0;
-        }
-    }
-    length = HWREGH(USB_BASE + MUSB_IND_TXMAP_OFFSET);
     musb_set_active_ep(old_ep_idx);
-    return length;
-}
-
-int usb_ep_wait_in_data_avail(uint8_t ep_addr)
-{
-    uint32_t cnt;
-    
-    for (cnt = 0; cnt < 3000; cnt++){
-        if (usb_ep_in_data_avail(ep_addr))
-            return cnt;
-    }
     return 0;
 }
 
-int usbd_read_packet(uint8_t ep_addr, uint8_t *buffer, uint16_t len)
-{
-    uint16_t old_ep_idx, cnt;
-    uint8_t ep_idx = USB_EP_GET_IDX(ep_addr);
-    
-    old_ep_idx = musb_get_active_ep();
-    musb_set_active_ep(ep_idx);
-    if (ep_idx == 0){
-        if (!(HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) & USB_CSRL0_RXRDY)){
-            musb_set_active_ep(old_ep_idx);
-            return 0;
-        }
-    }
-    else{
-        if (!(HWREGB(USB_BASE + MUSB_IND_RXCSRL_OFFSET) & USB_RXCSRL1_RXRDY)){
-            musb_set_active_ep(old_ep_idx);
-            return 0;
-        }
-    }
-    cnt = usb_ep_out_data_avail(ep_idx);
-    if (cnt){
-        musb_read_packet(ep_idx, buffer, cnt);
-        HWREGB(USB_BASE + MUSB_IND_RXCSRL_OFFSET) &= ~(USB_RXCSRL1_OVER | USB_RXCSRL1_ERROR | USB_RXCSRL1_STALL| USB_RXCSRL1_STALLED);
-        HWREGB(USB_BASE + MUSB_IND_RXCSRL_OFFSET) &= ~(USB_RXCSRL1_RXRDY);
-        musb_set_active_ep(old_ep_idx);
-    }
-    return cnt;
-}
-
-int usbd_write_packet(uint8_t ep_addr, uint8_t *buffer, uint16_t len)
-{
-    uint16_t old_ep_idx, cnt;
-    uint8_t ep_idx = USB_EP_GET_IDX(ep_addr);
-    
-    old_ep_idx = musb_get_active_ep();
-    musb_set_active_ep(ep_idx);
-    if (HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) & USB_TXCSRL1_UNDRN){
-        HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) &= ~USB_TXCSRL1_UNDRN;
-    }
-    if (HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) & USB_TXCSRL1_TXRDY){
-        musb_set_active_ep(old_ep_idx);
-        return -1;
-    }  
-    
-    if (!buffer && len){
-        return -2;
-    }
-    
-    if (!len){
-        HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) |= USB_TXCSRL1_TXRDY;
-        return 0;
-    }
-    
-    cnt = usb_ep_in_data_avail(ep_idx);
-    if (cnt){
-        cnt = MIN(cnt, len);
-        musb_write_packet(ep_idx, buffer, cnt);
-        HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) |= USB_TXCSRL1_TXRDY;
-        musb_set_active_ep(old_ep_idx);
-    }
-    return cnt;
-}
-
-int usbd_ep_start_write(const uint8_t ep, const uint8_t *data, uint32_t data_len)
+int usbd_ep_start_write(uint8_t busid, const uint8_t ep, const uint8_t *data, uint32_t data_len)
 {
     uint8_t ep_idx = USB_EP_GET_IDX(ep);
     uint8_t old_ep_idx;
@@ -649,6 +550,7 @@ int usbd_ep_start_write(const uint8_t ep, const uint8_t *data, uint32_t data_len
             HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) = (USB_CSRL0_TXRDY | USB_CSRL0_DATAEND);
         } else {
             HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) = USB_TXCSRL1_TXRDY;
+            HWREGB(USB_BASE + MUSB_TXIE_OFFSET) |= (1 << ep_idx);
         }
         musb_set_active_ep(old_ep_idx);
         return 0;
@@ -656,7 +558,7 @@ int usbd_ep_start_write(const uint8_t ep, const uint8_t *data, uint32_t data_len
     data_len = MIN(data_len, g_musb_udc.in_ep[ep_idx].ep_mps);
 
     musb_write_packet(ep_idx, (uint8_t *)data, data_len);
-    HWREGH(USB_BASE + MUSB_TXIE_OFFSET) |= (1 << ep_idx);
+    HWREGB(USB_BASE + MUSB_TXIE_OFFSET) |= (1 << ep_idx);
 
     if (ep_idx == 0x00) {
         usb_ep0_state = USB_EP0_STATE_IN_DATA;
@@ -673,7 +575,7 @@ int usbd_ep_start_write(const uint8_t ep, const uint8_t *data, uint32_t data_len
     return 0;
 }
 
-int usbd_ep_start_read(const uint8_t ep, uint8_t *data, uint32_t data_len)
+int usbd_ep_start_read(uint8_t busid, const uint8_t ep, uint8_t *data, uint32_t data_len)
 {
     uint8_t ep_idx = USB_EP_GET_IDX(ep);
     uint8_t old_ep_idx;
@@ -702,7 +604,7 @@ int usbd_ep_start_read(const uint8_t ep, uint8_t *data, uint32_t data_len)
     if (ep_idx == 0) {
         usb_ep0_state = USB_EP0_STATE_OUT_DATA;
     } else {
-        HWREGH(USB_BASE + MUSB_RXIE_OFFSET) |= (1 << ep_idx);
+        HWREGB(USB_BASE + MUSB_RXIE_OFFSET) |= (1 << ep_idx);
     }
     musb_set_active_ep(old_ep_idx);
     return 0;
@@ -744,7 +646,7 @@ static void handle_ep0(void)
                     HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) = (USB_CSRL0_RXRDYC | USB_CSRL0_DATAEND);
                 }
 
-                usbd_event_ep0_setup_complete_handler((uint8_t *)&g_musb_udc.setup);
+                usbd_event_ep0_setup_complete_handler(0, (uint8_t *)&g_musb_udc.setup);
             }
             break;
 
@@ -757,7 +659,7 @@ static void handle_ep0(void)
                 g_musb_udc.in_ep[0].xfer_len = 0;
             }
 
-            usbd_event_ep_in_complete_handler(0x80, g_musb_udc.in_ep[0].actual_xfer_len);
+            usbd_event_ep_in_complete_handler(0, 0x80, g_musb_udc.in_ep[0].actual_xfer_len);
 
             break;
         case USB_EP0_STATE_OUT_DATA:
@@ -769,7 +671,7 @@ static void handle_ep0(void)
                 g_musb_udc.out_ep[0].actual_xfer_len += read_count;
 
                 if (read_count < g_musb_udc.out_ep[0].ep_mps) {
-                    usbd_event_ep_out_complete_handler(0x00, g_musb_udc.out_ep[0].actual_xfer_len);
+                    usbd_event_ep_out_complete_handler(0, 0x00, g_musb_udc.out_ep[0].actual_xfer_len);
                     HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) = (USB_CSRL0_RXRDYC | USB_CSRL0_DATAEND);
                     usb_ep0_state = USB_EP0_STATE_IN_STATUS;
                 } else {
@@ -780,12 +682,12 @@ static void handle_ep0(void)
         case USB_EP0_STATE_IN_STATUS:
         case USB_EP0_STATE_IN_ZLP:
             usb_ep0_state = USB_EP0_STATE_SETUP;
-            usbd_event_ep_in_complete_handler(0x80, 0);
+            usbd_event_ep_in_complete_handler(0, 0x80, 0);
             break;
     }
 }
 
-void USBD_IRQHandler(void)
+void USBD_IRQHandler(uint8_t busid)
 {
     uint32_t is;
     uint32_t txis;
@@ -795,8 +697,8 @@ void USBD_IRQHandler(void)
     uint16_t write_count, read_count;
 
     is = HWREGB(USB_BASE + MUSB_IS_OFFSET);
-    txis = HWREGH(USB_BASE + MUSB_TXIS_OFFSET);
-    rxis = HWREGH(USB_BASE + MUSB_RXIS_OFFSET);
+    txis = HWREGB(USB_BASE + MUSB_TXIS_OFFSET);
+    rxis = HWREGB(USB_BASE + MUSB_RXIS_OFFSET);
 
     HWREGB(USB_BASE + MUSB_IS_OFFSET) = is;
 
@@ -805,34 +707,30 @@ void USBD_IRQHandler(void)
     /* Receive a reset signal from the USB bus */
     if (is & USB_IS_RESET) {
         memset(&g_musb_udc, 0, sizeof(struct musb_udc));
-        g_musb_udc.fifo_size_offset = USB_CTRL_EP_MPS;
-        usbd_event_reset_handler();
-        HWREGH(USB_BASE + MUSB_TXIE_OFFSET) = USB_TXIE_EP0;
-        HWREGH(USB_BASE + MUSB_RXIE_OFFSET) = 0;
+        usbd_event_reset_handler(0);
+        HWREGB(USB_BASE + MUSB_TXIE_OFFSET) = USB_TXIE_EP0;
+        HWREGB(USB_BASE + MUSB_RXIE_OFFSET) = 0;
 
-        for (uint8_t i = 1; i < USB_NUM_BIDIR_ENDPOINTS; i++) {
-            musb_set_active_ep(i);
-            HWREGB(USB_BASE + MUSB_TXFIFOSZ_OFFSET) = 0;
-            HWREGH(USB_BASE + MUSB_TXFIFOADD_OFFSET) = 0;
-            HWREGB(USB_BASE + MUSB_RXFIFOSZ_OFFSET) = 0;
-            HWREGH(USB_BASE + MUSB_RXFIFOADD_OFFSET) = 0;
-        }
         usb_ep0_state = USB_EP0_STATE_SETUP;
     }
 
     if (is & USB_IS_SOF) {
+        is &= ~0x08;//sof
+        HWREGB(USB_BASE + MUSB_IS_OFFSET) = is;
     }
 
     if (is & USB_IS_RESUME) {
+        usbd_event_resume_handler(0);
     }
 
     if (is & USB_IS_SUSPEND) {
+        usbd_event_suspend_handler(0);
     }
 
-    txis &= HWREGH(USB_BASE + MUSB_TXIE_OFFSET);
+    txis &= HWREGB(USB_BASE + MUSB_TXIE_OFFSET);
     /* Handle EP0 interrupt */
     if (txis & USB_TXIE_EP0) {
-        HWREGH(USB_BASE + MUSB_TXIS_OFFSET) = USB_TXIE_EP0;
+        HWREGB(USB_BASE + MUSB_TXIS_OFFSET) = USB_TXIE_EP0;
         musb_set_active_ep(0);
         handle_ep0();
         txis &= ~USB_TXIE_EP0;
@@ -842,7 +740,7 @@ void USBD_IRQHandler(void)
     while (txis) {
         if (txis & (1 << ep_idx)) {
             musb_set_active_ep(ep_idx);
-            HWREGH(USB_BASE + MUSB_TXIS_OFFSET) = (1 << ep_idx);
+            HWREGB(USB_BASE + MUSB_TXIS_OFFSET) = (1 << ep_idx);
             if (HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) & USB_TXCSRL1_UNDRN) {
                 HWREGB(USB_BASE + MUSB_IND_TXCSRL_OFFSET) &= ~USB_TXCSRL1_UNDRN;
             }
@@ -858,8 +756,8 @@ void USBD_IRQHandler(void)
             }
 
             if (g_musb_udc.in_ep[ep_idx].xfer_len == 0) {
-                HWREGH(USB_BASE + MUSB_TXIE_OFFSET) &= ~(1 << ep_idx);
-                usbd_event_ep_in_complete_handler(ep_idx | 0x80, g_musb_udc.in_ep[ep_idx].actual_xfer_len);
+                HWREGB(USB_BASE + MUSB_TXIE_OFFSET) &= ~(1 << ep_idx);
+                usbd_event_ep_in_complete_handler(0, ep_idx | 0x80, g_musb_udc.in_ep[ep_idx].actual_xfer_len);
             } else {
                 write_count = MIN(g_musb_udc.in_ep[ep_idx].xfer_len, g_musb_udc.in_ep[ep_idx].ep_mps);
 
@@ -872,12 +770,12 @@ void USBD_IRQHandler(void)
         ep_idx++;
     }
 
-    rxis &= HWREGH(USB_BASE + MUSB_RXIE_OFFSET);
+    rxis &= HWREGB(USB_BASE + MUSB_RXIE_OFFSET);
     ep_idx = 1;
     while (rxis) {
         if (rxis & (1 << ep_idx)) {
             musb_set_active_ep(ep_idx);
-            HWREGH(USB_BASE + MUSB_RXIS_OFFSET) = (1 << ep_idx);
+            HWREGB(USB_BASE + MUSB_RXIS_OFFSET) = (1 << ep_idx);
             if (HWREGB(USB_BASE + MUSB_IND_RXCSRL_OFFSET) & USB_RXCSRL1_RXRDY) {
                 read_count = HWREGH(USB_BASE + MUSB_IND_RXCOUNT_OFFSET);
 
@@ -889,8 +787,8 @@ void USBD_IRQHandler(void)
                 g_musb_udc.out_ep[ep_idx].xfer_len -= read_count;
 
                 if ((read_count < g_musb_udc.out_ep[ep_idx].ep_mps) || (g_musb_udc.out_ep[ep_idx].xfer_len == 0)) {
-                    HWREGH(USB_BASE + MUSB_RXIE_OFFSET) &= ~(1 << ep_idx);
-                    usbd_event_ep_out_complete_handler(ep_idx, g_musb_udc.out_ep[ep_idx].actual_xfer_len);
+                    HWREGB(USB_BASE + MUSB_RXIE_OFFSET) &= ~(1 << ep_idx);
+                    usbd_event_ep_out_complete_handler(0, ep_idx, g_musb_udc.out_ep[ep_idx].actual_xfer_len);
                 } else {
                 }
             }

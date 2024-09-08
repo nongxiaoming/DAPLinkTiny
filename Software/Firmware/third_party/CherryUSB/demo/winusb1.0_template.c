@@ -1,5 +1,10 @@
+/*
+ * Copyright (c) 2024, sakumisu
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 #include "usbd_core.h"
-#include "usbd_cdc.h"
+#include "usbd_cdc_acm.h"
 
 #define WCID_VENDOR_CODE 0x17
 
@@ -82,7 +87,7 @@ __ALIGN_BEGIN const uint8_t WINUSB_IF0_WCIDProperties [142] __ALIGN_END = {
   0x00, 0x01,                                       /* bcdVersion */
   0x05, 0x00,                                       /* wIndex */
   0x01, 0x00,                                       /* wCount */
-  
+
   ///////////////////////////////////////
   /// registry propter descriptor
   ///////////////////////////////////////
@@ -117,7 +122,7 @@ __ALIGN_BEGIN const uint8_t WINUSB_IF1_WCIDProperties [142] __ALIGN_END = {
   0x00, 0x01,                                       /* bcdVersion */
   0x05, 0x00,                                       /* wIndex */
   0x01, 0x00,                                       /* wCount */
-  
+
   ///////////////////////////////////////
   /// registry propter descriptor
   ///////////////////////////////////////
@@ -146,18 +151,16 @@ __ALIGN_BEGIN const uint8_t WINUSB_IF1_WCIDProperties [142] __ALIGN_END = {
 
 const uint8_t *WINUSB_IFx_WCIDProperties[] = {
     WINUSB_IF0_WCIDProperties,
+#if DOUBLE_WINUSB == 1
     WINUSB_IF1_WCIDProperties,
+#endif
 };
 
 struct usb_msosv1_descriptor msosv1_desc = {
     .string = WCID_StringDescriptor_MSOS,
     .vendor_code = WCID_VENDOR_CODE,
     .compat_id = WINUSB_WCIDDescriptor,
-#if DOUBLE_WINUSB == 0
-    .comp_id_property = &WINUSB_IF0_WCIDProperties,
-#else
     .comp_id_property = WINUSB_IFx_WCIDProperties,
-#endif
 };
 
 #define WINUSB_IN_EP  0x81
@@ -281,7 +284,7 @@ const uint8_t winusb_descriptor[] = {
     'E', 0x00,                  /* wcChar18 */
     'M', 0x00,                  /* wcChar19 */
     'O', 0x00,                  /* wcChar20 */
-        ' ', 0x00,                  /* wcChar16 */
+    ' ', 0x00,                  /* wcChar16 */
     '1', 0x00,                  /* wcChar21 */
     ///////////////////////////////////////
     /// string5 descriptor
@@ -309,7 +312,7 @@ const uint8_t winusb_descriptor[] = {
     'E', 0x00,                  /* wcChar18 */
     'M', 0x00,                  /* wcChar19 */
     'O', 0x00,                  /* wcChar20 */
-        ' ', 0x00,                  /* wcChar16 */
+    ' ', 0x00,                  /* wcChar16 */
     '2', 0x00,                  /* wcChar21 */
 #ifdef CONFIG_USB_HS
     ///////////////////////////////////////
@@ -334,7 +337,7 @@ USB_NOCACHE_RAM_SECTION USB_MEM_ALIGNX uint8_t write_buffer[2048];
 
 volatile bool ep_tx_busy_flag = false;
 
-void usbd_event_handler(uint8_t event)
+static void usbd_event_handler(uint8_t busid, uint8_t event)
 {
     switch (event) {
         case USBD_EVENT_RESET:
@@ -348,10 +351,11 @@ void usbd_event_handler(uint8_t event)
         case USBD_EVENT_SUSPEND:
             break;
         case USBD_EVENT_CONFIGURED:
+            ep_tx_busy_flag = false;
             /* setup first out ep read transfer */
-            usbd_ep_start_read(WINUSB_OUT_EP, read_buffer, 2048);
+            usbd_ep_start_read(busid, WINUSB_OUT_EP, read_buffer, 2048);
 #if DOUBLE_WINUSB == 1
-            usbd_ep_start_read(WINUSB_OUT_EP2, read_buffer, 2048);
+            usbd_ep_start_read(busid, WINUSB_OUT_EP2, read_buffer, 2048);
 #endif
             break;
         case USBD_EVENT_SET_REMOTE_WAKEUP:
@@ -364,25 +368,25 @@ void usbd_event_handler(uint8_t event)
     }
 }
 
-void usbd_winusb_out(uint8_t ep, uint32_t nbytes)
+void usbd_winusb_out(uint8_t busid, uint8_t ep, uint32_t nbytes)
 {
     USB_LOG_RAW("actual out len:%d\r\n", nbytes);
     // for (int i = 0; i < 100; i++) {
     //     printf("%02x ", read_buffer[i]);
     // }
     // printf("\r\n");
-    usbd_ep_start_write(WINUSB_IN_EP, read_buffer, nbytes);
+    usbd_ep_start_write(busid, WINUSB_IN_EP, read_buffer, nbytes);
     /* setup next out ep read transfer */
-    usbd_ep_start_read(WINUSB_OUT_EP, read_buffer, 2048);
+    usbd_ep_start_read(busid, WINUSB_OUT_EP, read_buffer, 2048);
 }
 
-void usbd_winusb_in(uint8_t ep, uint32_t nbytes)
+void usbd_winusb_in(uint8_t busid, uint8_t ep, uint32_t nbytes)
 {
     USB_LOG_RAW("actual in len:%d\r\n", nbytes);
 
     if ((nbytes % WINUSB_EP_MPS) == 0 && nbytes) {
         /* send zlp */
-        usbd_ep_start_write(WINUSB_IN_EP, NULL, 0);
+        usbd_ep_start_write(busid, WINUSB_IN_EP, NULL, 0);
     } else {
         ep_tx_busy_flag = false;
     }
@@ -402,25 +406,25 @@ struct usbd_interface intf0;
 
 #if DOUBLE_WINUSB == 1
 
-void usbd_winusb_out2(uint8_t ep, uint32_t nbytes)
+void usbd_winusb_out2(uint8_t busid, uint8_t ep, uint32_t nbytes)
 {
     USB_LOG_RAW("actual out len:%d\r\n", nbytes);
     // for (int i = 0; i < 100; i++) {
     //     printf("%02x ", read_buffer[i]);
     // }
     // printf("\r\n");
-    usbd_ep_start_write(WINUSB_IN_EP2, read_buffer, nbytes);
+    usbd_ep_start_write(busid, WINUSB_IN_EP2, read_buffer, nbytes);
     /* setup next out ep read transfer */
-    usbd_ep_start_read(WINUSB_OUT_EP2, read_buffer, 2048);
+    usbd_ep_start_read(busid, WINUSB_OUT_EP2, read_buffer, 2048);
 }
 
-void usbd_winusb_in2(uint8_t ep, uint32_t nbytes)
+void usbd_winusb_in2(uint8_t busid, uint8_t ep, uint32_t nbytes)
 {
     USB_LOG_RAW("actual in len:%d\r\n", nbytes);
 
-    if ((nbytes % WINUSB_EP_MPS) == 0 && nbytes) {
+    if ((nbytes % usbd_get_ep_mps(busid, ep)) == 0 && nbytes) {
         /* send zlp */
-        usbd_ep_start_write(WINUSB_IN_EP2, NULL, 0);
+        usbd_ep_start_write(busid, WINUSB_IN_EP2, NULL, 0);
     } else {
         ep_tx_busy_flag = false;
     }
@@ -440,17 +444,17 @@ struct usbd_interface intf1;
 
 #endif
 
-void winusb_init(void)
+void winusb_init(uint8_t busid, uintptr_t reg_base)
 {
-    usbd_desc_register(winusb_descriptor);
-    usbd_msosv1_desc_register(&msosv1_desc);
-    usbd_add_interface(&intf0);
-    usbd_add_endpoint(&winusb_out_ep1);
-    usbd_add_endpoint(&winusb_in_ep1);
+    usbd_desc_register(busid, winusb_descriptor);
+    usbd_msosv1_desc_register(busid, &msosv1_desc);
+    usbd_add_interface(busid, &intf0);
+    usbd_add_endpoint(busid, &winusb_out_ep1);
+    usbd_add_endpoint(busid, &winusb_in_ep1);
 #if DOUBLE_WINUSB == 1
-    usbd_add_interface(&intf1);
-    usbd_add_endpoint(&winusb_out_ep2);
-    usbd_add_endpoint(&winusb_in_ep2);
+    usbd_add_interface(busid, &intf1);
+    usbd_add_endpoint(busid, &winusb_out_ep2);
+    usbd_add_endpoint(busid, &winusb_in_ep2);
 #endif
-    usbd_initialize();
+    usbd_initialize(busid, reg_base, usbd_event_handler);
 }

@@ -186,10 +186,11 @@
             <RvdsVP>0</RvdsVP>
             <RvdsMve>0</RvdsMve>
             <RvdsCdeCp>0</RvdsCdeCp>
+            <nBranchProt>0</nBranchProt>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
-            <useUlib>0</useUlib>
+            <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <nSecure>0</nSecure>
@@ -313,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>1</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -389,25 +390,15 @@
               <FilePath>applications\main.c</FilePath>
             </File>
             <File>
-              <FileName>cmsis-dap.c</FileName>
+              <FileName>cdc_acm_hid_msc_template.c</FileName>
               <FileType>1</FileType>
-              <FilePath>applications\cmsis-dap.c</FilePath>
+              <FilePath>.\applications\cdc_acm_hid_msc_template.c</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
           <GroupName>CherryUSB</GroupName>
           <Files>
-            <File>
-              <FileName>usbd_cdc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\third_party\CherryUSB\class\cdc\usbd_cdc.c</FilePath>
-            </File>
-            <File>
-              <FileName>hid_mouse_template.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\third_party\CherryUSB\demo\hid_mouse_template.c</FilePath>
-            </File>
             <File>
               <FileName>usbd_core.c</FileName>
               <FileType>1</FileType>
@@ -422,6 +413,16 @@
               <FileName>usb_dc_musb.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\third_party\CherryUSB\port\musb\usb_dc_musb.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_glue_es.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\third_party\CherryUSB\port\musb\usb_glue_es.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_cdc_acm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\third_party\CherryUSB\class\cdc\usbd_cdc_acm.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -497,26 +498,6 @@
               <FileName>cpuport.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\rt-thread\libcpu\arm\cortex-m0\cpuport.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>DAPLink</GroupName>
-          <Files>
-            <File>
-              <FileName>DAP.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\third_party\DAPLink\DAP\DAP.c</FilePath>
-            </File>
-            <File>
-              <FileName>SWD_host.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\third_party\DAPLink\SWD_host\SWD_host.c</FilePath>
-            </File>
-            <File>
-              <FileName>SW_DP.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\third_party\DAPLink\DAP\SW_DP.c</FilePath>
             </File>
           </Files>
         </Group>
