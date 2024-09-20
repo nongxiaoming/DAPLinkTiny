@@ -54,10 +54,7 @@ void usb_dc_low_level_init(void)
     RCC_USBCLKConfig(RCC_USBCLK_HSI48);
 
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
-//    USB_ITConfig(USB_IT_USB_RESUME_FLAG, ENABLE);
-//    USB_ITConfig(USB_IT_USB_SUSPEND_FLAG, ENABLE);
-//    USB_ITConfig(USB_IT_USB_SOF_FLAG, ENABLE);
-//    USB_ITConfig(USB_IT_USB_RESET_FLAG, ENABLE);
+
     USB_PDCTRLConfig(USB_PDCTRL_PU_ENABLE);
 
     NVIC_InitStructure.NVIC_IRQChannel = USB_IRQn;
@@ -81,7 +78,7 @@ int main(void)
     cdc_acm_hid_msc_descriptor_init(0,USB_BASE);
     while (1)
     {
-        //cdc_acm_data_send_with_dtr_test(0);
+        cdc_acm_data_send_with_dtr_test(0);
         rt_pin_write(LED2_PIN, PIN_HIGH);
         rt_thread_mdelay(500);
         rt_pin_write(LED2_PIN, PIN_LOW);

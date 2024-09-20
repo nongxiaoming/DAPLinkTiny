@@ -85,7 +85,7 @@ void usb_assert(const char *filename, int linenum);
 #define ___is_print(ch) ((unsigned int)((ch) - ' ') < 127u - ' ')
 static inline void usb_hexdump(const void *ptr, uint32_t buflen)
 {
-    unsigned char *buf = (unsigned char *)ptr;
+    //unsigned char *buf = (unsigned char *)ptr;
     uint32_t i, j;
 
     for (i = 0; i < buflen; i += 16) {

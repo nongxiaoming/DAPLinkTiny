@@ -172,54 +172,8 @@ static void musb_read_packet(uint8_t ep_idx, uint8_t *buffer, uint16_t len)
         }
 }
 
-static uint32_t musb_get_fifo_size(uint16_t mps, uint16_t *used)
+__WEAK void usbd_musb_delay_ms(uint8_t ms)
 {
-    uint32_t size;
-
-    for (uint8_t i = USB_TXFIFOSZ_SIZE_8; i <= USB_TXFIFOSZ_SIZE_2048; i++) {
-        size = (8 << i);
-        if (mps <= size) {
-            *used = size;
-            return i;
-        }
-    }
-
-    *used = 0;
-    return USB_TXFIFOSZ_SIZE_8;
-}
-
-static uint32_t usbd_musb_fifo_config(struct musb_fifo_cfg *cfg, uint32_t offset)
-{
-    uint16_t fifo_used;
-    uint8_t c_size;
-    uint16_t c_off;
-
-    c_off = offset >> 3;
-    c_size = musb_get_fifo_size(cfg->maxpacket, &fifo_used);
-
-    musb_set_active_ep(cfg->ep_num);
-
-    switch (cfg->style) {
-        case FIFO_TX:
-//            HWREGB(USB_BASE + MUSB_TXFIFOSZ_OFFSET) = c_size & 0x0f;
-//            HWREGH(USB_BASE + MUSB_TXFIFOADD_OFFSET) = c_off;
-            break;
-        case FIFO_RX:
-//            HWREGB(USB_BASE + MUSB_RXFIFOSZ_OFFSET) = c_size & 0x0f;
-//            HWREGH(USB_BASE + MUSB_RXFIFOADD_OFFSET) = c_off;
-            break;
-        case FIFO_TXRX:
-//            HWREGB(USB_BASE + MUSB_TXFIFOSZ_OFFSET) = c_size & 0x0f;
-//            HWREGH(USB_BASE + MUSB_TXFIFOADD_OFFSET) = c_off;
-//            HWREGB(USB_BASE + MUSB_RXFIFOSZ_OFFSET) = c_size & 0x0f;
-//            HWREGH(USB_BASE + MUSB_RXFIFOADD_OFFSET) = c_off;
-            break;
-
-        default:
-            break;
-    }
-
-    return (offset + fifo_used);
 }
 
 __WEAK void usb_dc_low_level_init(void)
@@ -232,9 +186,9 @@ __WEAK void usb_dc_low_level_deinit(void)
 
 int usb_dc_init(uint8_t busid)
 {
-    uint16_t offset = 0;
-    uint8_t cfg_num;
-    struct musb_fifo_cfg *cfg;
+//    uint16_t offset = 0;
+//    uint8_t cfg_num;
+//    struct musb_fifo_cfg *cfg;
 
     usb_dc_low_level_init();
 
@@ -249,17 +203,17 @@ int usb_dc_init(uint8_t busid)
 
     //HWREGB(USB_BASE + MUSB_DEVCTL_OFFSET) |= USB_DEVCTL_SESSION;
 
-    cfg_num = usbd_get_musb_fifo_cfg(&cfg);
+//    cfg_num = usbd_get_musb_fifo_cfg(&cfg);
 
-    for (uint8_t i = 0; i < cfg_num; i++) {
-        offset = usbd_musb_fifo_config(&cfg[i], offset);
-    }
+//    for (uint8_t i = 0; i < cfg_num; i++) {
+//        offset = usbd_musb_fifo_config(&cfg[i], offset);
+//    }
 
-    if (offset > usb_get_musb_ram_size()) {
-        USB_LOG_ERR("offset:%d is overflow, please check your table\r\n", offset);
-        while (1) {
-        }
-    }
+//    if (offset > usb_get_musb_ram_size()) {
+//        USB_LOG_ERR("offset:%d is overflow, please check your table\r\n", offset);
+//        while (1) {
+//        }
+//    }
 
     /* Enable USB interrupts */
     HWREGB(USB_BASE + MUSB_IE_OFFSET) = USB_IE_RESET | USB_IE_SUSPND | USB_IE_RESUME | USB_IE_SOF;
@@ -306,7 +260,7 @@ int usbd_ep_open(uint8_t busid, const struct usb_endpoint_descriptor *ep)
 {
     uint8_t ep_idx = USB_EP_GET_IDX(ep->bEndpointAddress);
     uint8_t old_ep_idx;
-    uint32_t ui32Flags = 0;
+    uint32_t ui31Flags = 0;
     uint16_t ui32Register = 0;
 
     if (ep_idx == 0) {
@@ -343,22 +297,22 @@ int usbd_ep_open(uint8_t busid, const struct usb_endpoint_descriptor *ep)
         // Allow auto clearing of RxPktRdy when packet of size max packet
         // has been unloaded from the FIFO.
         //
-        if (ui32Flags & USB_EP_AUTO_CLEAR) {
+        if (ui31Flags & USB_EP_AUTO_CLEAR) {
             ui32Register = USB_RXCSRH1_AUTOCL;
         }
         //
         // Configure the DMA mode.
         //
-        if (ui32Flags & USB_EP_DMA_MODE_1) {
+        if (ui31Flags & USB_EP_DMA_MODE_1) {
             ui32Register |= USB_RXCSRH1_DMAEN | USB_RXCSRH1_DMAMOD;
-        } else if (ui32Flags & USB_EP_DMA_MODE_0) {
+        } else if (ui31Flags & USB_EP_DMA_MODE_0) {
             ui32Register |= USB_RXCSRH1_DMAEN;
         }
         //
         // If requested, disable NYET responses for high-speed bulk and
         // interrupt endpoints.
         //
-        if (ui32Flags & USB_EP_DIS_NYET) {
+        if (ui31Flags & USB_EP_DIS_NYET) {
             ui32Register |= USB_RXCSRH1_DISNYET;
         }
 
@@ -392,19 +346,20 @@ int usbd_ep_open(uint8_t busid, const struct usb_endpoint_descriptor *ep)
         // Allow auto setting of TxPktRdy when max packet size has been loaded
         // into the FIFO.
         //
-        if (ui32Flags & USB_EP_AUTO_SET) {
+        if (ui31Flags & USB_EP_AUTO_SET) {
             ui32Register |= USB_TXCSRH1_AUTOSET;
         }
 
         //
         // Configure the DMA mode.
         //
-        if (ui32Flags & USB_EP_DMA_MODE_1) {
+        if (ui31Flags & USB_EP_DMA_MODE_1) {
             ui32Register |= USB_TXCSRH1_DMAEN | USB_TXCSRH1_DMAMOD;
-        } else if (ui32Flags & USB_EP_DMA_MODE_0) {
+        } else if (ui31Flags & USB_EP_DMA_MODE_0) {
             ui32Register |= USB_TXCSRH1_DMAEN;
         }
-
+        
+         ui32Register |= USB_TXCSRH1_MODE;
         //
         // Enable isochronous mode if requested.
         //
