@@ -395,19 +395,19 @@
           <GroupName>Drivers</GroupName>
           <Files>
             <File>
-              <FileName>bsp_led.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Drivers\bsp_led.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_systick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Drivers\bsp_systick.c</FilePath>
-            </File>
-            <File>
               <FileName>ft32f0xx_it.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Drivers\ft32f0xx_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\drv_led.c</FilePath>
+            </File>
+            <File>
+              <FileName>systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\systick.c</FilePath>
             </File>
           </Files>
         </Group>

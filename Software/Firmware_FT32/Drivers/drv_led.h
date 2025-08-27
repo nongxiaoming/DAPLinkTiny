@@ -30,37 +30,27 @@ typedef struct
     uint32_t clk;
     GPIO_TypeDef   *port;
     uint16_t    pin;
-    BitAction   active_state;
-    uint8_t reserved;
-} PIN_CONFIG_t;
+} pin_config_t;
 
 typedef enum
 {
     LED1 = 0,
     LED2 = 1,
-    LED3 = 2,
-    LED4 = 3
 } Led_TypeDef;
 
 /* Exported constants --------------------------------------------------------*/
 /* ------------------------------- Configuration ---------------------------- */
-#define LED_NUM                         4U
+#define LED_NUM                         2U
 
 /* Exported macro ------------------------------------------------------------*/
 #define LED1_CLK        RCC_AHBENR_GPIOBEN
 #define LED2_CLK        RCC_AHBENR_GPIOBEN
-#define LED3_CLK        RCC_AHBENR_GPIOBEN
-#define LED4_CLK        RCC_AHBENR_GPIOBEN
 
 #define LED1_GPIOX  GPIOB
 #define LED2_GPIOX  GPIOB
-#define LED3_GPIOX  GPIOB
-#define LED4_GPIOX  GPIOB
 
-#define LED1_GPIO_Pin   GPIO_Pin_0
-#define LED2_GPIO_Pin   GPIO_Pin_1
-#define LED3_GPIO_Pin   GPIO_Pin_2
-#define LED4_GPIO_Pin   GPIO_Pin_3
+#define LED1_GPIO_Pin   GPIO_Pin_3
+#define LED2_GPIO_Pin   GPIO_Pin_4
 
 /* Exported functions ------------------------------------------------------- */
 void LedConfig(Led_TypeDef Led);

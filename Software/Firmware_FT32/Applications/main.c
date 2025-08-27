@@ -36,12 +36,10 @@ int main(void)
     /* Initialize LEDs mounted on Starter board */
     LedConfig(LED1);
     LedConfig(LED2);
-    LedConfig(LED3);
-    LedConfig(LED4);
 
     /* Turn on LED1 and LED3 */
     LedOn(LED1);
-    LedOn(LED3);
+    LedOn(LED2);
 
     /* Initialize SysTick Timer*/
     SystickInit();
@@ -49,15 +47,15 @@ int main(void)
     while (1)
     {
         /* Toggle LED2 and LED4 */
+        LedToggle(LED1);
         LedToggle(LED2);
-        LedToggle(LED4);
 
         /* Insert 50 ms delay */
         Delay(50);
 
         /* Toggle LED1 and LED3 */
         LedToggle(LED1);
-        LedToggle(LED3);
+        LedToggle(LED2);
 
         /* Insert 100 ms delay */
         Delay(100);

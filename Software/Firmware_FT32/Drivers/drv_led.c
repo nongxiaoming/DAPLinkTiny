@@ -17,14 +17,12 @@
 *******************************************************************************/
 
 /* Includes ------------------------------------------------------------------*/
-#include "bsp_led.h"
+#include "drv_led.h"
 
-const PIN_CONFIG_t  PIN_CONFIG[LED_NUM] =
+const pin_config_t  PIN_CONFIG[LED_NUM] =
 {
-    { LED1_CLK, LED1_GPIOX, LED1_GPIO_Pin, Bit_RESET, 0U },
-    { LED2_CLK, LED2_GPIOX, LED2_GPIO_Pin, Bit_RESET, 0U },
-    { LED3_CLK, LED3_GPIOX, LED3_GPIO_Pin, Bit_SET, 0U },
-    { LED4_CLK, LED4_GPIOX, LED4_GPIO_Pin, Bit_SET, 0U },
+    { LED1_CLK, LED1_GPIOX, LED1_GPIO_Pin },
+    { LED2_CLK, LED2_GPIOX, LED2_GPIO_Pin },
 };
 
 /**
@@ -33,8 +31,6 @@ const PIN_CONFIG_t  PIN_CONFIG[LED_NUM] =
   *          This parameter can be one of following parameters:
   *            @arg LED1
   *            @arg LED2
-  *            @arg LED3
-  *            @arg LED4
   * @retval None
   */
 void LedConfig(Led_TypeDef Led)
@@ -63,8 +59,6 @@ void LedConfig(Led_TypeDef Led)
   *          This parameter can be one of following parameters:
   *            @arg LED1
   *            @arg LED2
-  *            @arg LED3
-  *            @arg LED4
   * @retval None
   */
 void LedOn(Led_TypeDef Led)
@@ -86,8 +80,6 @@ void LedOn(Led_TypeDef Led)
   *          This parameter can be one of following parameters:
   *            @arg LED1
   *            @arg LED2
-  *            @arg LED3
-  *            @arg LED4
   * @retval None
   */
 void LedOff(Led_TypeDef Led)
@@ -109,8 +101,6 @@ void LedOff(Led_TypeDef Led)
   *          This parameter can be one of following parameters:
   *            @arg LED1
   *            @arg LED2
-  *            @arg LED3
-  *            @arg LED4
   * @retval None
   */
 void LedToggle(Led_TypeDef Led)
