@@ -29,7 +29,7 @@
 								((PDCTRL) == USB_PDCTRL_PU_ENABLE))
                                 
 /* defined the LED2 pin: PB0 */
-#define LED2_PIN    GET_PIN(B, 0)
+#define LED2_PIN    GET_PIN(B, 3)
 
 extern void cdc_acm_hid_msc_descriptor_init(uint8_t busid, uintptr_t reg_base);
 
