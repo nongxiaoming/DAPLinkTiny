@@ -338,9 +338,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>FT32F072xB</Define>
               <Undefine></Undefine>
-              <IncludePath>..\User\Include</IncludePath>
+              <IncludePath>.\Applications;.\Drivers;.\Libraries\CMSIS\FT32F0xx\Include;.\Libraries\FT32F0xx_Driver\Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -385,24 +385,114 @@
           <GroupName>Applications</GroupName>
           <Files>
             <File>
-              <FileName>ft32f0xx_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USER\Sourse\ft32f0xx_it.c</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\Sourse\main.c</FilePath>
+              <FilePath>.\Applications\main.c</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drivers</GroupName>
+          <Files>
             <File>
               <FileName>bsp_led.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\Sourse\bsp_led.c</FilePath>
+              <FilePath>.\Drivers\bsp_led.c</FilePath>
             </File>
             <File>
               <FileName>bsp_systick.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\Sourse\bsp_systick.c</FilePath>
+              <FilePath>.\Drivers\bsp_systick.c</FilePath>
+            </File>
+            <File>
+              <FileName>ft32f0xx_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\ft32f0xx_it.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>CMSIS</GroupName>
+          <Files>
+            <File>
+              <FileName>system_ft32f0xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\CMSIS\FT32F0xx\source\system_ft32f0xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>startup_ft32f072xb.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\Libraries\CMSIS\FT32F0xx\source\arm\startup_ft32f072xb.s</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FT32F0xx_Driver</GroupName>
+          <Files>
+            <File>
+              <FileName>ft32f0xx_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\FT32F0xx_Driver\Src\ft32f0xx_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>ft32f0xx_debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\FT32F0xx_Driver\Src\ft32f0xx_debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>ft32f0xx_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\FT32F0xx_Driver\Src\ft32f0xx_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>ft32f0xx_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\FT32F0xx_Driver\Src\ft32f0xx_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>ft32f0xx_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\FT32F0xx_Driver\Src\ft32f0xx_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>ft32f0xx_misc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\FT32F0xx_Driver\Src\ft32f0xx_misc.c</FilePath>
+            </File>
+            <File>
+              <FileName>ft32f0xx_pwr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\FT32F0xx_Driver\Src\ft32f0xx_pwr.c</FilePath>
+            </File>
+            <File>
+              <FileName>ft32f0xx_rcc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\FT32F0xx_Driver\Src\ft32f0xx_rcc.c</FilePath>
+            </File>
+            <File>
+              <FileName>ft32f0xx_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\FT32F0xx_Driver\Src\ft32f0xx_rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>ft32f0xx_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\FT32F0xx_Driver\Src\ft32f0xx_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>ft32f0xx_syscfg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\FT32F0xx_Driver\Src\ft32f0xx_syscfg.c</FilePath>
+            </File>
+            <File>
+              <FileName>ft32f0xx_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\FT32F0xx_Driver\Src\ft32f0xx_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>ft32f0xx_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\FT32F0xx_Driver\Src\ft32f0xx_usart.c</FilePath>
             </File>
           </Files>
         </Group>

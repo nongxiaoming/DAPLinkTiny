@@ -64,7 +64,7 @@
 #else
  #error "Please select first the target FT32F0xx device used in your application (in ft32f0xx.h file)"
 #endif
-#include "../../../FT32F0xx_Driver/templates/Inc/ft32f0xx_conf.h"  
+#include "ft32f0xx_conf.h"  
 
 /**
   * @}
