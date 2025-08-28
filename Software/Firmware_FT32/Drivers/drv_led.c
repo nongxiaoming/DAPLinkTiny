@@ -63,15 +63,7 @@ void LedConfig(Led_TypeDef Led)
   */
 void LedOn(Led_TypeDef Led)
 {
-    if (PIN_CONFIG[Led].active_state == Bit_RESET)
-    {
-        GPIO_WriteBit(PIN_CONFIG[Led].port, PIN_CONFIG[Led].pin, Bit_RESET);
-    }
-    else
-    {
-        GPIO_WriteBit(PIN_CONFIG[Led].port, PIN_CONFIG[Led].pin, Bit_SET);
-    }
-
+   GPIO_WriteBit(PIN_CONFIG[Led].port, PIN_CONFIG[Led].pin, Bit_RESET);
 }
 
 /**
@@ -84,15 +76,7 @@ void LedOn(Led_TypeDef Led)
   */
 void LedOff(Led_TypeDef Led)
 {
-    if (PIN_CONFIG[Led].active_state == Bit_RESET)
-    {
-        GPIO_WriteBit(PIN_CONFIG[Led].port, PIN_CONFIG[Led].pin, Bit_SET);
-    }
-    else
-    {
-        GPIO_WriteBit(PIN_CONFIG[Led].port, PIN_CONFIG[Led].pin, Bit_RESET);
-    }
-
+   GPIO_WriteBit(PIN_CONFIG[Led].port, PIN_CONFIG[Led].pin, Bit_SET);
 }
 
 /**

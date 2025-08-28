@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>FT32F072xB</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Applications;.\Drivers;.\Libraries\CMSIS\FT32F0xx\Include;.\Libraries\FT32F0xx_Driver\Inc</IncludePath>
+              <IncludePath>.\Applications;.\Drivers;.\Libraries\CMSIS\FT32F0xx\Include;.\Libraries\FT32F0xx_Driver\Inc;.\Libraries\CherryUSB\common;.\Libraries\CherryUSB\core;.\Libraries\CherryUSB\class\msc;.\Libraries\CherryUSB\class\cdc;.\Libraries\CherryUSB\class\hid;.\Libraries\CherryRB;.\Libraries\DAP\Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -388,6 +388,16 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Applications\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb2uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Applications\usb2uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>dap_main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Applications\dap_main.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -493,6 +503,71 @@
               <FileName>ft32f0xx_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Libraries\FT32F0xx_Driver\Src\ft32f0xx_usart.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>CherryUSB</GroupName>
+          <Files>
+            <File>
+              <FileName>usbd_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\CherryUSB\core\usbd_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_hid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\CherryUSB\class\hid\usbd_hid.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_cdc_acm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\CherryUSB\class\cdc\usbd_cdc_acm.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_dc_musb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\CherryUSB\port\musb\usb_dc_musb.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_glue_sunxi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\CherryUSB\port\musb\usb_glue_sunxi.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>CherryRB</GroupName>
+          <Files>
+            <File>
+              <FileName>chry_ringbuffer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\CherryRB\chry_ringbuffer.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>DAP</GroupName>
+          <Files>
+            <File>
+              <FileName>DAP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\DAP\Source\DAP.c</FilePath>
+            </File>
+            <File>
+              <FileName>DAP_vendor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\DAP\Source\DAP_vendor.c</FilePath>
+            </File>
+            <File>
+              <FileName>JTAG_DP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\DAP\Source\JTAG_DP.c</FilePath>
+            </File>
+            <File>
+              <FileName>SW_DP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Libraries\DAP\Source\SW_DP.c</FilePath>
             </File>
           </Files>
         </Group>
